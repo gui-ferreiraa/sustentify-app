@@ -1,8 +1,9 @@
-package com.sustentify.sustentify_app.companies.entity;
+package com.sustentify.sustentify_app.companies.entities;
 
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "companies")
 public class Company {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -1,4 +1,4 @@
-package com.sustentify.sustentify_app.companies.entity;
+package com.sustentify.sustentify_app.companies.entities;
 
 public enum CompanyDepartment {
     ADMINISTRATIVE("Administrative"),
