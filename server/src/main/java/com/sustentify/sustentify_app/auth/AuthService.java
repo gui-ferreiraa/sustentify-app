@@ -9,6 +9,8 @@ import com.sustentify.sustentify_app.exceptions.CompanyAlreadyExistsException;
 import com.sustentify.sustentify_app.exceptions.CompanyNotFoundException;
 import com.sustentify.sustentify_app.exceptions.CompanyPasswordInvalidException;
 import com.sustentify.sustentify_app.jwt.TokenService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -48,5 +50,15 @@ public class AuthService {
         String refreshToken = this.tokenService.generateRefreshToken(newCompany);
 
         return ResponseEntity.ok(new ResponseDto(newCompany.getName(), newCompany.getEmail(), accessToken));
+    }
+
+    private void createCookieWithRefreshToken(String cookie HttpServletResponse response) {
+        Cookie refreshTokenCookie = new Cookie("refreshToken", cookie);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setSecure(true);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7);
+
+        response.addCookie(refreshTokenCookie);
     }
 }
