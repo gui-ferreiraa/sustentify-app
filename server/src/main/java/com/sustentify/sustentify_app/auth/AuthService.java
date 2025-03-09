@@ -3,33 +3,32 @@ package com.sustentify.sustentify_app.auth;
 import com.sustentify.sustentify_app.auth.dtos.LoginCompanyDto;
 import com.sustentify.sustentify_app.auth.dtos.RegisterCompanyDto;
 import com.sustentify.sustentify_app.auth.dtos.ResponseDto;
-import com.sustentify.sustentify_app.companies.CompaniesRepository;
+import com.sustentify.sustentify_app.companies.CompaniesService;
 import com.sustentify.sustentify_app.companies.entities.Company;
 import com.sustentify.sustentify_app.exceptions.CompanyAlreadyExistsException;
 import com.sustentify.sustentify_app.exceptions.CompanyNotFoundException;
+import com.sustentify.sustentify_app.exceptions.CompanyPasswordInvalidException;
 import com.sustentify.sustentify_app.jwt.TokenService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class AuthService {
-    private final CompaniesRepository companiesRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
+    private final CompaniesService companiesService;
 
-    public AuthService(CompaniesRepository companiesRepository, PasswordEncoder passwordEncoder, TokenService tokenService) {
-        this.companiesRepository = companiesRepository;
+    public AuthService(PasswordEncoder passwordEncoder, TokenService tokenService, CompaniesService companiesService) {
         this.passwordEncoder = passwordEncoder;
         this.tokenService = tokenService;
+        this.companiesService = companiesService;
     }
 
     public ResponseEntity<ResponseDto> login(LoginCompanyDto loginCompanyDto) {
-        Company company = this.companiesRepository.findByEmail(loginCompanyDto.email()).orElseThrow(() -> new CompanyNotFoundException(loginCompanyDto));
+        Company company = this.companiesService.findByEmail(loginCompanyDto.email()).orElseThrow(() -> new CompanyNotFoundException(loginCompanyDto.email()));
 
-        if (!passwordEncoder.matches(company.getPassword(), loginCompanyDto.password())) ResponseEntity.badRequest().body("Invalid Credentials");
+        if (!passwordEncoder.matches(company.getPassword(), loginCompanyDto.password())) throw new CompanyPasswordInvalidException(loginCompanyDto.email());
 
         String accessToken = this.tokenService.generateAccessToken(company);
         String refreshToken = this.tokenService.generateRefreshToken(company);
@@ -38,20 +37,12 @@ public class AuthService {
     }
 
     public ResponseEntity<ResponseDto> register(RegisterCompanyDto registerCompanyDto) {
-        Optional<Company> company = this.companiesRepository.findByEmail(registerCompanyDto.email());
+        this.companiesService.findByEmail(registerCompanyDto.email())
+                .ifPresent(existingCompany -> {
+                    throw new CompanyAlreadyExistsException(existingCompany);
+                });
 
-        if (company.isPresent()) {
-            throw new CompanyAlreadyExistsException(company.get());
-        }
-
-        Company newCompany = new Company();
-        newCompany.setPassword(passwordEncoder.encode(registerCompanyDto.password()));
-        newCompany.setEmail(registerCompanyDto.email());
-        newCompany.setName(registerCompanyDto.name());
-        newCompany.setAddress(registerCompanyDto.address());
-        newCompany.setCompanyDepartment(registerCompanyDto.companyDepartment());
-        newCompany.setCnpj(registerCompanyDto.cnpj());
-        this.companiesRepository.save(newCompany);
+        Company newCompany = companiesService.create(registerCompanyDto);
 
         String accessToken = this.tokenService.generateAccessToken(newCompany);
         String refreshToken = this.tokenService.generateRefreshToken(newCompany);

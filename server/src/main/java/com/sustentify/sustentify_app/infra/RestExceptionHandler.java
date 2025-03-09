@@ -2,6 +2,7 @@ package com.sustentify.sustentify_app.infra;
 
 import com.sustentify.sustentify_app.exceptions.CompanyAlreadyExistsException;
 import com.sustentify.sustentify_app.exceptions.CompanyNotFoundException;
+import com.sustentify.sustentify_app.exceptions.CompanyPasswordInvalidException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -21,5 +22,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<ResponseError> companyAlreadyExistsHandler(CompanyAlreadyExistsException exception) {
         ResponseError responseError = new ResponseError(HttpStatus.CONFLICT, exception.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(responseError);
+    }
+
+    @ExceptionHandler(CompanyPasswordInvalidException.class)
+    private ResponseEntity<ResponseError> companyPasswordInvalidHandler(CompanyPasswordInvalidException exception) {
+        ResponseError responseError = new ResponseError(HttpStatus.BAD_REQUEST, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseError);
     }
 }

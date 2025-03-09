@@ -1,15 +1,14 @@
 package com.sustentify.sustentify_app.exceptions;
 
-public class CompanyNotFoundException extends RuntimeException {
-
+public class CompanyPasswordInvalidException extends RuntimeException {
     private final String companyEmail;
 
-    public CompanyNotFoundException(String companyEmail) {
-        super("Company Not Found: (" + companyEmail+ ")");
+    public CompanyPasswordInvalidException(String companyEmail) {
+        super("Company Password Invalid: (" + companyEmail+ ")");
         this.companyEmail = companyEmail;
     }
 
-    public CompanyNotFoundException(String message, String companyEmail) {
+    public CompanyPasswordInvalidException(String message, String companyEmail) {
         super(message);
         this.companyEmail = companyEmail;
     }
