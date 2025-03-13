@@ -3,17 +3,19 @@ package com.sustentify.sustentify_app.auth;
 import com.sustentify.sustentify_app.auth.dtos.LoginCompanyDto;
 import com.sustentify.sustentify_app.auth.dtos.RegisterCompanyDto;
 import com.sustentify.sustentify_app.auth.dtos.ResponseDto;
-import com.sustentify.sustentify_app.companies.CompaniesService;
+import com.sustentify.sustentify_app.auth.jwt.TokenService;
+import com.sustentify.sustentify_app.companies.services.CompaniesService;
 import com.sustentify.sustentify_app.companies.entities.Company;
-import com.sustentify.sustentify_app.exceptions.CompanyAlreadyExistsException;
-import com.sustentify.sustentify_app.exceptions.CompanyNotFoundException;
-import com.sustentify.sustentify_app.exceptions.CompanyPasswordInvalidException;
-import com.sustentify.sustentify_app.jwt.TokenService;
+import com.sustentify.sustentify_app.companies.exceptions.CompanyAlreadyExistsException;
+import com.sustentify.sustentify_app.companies.exceptions.CompanyNotFoundException;
+import com.sustentify.sustentify_app.companies.exceptions.CompanyPasswordInvalidException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 @Service
 public class AuthService {
@@ -27,18 +29,28 @@ public class AuthService {
         this.companiesService = companiesService;
     }
 
-    public ResponseEntity<ResponseDto> login(LoginCompanyDto loginCompanyDto) {
+    public ResponseEntity<Company> companyLogged(String accessToken) {
+        String subjectEmail = tokenService.validateToken(accessToken);
+
+        Company company = this.companiesService.findByEmail(subjectEmail).orElseThrow(() -> new CompanyNotFoundException(subjectEmail));
+
+        return ResponseEntity.ok(company);
+    }
+
+    public ResponseEntity<ResponseDto> signin(LoginCompanyDto loginCompanyDto, HttpServletResponse response) {
         Company company = this.companiesService.findByEmail(loginCompanyDto.email()).orElseThrow(() -> new CompanyNotFoundException(loginCompanyDto.email()));
 
-        if (!passwordEncoder.matches(company.getPassword(), loginCompanyDto.password())) throw new CompanyPasswordInvalidException(loginCompanyDto.email());
+        if (!passwordEncoder.matches(loginCompanyDto.password(), company.getPassword())) throw new CompanyPasswordInvalidException(loginCompanyDto.email());
 
         String accessToken = this.tokenService.generateAccessToken(company);
         String refreshToken = this.tokenService.generateRefreshToken(company);
 
+        createCookieWithRefreshToken(refreshToken, response);
+
         return ResponseEntity.ok(new ResponseDto(company.getName(), company.getEmail(), accessToken));
     }
 
-    public ResponseEntity<ResponseDto> register(RegisterCompanyDto registerCompanyDto) {
+    public ResponseEntity<ResponseDto> signup(RegisterCompanyDto registerCompanyDto, HttpServletResponse response) {
         this.companiesService.findByEmail(registerCompanyDto.email())
                 .ifPresent(existingCompany -> {
                     throw new CompanyAlreadyExistsException(existingCompany);
@@ -49,13 +61,26 @@ public class AuthService {
         String accessToken = this.tokenService.generateAccessToken(newCompany);
         String refreshToken = this.tokenService.generateRefreshToken(newCompany);
 
+        createCookieWithRefreshToken(refreshToken, response);
+
         return ResponseEntity.ok(new ResponseDto(newCompany.getName(), newCompany.getEmail(), accessToken));
     }
 
-    private void createCookieWithRefreshToken(String cookie HttpServletResponse response) {
-        Cookie refreshTokenCookie = new Cookie("refreshToken", cookie);
+    public ResponseEntity<Map<String, String>> logout(HttpServletResponse response) {
+        Cookie cookie = new Cookie("refreshToken", "");
+        cookie.setHttpOnly(true);
+//        cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok(Map.of("successfully", "true", "message", "Logout Successfully"));
+    }
+
+    private void createCookieWithRefreshToken(String refreshToken, HttpServletResponse response) {
+        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
         refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setSecure(true);
+//        refreshTokenCookie.setSecure(true);
         refreshTokenCookie.setPath("/");
         refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7);
 

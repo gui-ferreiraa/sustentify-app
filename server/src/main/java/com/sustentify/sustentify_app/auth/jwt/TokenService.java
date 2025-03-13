@@ -1,9 +1,11 @@
-package com.sustentify.sustentify_app.jwt;
+package com.sustentify.sustentify_app.auth.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.sustentify.sustentify_app.auth.jwt.exceptions.TokenGenerationException;
+import com.sustentify.sustentify_app.auth.jwt.exceptions.TokenValidationException;
 import com.sustentify.sustentify_app.companies.entities.Company;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -28,7 +30,7 @@ public class TokenService {
                     .withExpiresAt(this.generateExpirationDate(2))
                     .sign(algorithm);
         } catch (JWTCreationException exception) {
-            throw new RuntimeException("Teste");
+            throw new TokenGenerationException("Token generation Error", exception);
         }
     }
 
@@ -42,11 +44,11 @@ public class TokenService {
                     .withExpiresAt(this.generateExpirationDate(24))
                     .sign(algorithm);
         } catch (JWTCreationException exception) {
-            throw new RuntimeException("Teste");
+            throw new TokenGenerationException("Token generation Error", exception);
         }
     }
 
-    public String validateToken(String token) {
+    public String validateToken(String token) throws TokenValidationException {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.require(algorithm)
@@ -56,7 +58,7 @@ public class TokenService {
                     .getSubject();
 
         } catch (JWTVerificationException exception) {
-            return null;
+            throw new TokenValidationException("Token expired", exception);
         }
     }
 

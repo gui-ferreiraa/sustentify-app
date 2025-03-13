@@ -1,4 +1,4 @@
-package com.sustentify.sustentify_app.infra;
+package com.sustentify.sustentify_app.config.exceptions;
 
 import org.springframework.http.HttpStatus;
 

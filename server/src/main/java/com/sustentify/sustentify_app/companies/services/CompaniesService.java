@@ -1,7 +1,8 @@
-package com.sustentify.sustentify_app.companies;
+package com.sustentify.sustentify_app.companies.services;
 
 import com.sustentify.sustentify_app.auth.dtos.RegisterCompanyDto;
 import com.sustentify.sustentify_app.companies.entities.Company;
+import com.sustentify.sustentify_app.companies.repositories.CompaniesRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

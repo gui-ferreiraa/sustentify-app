@@ -1,9 +1,9 @@
-package com.sustentify.sustentify_app.security;
+package com.sustentify.sustentify_app.config.security;
 
-import com.sustentify.sustentify_app.companies.CompaniesRepository;
+import com.sustentify.sustentify_app.auth.jwt.TokenService;
+import com.sustentify.sustentify_app.companies.repositories.CompaniesRepository;
 import com.sustentify.sustentify_app.companies.entities.Company;
-import com.sustentify.sustentify_app.exceptions.CompanyNotFoundException;
-import com.sustentify.sustentify_app.jwt.TokenService;
+import com.sustentify.sustentify_app.companies.exceptions.CompanyNotFoundException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,12 +40,10 @@ public class SecurityFilter extends OncePerRequestFilter {
         if (token != null ) {
             var login = this.tokenService.validateToken(token);
 
-            if (login != null) {
-                Company company = this.companiesRepository.findByEmail(login).orElseThrow(() -> new CompanyNotFoundException(login));
-                var authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
-                var authentication = new UsernamePasswordAuthenticationToken(company, null, authorities);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
+            Company company = this.companiesRepository.findByEmail(login).orElseThrow(() -> new CompanyNotFoundException(login));
+            var authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+            var authentication = new UsernamePasswordAuthenticationToken(company, null, authorities);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
         filterChain.doFilter(request, response);

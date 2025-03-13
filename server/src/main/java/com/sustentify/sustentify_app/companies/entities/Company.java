@@ -1,6 +1,12 @@
 package com.sustentify.sustentify_app.companies.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.sustentify.sustentify_app.products.entities.Product;
 import jakarta.persistence.*;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "companies")
@@ -13,6 +19,7 @@ public class Company {
 
     private String email;
 
+    @JsonIgnore
     private String password;
 
     private String cnpj;
@@ -21,6 +28,10 @@ public class Company {
 
     @Enumerated(EnumType.STRING)
     private CompanyDepartment companyDepartment;
+
+    @OneToMany(mappedBy = "company")
+    @JsonIgnore
+    private Set<Product> products;
 
     public Company() {
     }
@@ -88,6 +99,21 @@ public class Company {
 
     public void setCompanyDepartment(CompanyDepartment companyDepartment) {
         this.companyDepartment = companyDepartment;
+    }
+
+    public Set<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(Set<Product> products) {
+        this.products = products;
+    }
+
+    @JsonProperty("product_id")
+    public Set<Long> getProductIds() {
+        return products.stream()
+                .map(Product::getId)
+                .collect(Collectors.toSet());
     }
 
     @Override

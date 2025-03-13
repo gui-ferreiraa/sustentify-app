@@ -9,5 +9,4 @@ public class SustentifyAppApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SustentifyAppApplication.class, args);
 	}
-
 }

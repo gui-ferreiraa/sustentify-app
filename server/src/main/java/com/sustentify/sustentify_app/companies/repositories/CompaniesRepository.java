@@ -1,4 +1,4 @@
-package com.sustentify.sustentify_app.companies;
+package com.sustentify.sustentify_app.companies.repositories;
 
 import com.sustentify.sustentify_app.companies.entities.Company;
 import org.springframework.data.jpa.repository.JpaRepository;

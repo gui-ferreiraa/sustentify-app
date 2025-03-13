@@ -1,4 +1,4 @@
-package com.sustentify.sustentify_app.exceptions;
+package com.sustentify.sustentify_app.companies.exceptions;
 
 import com.sustentify.sustentify_app.companies.entities.Company;
 

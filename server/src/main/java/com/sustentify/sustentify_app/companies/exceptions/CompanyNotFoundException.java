@@ -1,4 +1,4 @@
-package com.sustentify.sustentify_app.exceptions;
+package com.sustentify.sustentify_app.companies.exceptions;
 
 public class CompanyNotFoundException extends RuntimeException {
 

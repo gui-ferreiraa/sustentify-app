@@ -1,6 +1,6 @@
-package com.sustentify.sustentify_app.security;
+package com.sustentify.sustentify_app.config.security;
 
-import com.sustentify.sustentify_app.companies.CompaniesRepository;
+import com.sustentify.sustentify_app.companies.repositories.CompaniesRepository;
 import com.sustentify.sustentify_app.companies.entities.Company;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
