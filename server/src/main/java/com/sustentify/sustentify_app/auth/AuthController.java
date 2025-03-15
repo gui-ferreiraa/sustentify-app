@@ -23,7 +23,6 @@ public class AuthController {
     }
 
     @GetMapping()
-    @Cacheable("companyLogged")
     public ResponseEntity<Company> companyLogged(@RequestHeader("Authorization") String tokenAuthorization) {
         String accessToken = tokenAuthorization.replace("Bearer ", "");
 
