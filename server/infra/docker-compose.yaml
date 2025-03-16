@@ -23,5 +23,14 @@ services:
     depends_on:
       - database
 
+  redis:
+    image: redis:latest
+    container_name: redis-container
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_PASSWORD=yourpassword
+    restart: always
+
 volumes:
   dbbase:

@@ -5,8 +5,6 @@ import com.sustentify.sustentify_app.auth.dtos.RegisterCompanyDto;
 import com.sustentify.sustentify_app.auth.dtos.ResponseDto;
 import com.sustentify.sustentify_app.companies.entities.Company;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,8 +38,12 @@ public class AuthController {
     }
 
     @GetMapping("/logout")
-    @CacheEvict("companyLogged")
-    public ResponseEntity<Map<String, String>> logout(HttpServletResponse response) {
-        return this.authService.logout(response);
+    public ResponseEntity<Map<String, String>> logout(
+            HttpServletResponse response,
+            @RequestHeader("Authorization") String tokenAuthorization
+            ) {
+        String accessToken = tokenAuthorization.replace("Bearer ", "");
+
+        return this.authService.logout(response, accessToken);
     }
 }

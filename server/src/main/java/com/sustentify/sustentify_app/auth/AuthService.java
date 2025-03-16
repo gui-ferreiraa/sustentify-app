@@ -32,15 +32,15 @@ public class AuthService {
     public ResponseEntity<Company> companyLogged(String accessToken) {
         String subjectEmail = tokenService.validateToken(accessToken);
 
-        Company company = this.companiesService.findByEmail(subjectEmail).orElseThrow(() -> new CompanyNotFoundException(subjectEmail));
+        Company company = this.companiesService.findByEmail(subjectEmail).orElseThrow(CompanyNotFoundException::new);
 
         return ResponseEntity.ok(company);
     }
 
     public ResponseEntity<ResponseDto> signin(LoginCompanyDto loginCompanyDto, HttpServletResponse response) {
-        Company company = this.companiesService.findByEmail(loginCompanyDto.email()).orElseThrow(() -> new CompanyNotFoundException(loginCompanyDto.email()));
+        Company company = this.companiesService.findByEmail(loginCompanyDto.email()).orElseThrow(CompanyNotFoundException::new);
 
-        if (!passwordEncoder.matches(loginCompanyDto.password(), company.getPassword())) throw new CompanyPasswordInvalidException(loginCompanyDto.email());
+        if (!passwordEncoder.matches(loginCompanyDto.password(), company.getPassword())) throw new CompanyPasswordInvalidException();
 
         String accessToken = this.tokenService.generateAccessToken(company);
         String refreshToken = this.tokenService.generateRefreshToken(company);
@@ -53,7 +53,7 @@ public class AuthService {
     public ResponseEntity<ResponseDto> signup(RegisterCompanyDto registerCompanyDto, HttpServletResponse response) {
         this.companiesService.findByEmail(registerCompanyDto.email())
                 .ifPresent(existingCompany -> {
-                    throw new CompanyAlreadyExistsException(existingCompany);
+                    throw new CompanyAlreadyExistsException();
                 });
 
         Company newCompany = companiesService.create(registerCompanyDto);
@@ -66,7 +66,9 @@ public class AuthService {
         return ResponseEntity.ok(new ResponseDto(newCompany.getName(), newCompany.getEmail(), accessToken));
     }
 
-    public ResponseEntity<Map<String, String>> logout(HttpServletResponse response) {
+    public ResponseEntity<Map<String, String>> logout(HttpServletResponse response, String accessToken) {
+        tokenService.revokeToken(accessToken);
+
         Cookie cookie = new Cookie("refreshToken", "");
         cookie.setHttpOnly(true);
 //        cookie.setSecure(true);

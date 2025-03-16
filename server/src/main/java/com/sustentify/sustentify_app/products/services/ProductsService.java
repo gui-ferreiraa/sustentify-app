@@ -1,19 +1,24 @@
 package com.sustentify.sustentify_app.products.services;
 
 import com.sustentify.sustentify_app.companies.entities.Company;
+import com.sustentify.sustentify_app.products.dtos.ProductSummaryDto;
 import com.sustentify.sustentify_app.products.dtos.RegisterProductDto;
 import com.sustentify.sustentify_app.products.dtos.ResponseDto;
 import com.sustentify.sustentify_app.products.dtos.UpdateProductDto;
 import com.sustentify.sustentify_app.products.entities.Product;
+import com.sustentify.sustentify_app.products.exceptions.ProductNotFoundException;
 import com.sustentify.sustentify_app.products.repositories.ProductsRepository;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,7 +31,12 @@ public class ProductsService {
 
     public Product findById(Long productId) {
 
-        return this.productsRepository.findById(productId).orElseThrow(() -> new RuntimeException("Error"));
+        return this.productsRepository.findById(productId).orElseThrow(ProductNotFoundException::new);
+    }
+
+    public Product findById(Long productId, Company company) {
+
+        return this.productsRepository.findByIdAndCompany(productId, company).orElseThrow(ProductNotFoundException::new);
     }
 
     public ResponseEntity<Product> create(RegisterProductDto registerProductDto, Company company) {
@@ -50,12 +60,22 @@ public class ProductsService {
                 .body(product);
     }
 
-    public List<Product> findAll() {
-        return this.productsRepository.findAll();
+    public Page<ProductSummaryDto> findAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
+        Page<Product> productPage = this.productsRepository.findAll(pageable);
+
+        return productPage.map(product -> new ProductSummaryDto(
+                product.getName(),
+                product.getCategory(),
+                product.getPrice(),
+                product.getQuantity(),
+                product.getLocation()
+        ));
     }
 
-    public List<Product> findByCompany(Company company) {
-        return this.productsRepository.findByCompany(company);
+    public Page<Product> getProductsByCompany(Company company, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
+        return this.productsRepository.findByCompany(company, pageable);
     }
 
     public ResponseEntity<ResponseDto> update(Product product, UpdateProductDto updateProductDto) {

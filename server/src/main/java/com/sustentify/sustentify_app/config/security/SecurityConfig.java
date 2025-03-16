@@ -33,6 +33,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/v1/auth/signin").permitAll()
                         .requestMatchers(HttpMethod.POST, "/v1/auth/signup").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/v1/products").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/v1/products/{id}").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

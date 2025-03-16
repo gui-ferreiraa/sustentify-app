@@ -8,6 +8,7 @@ import com.sustentify.sustentify_app.auth.jwt.exceptions.TokenGenerationExceptio
 import com.sustentify.sustentify_app.auth.jwt.exceptions.TokenValidationException;
 import com.sustentify.sustentify_app.companies.entities.Company;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -19,6 +20,11 @@ public class TokenService {
     @Value("${api.security.token.secret}")
     private String secret;
     private final String issuer = "login-auth-api";
+    private final CacheManager cacheManager;
+
+    public TokenService(CacheManager cacheManager) {
+        this.cacheManager = cacheManager;
+    }
 
     public String generateAccessToken(Company company) {
         try {
@@ -29,6 +35,7 @@ public class TokenService {
                     .withSubject(company.getEmail())
                     .withExpiresAt(this.generateExpirationDate(2))
                     .sign(algorithm);
+
         } catch (JWTCreationException exception) {
             throw new TokenGenerationException("Token generation Error", exception);
         }
@@ -48,8 +55,12 @@ public class TokenService {
         }
     }
 
-    public String validateToken(String token) throws TokenValidationException {
+    public String validateToken(String token) {
         try {
+            if (isTokenRevoked(token)) {
+                throw new TokenValidationException("Token is revoked");
+            }
+
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.require(algorithm)
                     .withIssuer(issuer)
@@ -59,6 +70,18 @@ public class TokenService {
 
         } catch (JWTVerificationException exception) {
             throw new TokenValidationException("Token expired", exception);
+        }
+    }
+
+    private boolean isTokenRevoked(String token) {
+        var cache = cacheManager.getCache("revokedTokens");
+        return cache.get(token) != null;
+    }
+
+    public void revokeToken(String token) {
+        var cache = cacheManager.getCache("revokedTokens");
+        if (cache != null) {
+            cache.put(token, "revoked");
         }
     }
 

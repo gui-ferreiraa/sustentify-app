@@ -1,19 +1,11 @@
 package com.sustentify.sustentify_app.companies.exceptions;
 
 public class CompanyPasswordInvalidException extends RuntimeException {
-    private final String companyEmail;
-
-    public CompanyPasswordInvalidException(String companyEmail) {
-        super("Company Password Invalid: (" + companyEmail+ ")");
-        this.companyEmail = companyEmail;
+    public CompanyPasswordInvalidException() {
+        super("Company Password Invalid ");
     }
 
-    public CompanyPasswordInvalidException(String message, String companyEmail) {
+    public CompanyPasswordInvalidException(String message) {
         super(message);
-        this.companyEmail = companyEmail;
-    }
-
-    public String getCompanyEmail() {
-        return companyEmail;
     }
 }

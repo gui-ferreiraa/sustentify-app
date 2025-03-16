@@ -7,6 +7,7 @@ import com.sustentify.sustentify_app.products.enums.Category;
 import com.sustentify.sustentify_app.products.enums.Condition;
 import com.sustentify.sustentify_app.products.enums.Material;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
 import java.time.Instant;
 
@@ -17,28 +18,42 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotNull(message = "Name cannot be null")
+    @NotBlank(message = "Name cannot be empty")
     private String name;
 
     @Enumerated(EnumType.STRING)
+    @NotNull(message = "Category cannot be null")
     private Category category;
 
+    @NotNull(message = "description cannot be null")
+    @NotBlank(message = "description cannot be empty")
     private String description;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "product_condition")
+    @NotNull(message = "Condition cannot be null")
     private Condition condition;
 
     @Enumerated(EnumType.STRING)
+    @NotNull(message = "Material cannot be null")
     private Material material;
 
+    @NotNull(message = "Production date cannot be null")
     private Instant productionDate;
 
+    @NotNull(message = "Disposal date cannot be null")
     private Instant disposalDate;
 
+    @NotNull(message = "Price cannot be null")
+    @Positive(message = "Price must be positive")
     private Double price;
 
+    @NotNull(message = "Location cannot be null")
+    @NotBlank(message = "Location cannot be empty")
     private String location;
 
+    @Min(value = 1, message = "Quantity must be greater than or equal to 1")
     private int quantity;
 
     @ManyToOne
