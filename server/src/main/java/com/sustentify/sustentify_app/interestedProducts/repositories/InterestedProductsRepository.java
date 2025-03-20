@@ -6,9 +6,10 @@ import com.sustentify.sustentify_app.products.entities.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface InterestedProductsRepository extends JpaRepository<InterestedProducts, Long> {
     List<InterestedProducts> findByCompany(Company company);
-    InterestedProducts findByCompanyAndProduct(Company company, Product product);
+    Optional<InterestedProducts> findByCompanyAndProduct(Company company, Product product);
 
 }

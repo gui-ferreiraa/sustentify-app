@@ -9,8 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class InterestedProductsService {
@@ -26,7 +26,7 @@ public class InterestedProductsService {
         return ResponseEntity.status(HttpStatus.OK).body(interestedProductsList);
     }
 
-    public InterestedProducts findByCompanyAndProduct(Company company, Product product) {
+    public Optional<InterestedProducts> findByCompanyAndProduct(Company company, Product product) {
         return this.interestedProductsRepository.findByCompanyAndProduct(company, product);
     }
 
@@ -35,7 +35,6 @@ public class InterestedProductsService {
         interestedProducts.setCompany(company);
         interestedProducts.setProduct(product);
         interestedProducts.setStatus(InterestStatus.PENDING);
-        interestedProducts.setInterestDate(Instant.now());
 
         InterestedProducts newInterestedProduct = this.interestedProductsRepository.save(interestedProducts);
 

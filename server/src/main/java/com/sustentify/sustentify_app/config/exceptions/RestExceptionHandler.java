@@ -5,6 +5,8 @@ import com.sustentify.sustentify_app.auth.jwt.exceptions.TokenValidationExceptio
 import com.sustentify.sustentify_app.companies.exceptions.CompanyAlreadyExistsException;
 import com.sustentify.sustentify_app.companies.exceptions.CompanyNotFoundException;
 import com.sustentify.sustentify_app.companies.exceptions.CompanyPasswordInvalidException;
+import com.sustentify.sustentify_app.interestedProducts.exceptions.InterestedProductsInvalidException;
+import com.sustentify.sustentify_app.interestedProducts.exceptions.InterestedProductsNotFoundException;
 import com.sustentify.sustentify_app.products.exceptions.ProductAlreadyExistsException;
 import com.sustentify.sustentify_app.products.exceptions.ProductInvalidException;
 import com.sustentify.sustentify_app.products.exceptions.ProductNotFoundException;
@@ -67,6 +69,18 @@ public class RestExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseError);
     }
 
+    @ExceptionHandler(InterestedProductsNotFoundException.class)
+    private ResponseEntity<ResponseError> interestedProductsNotFoundHandler(InterestedProductsNotFoundException exception) {
+        ResponseError responseError = new ResponseError(HttpStatus.NOT_FOUND, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseError);
+    }
+
+    @ExceptionHandler(InterestedProductsInvalidException.class)
+    private ResponseEntity<ResponseError> interestedProductsInvalidHandler(InterestedProductsInvalidException exception) {
+        ResponseError responseError = new ResponseError(HttpStatus.CONFLICT, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(responseError);
+    }
+
     @ExceptionHandler({
             ConstraintViolationException.class,
             HttpMessageNotReadableException.class,
@@ -108,6 +122,5 @@ public class RestExceptionHandler {
 
         ResponseError genericError = new ResponseError(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", List.of("An unexpected error occurred"));
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(genericError);
-
     }
 }

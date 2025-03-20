@@ -5,6 +5,8 @@ import com.sustentify.sustentify_app.companies.entities.Company;
 import com.sustentify.sustentify_app.interestedProducts.InterestStatus;
 import com.sustentify.sustentify_app.products.entities.Product;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
 
@@ -22,23 +24,24 @@ public class InterestedProducts {
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
-    @JsonIgnore
     private Product product;
-
-    @Column(name = "interest_date", nullable = false)
-    private Instant interestDate;
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     private InterestStatus status;
 
+    @UpdateTimestamp
+    private Instant updatedAt;
+
+    @CreationTimestamp
+    private Instant createdAt;
+
     public InterestedProducts() {
     }
 
-    public InterestedProducts(Company company, Product product, Instant interestDate, InterestStatus status) {
+    public InterestedProducts(Company company, Product product, InterestStatus status) {
         this.company = company;
         this.product = product;
-        this.interestDate = interestDate;
         this.status = status;
     }
 
@@ -58,20 +61,12 @@ public class InterestedProducts {
         this.company = company;
     }
 
-    public Product getProduct() {
-        return product;
+    public Long getProduct() {
+        return product.getId();
     }
 
     public void setProduct(Product product) {
         this.product = product;
-    }
-
-    public Instant getInterestDate() {
-        return interestDate;
-    }
-
-    public void setInterestDate(Instant interestDate) {
-        this.interestDate = interestDate;
     }
 
     public InterestStatus getStatus() {
@@ -80,5 +75,13 @@ public class InterestedProducts {
 
     public void setStatus(InterestStatus status) {
         this.status = status;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
     }
 }
