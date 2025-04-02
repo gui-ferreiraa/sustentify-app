@@ -1,0 +1,65 @@
+services:
+  database:
+    image: mysql:lts-oraclelinux9
+    container_name: mysqldb
+    ports:
+      - 3307:3306
+#    volumes:
+#      - /mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 5s
+      retries: 5
+      start_period: 10s
+      timeout: 5s
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: sustentify_db
+
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: phpmyadmin-container
+    restart: always
+    ports:
+      - 8000:80
+    environment:
+      PMA_HOST: database
+      PMA_PORT: 3306
+    depends_on:
+      - database
+
+  redis:
+    image: redis:latest
+    container_name: redisdb
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 1s
+      timeout: 3s
+      retries: 5
+    environment:
+      - REDIS_PASSWORD=yourpassword
+    restart: always
+
+  server:
+    build:
+      context: ../server
+      dockerfile: Dockerfile
+    container_name: sustentify-server
+    ports:
+      - 3000:3000
+    environment:
+      - NODE_ENV=development
+    env_file:
+      - '.env.development.local'
+    depends_on:
+      database:
+        condition: service_healthy
+        restart: true
+      redis:
+        condition: service_healthy
+        restart: true
+
+volumes:
+  dbbase:
