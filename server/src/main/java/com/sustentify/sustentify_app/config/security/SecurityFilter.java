@@ -1,11 +1,11 @@
 package com.sustentify.sustentify_app.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sustentify.sustentify_app.auth.jwt.TokenService;
-import com.sustentify.sustentify_app.auth.jwt.exceptions.TokenValidationException;
-import com.sustentify.sustentify_app.companies.entities.Company;
-import com.sustentify.sustentify_app.companies.exceptions.CompanyNotFoundException;
-import com.sustentify.sustentify_app.companies.repositories.CompaniesRepository;
+import com.sustentify.sustentify_app.app.auth.jwt.TokenService;
+import com.sustentify.sustentify_app.app.auth.jwt.exceptions.TokenValidationException;
+import com.sustentify.sustentify_app.app.companies.entities.Company;
+import com.sustentify.sustentify_app.app.companies.exceptions.CompanyNotFoundException;
+import com.sustentify.sustentify_app.app.companies.repositories.CompaniesRepository;
 import com.sustentify.sustentify_app.config.exceptions.ResponseError;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

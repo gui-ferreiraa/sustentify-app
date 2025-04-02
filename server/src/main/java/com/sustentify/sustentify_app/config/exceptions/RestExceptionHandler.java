@@ -1,15 +1,15 @@
 package com.sustentify.sustentify_app.config.exceptions;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import com.sustentify.sustentify_app.auth.jwt.exceptions.TokenValidationException;
-import com.sustentify.sustentify_app.companies.exceptions.CompanyAlreadyExistsException;
-import com.sustentify.sustentify_app.companies.exceptions.CompanyNotFoundException;
-import com.sustentify.sustentify_app.companies.exceptions.CompanyPasswordInvalidException;
-import com.sustentify.sustentify_app.interestedProducts.exceptions.InterestedProductsInvalidException;
-import com.sustentify.sustentify_app.interestedProducts.exceptions.InterestedProductsNotFoundException;
-import com.sustentify.sustentify_app.products.exceptions.ProductAlreadyExistsException;
-import com.sustentify.sustentify_app.products.exceptions.ProductInvalidException;
-import com.sustentify.sustentify_app.products.exceptions.ProductNotFoundException;
+import com.sustentify.sustentify_app.app.auth.jwt.exceptions.TokenValidationException;
+import com.sustentify.sustentify_app.app.companies.exceptions.CompanyAlreadyExistsException;
+import com.sustentify.sustentify_app.app.companies.exceptions.CompanyNotFoundException;
+import com.sustentify.sustentify_app.app.companies.exceptions.CompanyPasswordInvalidException;
+import com.sustentify.sustentify_app.app.interestedProducts.exceptions.InterestedProductsInvalidException;
+import com.sustentify.sustentify_app.app.interestedProducts.exceptions.InterestedProductsNotFoundException;
+import com.sustentify.sustentify_app.app.products.exceptions.ProductAlreadyExistsException;
+import com.sustentify.sustentify_app.app.products.exceptions.ProductInvalidException;
+import com.sustentify.sustentify_app.app.products.exceptions.ProductNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;

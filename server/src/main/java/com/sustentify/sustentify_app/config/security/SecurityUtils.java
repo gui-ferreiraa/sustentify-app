@@ -1,6 +1,6 @@
 package com.sustentify.sustentify_app.config.security;
 
-import com.sustentify.sustentify_app.companies.entities.Company;
+import com.sustentify.sustentify_app.app.companies.entities.Company;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public class SecurityUtils {

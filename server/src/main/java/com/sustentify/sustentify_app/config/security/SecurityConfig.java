@@ -31,9 +31,10 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, "/v1/auth/signin").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/v1/auth/signup").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/v1/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/v1/companies").permitAll()
                         .requestMatchers(HttpMethod.GET, "/v1/products").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/v1/products/trending").permitAll()
                         .requestMatchers(HttpMethod.GET, "/v1/products/{id}").permitAll()
                         .anyRequest().authenticated()
                 )
