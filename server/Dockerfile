@@ -1,33 +1,23 @@
-FROM eclipse-temurin:17-jdk AS build
+FROM maven:3.9.9-eclipse-temurin-21 AS build
 
 WORKDIR /usr/src/server
 
-COPY pom.xml mvnw .mvn/ ./
+COPY pom.xml ./
 
-RUN ./mvnw dependency:go-offline -B
+RUN mvn dependency:go-offline -DskipTests
 
 COPY src ./src
 
-RUN ./mvnw package -DskipTests
+RUN mvn clean package -DskipTests
 
-FROM eclipse-temurin:17-jre
+FROM eclipse-temurin:21-jdk-alpine
 
 WORKDIR /usr/src/server
 
-COPY --from-build /app/target/sustentify-app.jar ./app.jar
+COPY --from=build /usr/src/server/target/sustentify-app-0.0.1-SNAPSHOT.jar ./app.jar
 
-EXPOSE 3000
+ENV PORT=${PORT}
 
-ENV PORT=${PORT} \
-    DB_HOST=${DB_HOST} \
-    DB_PORT=${DB_PORT} \
-    DB_NAME=${DB_NAME} \
-    DB_USERNAME=${DB_USERNAME} \
-    DB_PASSWORD=${DB_PASSWORD} \
-    JWT_SECRET=${JWT_SECRET} \
-    REDIS_HOST=${REDIS_HOST} \
-    REDIS_PORT=${REDIS_PORT} \
-    REDIS_PASSWORD=${REDIS_PASSWORD} \
-    REDIS_TIMEOUT=${REDIS_TIMEOUT}
+EXPOSE ${PORT}
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
