@@ -1,0 +1,54 @@
+<main>
+  <div
+    class="relative w-full h-full flex"
+  >
+    <img
+      [ngSrc]="mainImage"
+      alt=""
+      width="1080"
+      height="800"
+      class="w-full max-sm:h-[600px] sm:h-[80%] md:max-h-screen object-cover object-center brightness-75 relative top-0 left-0"
+      priority
+    >
+    <div
+      class="absolute bottom-0 pb-28 left-0 w-full px-6 md:px-12 flex flex-col gap-1 md:gap-3 items-start justify-center"
+      >
+      <app-subtitle
+        title="Sustentabilidade e Impacto"
+        [color]="subtitleColor"
+      />
+      <h1
+        [class]="'text-white font-semibold capitalize text-xl sm:text-2xl w-full sm:w-2/3 md:text-4xl lg:text-6xl md:w-1/2'"
+      >
+        Transforme o descarte de produtos em ação sustentável
+      </h1>
+      <div class="w-[90%] md:w-[76%]">
+        <app-paragraph-support
+          content="Nossa plataforma oferece soluções para empresas que desejam descartar produtos de forma responsável, reduzindo o impacto ambiental e promovendo práticas ESG. Junte-se a nós e ajude a criar um futuro mais sustentável!"
+          [color]="paragraphSupportColor"
+        />
+      </div>
+      <app-button-primary
+        title="Explorar"
+      />
+    </div>
+  </div>
+  <section class="default-padding flex flex-col md:flex-row gap-6 justify-between">
+    <div>
+      <app-subtitle
+        title="Princípios que Guiam Nossas Ações"
+        [color]="subtitleValueColor"
+      />
+      <h2 class="text-xl md:text-2xl lg:text-3xl font-semibold text-gray-800">
+        Valores
+      </h2>
+    </div>
+    <div>
+      <app-display1
+        [title]="'Sustentabilidade'"
+        [content]="'Sustentabilidade'"
+        [icon]="'assets/icons/values/sustentabilidade.svg'"
+      />
+    </div>
+  </section>
+</main>
