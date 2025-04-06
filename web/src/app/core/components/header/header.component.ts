@@ -1,6 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 import { LucideAngularModule, Menu, X, ChevronDown  } from 'lucide-angular';
 import { SustentifyLogoComponent } from "../sustentify-logo/sustentify-logo.component";
+import { NavigationEnd, Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -14,8 +15,16 @@ export class HeaderComponent {
   public isMenuOpen = false;
   public dropdownOpen = false;
   public scrolled = false;
+  public showBackground = false;
 
-  constructor() {}
+  constructor(private router: Router) {
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        const path = event.urlAfterRedirects;
+        this.showBackground = path !== '/';
+      }
+    })
+  }
 
   getMenuIcon() {
     return this.isMenuOpen ? this.X : this.Menu;
@@ -35,4 +44,5 @@ export class HeaderComponent {
 
     this.scrolled = scrollTop > 160;
   }
+
 }

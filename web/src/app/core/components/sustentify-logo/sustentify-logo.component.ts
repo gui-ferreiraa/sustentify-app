@@ -1,14 +1,22 @@
+import { NgOptimizedImage } from '@angular/common';
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sustentify-logo',
-  imports: [],
+  imports: [NgOptimizedImage],
   template: `
-    <div class="flex items-center gap-1">
+    <div
+      class="flex items-center gap-1 cursor-pointer"
+      (click)="onClick()"
+    >
       <img
-        src="/assets/images/logo.png"
+        ngSrc="/assets/images/logo.png"
         alt="Sustentify Logo"
+        width="300"
+        height="240"
         class="max-w-14 max-h-14 object-cover"
+        priority
       />
       <h1 class="flex items-center gap-1 text-white font-semibold text-xl">Sustentify</h1>
     </div>
@@ -16,4 +24,9 @@ import { Component } from '@angular/core';
 })
 export class SustentifyLogoComponent {
 
+  constructor(private router: Router) {}
+
+  onClick() {
+    this.router.navigate(['/'])
+  }
 }

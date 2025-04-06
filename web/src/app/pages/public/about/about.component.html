@@ -1,0 +1,34 @@
+<main
+  class="default-padding max-md:mt-8"
+>
+  <app-title-display
+    [center]="true"
+    [subtitle]="about.subtitle"
+    [subtitleColor]="about.subtitleColor"
+    [title]="about.title"
+    [titleColor]="about.titleColor"
+  />
+  <div
+    class="flex gap-8 flex-col md:flex-row"
+  >
+    <section
+      class="w-full md:w-2/4"
+    >
+      <img
+        ngSrc="/assets/images/meeting.jpg"
+        width="720"
+        height="640"
+        class="rounded-xl object-cover h-[342px] md:h-[70%]"
+      />
+    </section>
+    <section
+      class="w-full md:w-2/4"
+    >
+      <p
+        class="default-paragraph text-justify"
+      >
+        Tem dúvidas, sugestões ou quer saber mais sobre como a Sustentify pode ajudar sua empresa a reduzir seu impacto ambiental? Nossa equipe está pronta para atender você! Preencha o formulário abaixo ou entre em contato pelos nossos canais e vamos juntos construir um futuro mais sustentável.
+      </p>
+    </section>
+  </div>
+</main>

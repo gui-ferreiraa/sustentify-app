@@ -3,52 +3,143 @@
     class="relative w-full h-full flex"
   >
     <img
-      [ngSrc]="mainImage"
+      [ngSrc]="mainSection.image"
       alt=""
       width="1080"
-      height="800"
-      class="w-full max-sm:h-[600px] sm:h-[80%] md:max-h-screen object-cover object-center brightness-75 relative top-0 left-0"
+      height="720"
+      class="w-full aspect-[3/2] max-sm:h-[600px] sm:h-[80%] md:max-h-screen object-cover object-center brightness-75 relative top-0 left-0"
       priority
-    >
+    />
     <div
-      class="absolute bottom-0 pb-28 left-0 w-full px-6 md:px-12 flex flex-col gap-1 md:gap-3 items-start justify-center"
+      class="absolute bottom-0 pb-28 left-0 w-full default-padding flex flex-col gap-1 md:gap-3 items-start justify-center "
       >
       <app-subtitle
-        title="Sustentabilidade e Impacto"
-        [color]="subtitleColor"
+        [title]="mainSection.subtitle"
+        [color]="mainSection.subtitleColor"
       />
       <h1
-        [class]="'text-white font-semibold capitalize text-xl sm:text-2xl w-full sm:w-2/3 md:text-4xl lg:text-6xl md:w-1/2'"
+        [class]="'text-white font-semibold capitalize text-xl sm:text-2xl w-full md:text-4xl lg:text-6xl lg:w-3/4'"
       >
-        Transforme o descarte de produtos em ação sustentável
+        {{ mainSection.title }}
       </h1>
       <div class="w-[90%] md:w-[76%]">
         <app-paragraph-support
-          content="Nossa plataforma oferece soluções para empresas que desejam descartar produtos de forma responsável, reduzindo o impacto ambiental e promovendo práticas ESG. Junte-se a nós e ajude a criar um futuro mais sustentável!"
-          [color]="paragraphSupportColor"
+          [content]="mainSection.paragraph"
+          [color]="mainSection.paragraphSupportColor"
         />
       </div>
-      <app-button-primary
+      <app-button-green
         title="Explorar"
       />
     </div>
   </div>
   <section class="default-padding flex flex-col md:flex-row gap-6 justify-between">
-    <div>
-      <app-subtitle
-        title="Princípios que Guiam Nossas Ações"
-        [color]="subtitleValueColor"
-      />
-      <h2 class="text-xl md:text-2xl lg:text-3xl font-semibold text-gray-800">
-        Valores
-      </h2>
-    </div>
-    <div>
+    <app-title-display
+      [subtitle]="valuesSection.subtitle"
+      [subtitleColor]="valuesSection.subtitleColor"
+      [title]="valuesSection.title"
+      [titleColor]="valuesSection.subtitleColor"
+      [center]="false"
+    />
+    <div class="flex flex-col gap-6 justify-between items-center">
       <app-display1
         [title]="'Sustentabilidade'"
-        [content]="'Sustentabilidade'"
-        [icon]="'assets/icons/values/sustentabilidade.svg'"
+        [titleColor]="valuesSection.displayTitleColor"
+        [description]="'Acreditamos que um mundo mais sustentável começa com escolhas conscientes. Nossa missão é facilitar a transição para um modelo de negócios mais verde e responsável.'"
+        [descriptionColor]="valuesSection.displayDescriptionColor"
+        [icon]="valuesSection.icons.Handshake"
+        [flexDirection]="'flex-row'"
+      />
+      <app-display1
+        [title]="'Economia Circular'"
+        [titleColor]="valuesSection.displayTitleColor"
+        [description]="'Apoiamos a ideia de reutilizar, reduzir e reciclar, incentivando práticas que prolonguem a vida útil dos produtos e minimizem o desperdício.'"
+        [descriptionColor]="valuesSection.displayDescriptionColor"
+        [icon]="valuesSection.icons.SquareUserRound"
+        [flexDirection]="'flex-row'"
+      />
+      <app-display1
+        [title]="'Responsabilidade Social'"
+        [titleColor]="valuesSection.displayTitleColor"
+        [description]="'Nosso compromisso vai além dos negócios. Apoiamos iniciativas que contribuam para a preservação do meio ambiente e o desenvolvimento de comunidades ao redor do mundo.'"
+        [descriptionColor]="valuesSection.displayDescriptionColor"
+        [icon]="valuesSection.icons.Trophy"
+        [flexDirection]="'flex-row'"
       />
     </div>
   </section>
+  <section class="default-padding flex flex-col md:flex-row gap-6 justify-between bg-[#05444A]">
+    <div class="flex flex-col gap-2">
+      <app-title-display
+        [subtitle]="servicesSection.subtitle"
+        [subtitleColor]="servicesSection.subtitleColor"
+        [title]="servicesSection.title"
+        [titleColor]="servicesSection.titleColor"
+        [center]="false"
+      />
+      <p
+        [class]="'default-paragraph ' + servicesSection.paragraphSupportColor"
+      >
+        {{ servicesSection.paragraph }}
+      </p>
+    </div>
+    <div class="flex flex-col gap-6 justify-between items-center">
+      <app-display1
+        [title]="'Cadastro de Produtos Descartados'"
+        [titleColor]="servicesSection.displayTitleColor"
+        [description]="'Empresas podem cadastrar produtos descartados que estão disponíveis para venda ou reaproveitamento. Simples e rápido.'"
+        [descriptionColor]="servicesSection.displayDescriptionColor"
+        [icon]="servicesSection.icons.SquareChartGantt"
+        [flexDirection]="'flex-col'"
+      />
+      <app-display1
+        [title]="'Busca de Produtos:'"
+        [titleColor]="servicesSection.displayTitleColor"
+        [description]="'Empresas interessadas podem buscar por produtos reciclados ou reaproveitados, de acordo com suas necessidades.'"
+        [descriptionColor]="servicesSection.displayDescriptionColor"
+        [icon]="servicesSection.icons.Search"
+        [flexDirection]="'flex-col'"
+      />
+      <app-display1
+        [title]="'Soluções climáticas e de emissão zero'"
+        [titleColor]="servicesSection.displayTitleColor"
+        [description]="'Capacitar os investidores a analisar e relatar as exposições de seus produtos aos riscos climáticos físicos e de transição.'"
+        [descriptionColor]="servicesSection.displayDescriptionColor"
+        [icon]="servicesSection.icons.ChartNoAxesCombined"
+        [flexDirection]="'flex-col'"
+      />
+    </div>
+  </section>
+
+  <!-- PRODUCTS SECTION -->
+   <section class="default-padding flex flex-col justify-center items-center gap-6">
+      <app-title-display
+        [title]="productsSection.title"
+        [titleColor]="productsSection.subtitleColor"
+        [subtitle]="productsSection.subtitle"
+        [subtitleColor]="productsSection.subtitleColor"
+        center="true"
+      />
+      <div class="w-full flex flex-col items-center justify-center">
+        <div
+          class="w-full grid grid-cols-[repeat(auto-fit,1fr)] md:grid-cols-[repeat(auto-fit,minmax(264px,1fr))] gap-4"
+        >
+          @for (product of products$ | async; track product.id) {
+            <app-product-card
+              [productSummary]="product"
+            />
+          }
+          @empty {
+            <p>
+              Nenhum Produto Encontrado!
+            </p>
+          }
+        </div>
+      </div>
+   </section>
+   <section
+    class="default-padding"
+   >
+    <app-contact />
+   </section>
 </main>

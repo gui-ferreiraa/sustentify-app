@@ -1,5 +1,5 @@
 <header
-  [class]="'fixed top-0 left-0 w-full max-md:shadow-md z-50 max-md:bg-[#1E6468] transition duration-500 ease-in-out' + (scrolled ? ' bg-[#1E6468] shadow-md' : '')"
+  [class]="'fixed top-0 left-0 w-full max-md:shadow-md z-50 max-md:bg-[#1E6468] transition duration-500 ease-in-out ' + (showBackground && ' bg-[#1E6468] shadow-md') + (scrolled && ' bg-[#1E6468] shadow-md')"
 >
   <nav class="max-w-[1120px] mx-auto px-6 h-14 flex justify-between items-center">
     <!-- Logo -->
@@ -12,33 +12,36 @@
     </div>
 
     <div
-      [class]="'md:items-center md:gap-12 absolute md:static top-14 left-0 w-full max-md:bg-[#1E6468] text-white transition-all duration-300' + (isMenuOpen ? ' md:flex max-md:opacity-100 max-md:pointer-events-auto' : ' max-md:opacity-0 max-sm:pointer-events-none') "
+      [class]="'md:items-center md:gap-12 absolute md:static top-14 left-0 w-full max-md:bg-[#1E6468] text-white transition-all duration-300' + (isMenuOpen ? ' max-md:flex max-md:opacity-100 max-md:pointer-events-auto' : ' max-md:opacity-0 max-sm:pointer-events-none') "
       >
       <ul class="flex flex-col md:flex-row md:justify-end text-[14px]">
 
         <li class="relative">
           <div
-            [class]="'py-5 px-6 flex items-center justify-between cursor-pointer font-semibold hover:text-[#FFF952]' + (dropdownOpen ? ' text-[#FFF952]' : '')"
+            [class]="'py-5 px-6 flex items-center justify-between cursor-pointer font-semibold transition-colors duration-300 ease-in-out hover:text-[#FFF952]' + (dropdownOpen ? ' text-[#FFF952]' : '')"
             (click)="toggleDropdown()"
           >
             Produtos
-            <lucide-icon
-              [name]="ChevronDown"
-              [class]="'transition-all duration-300 ease-in-out ' +  (dropdownOpen ? ' rotate-180' : '')"
-            />
+            <span
+              [class]="'transform transition-transform duration-300 ease-in-out ' +  (dropdownOpen ? ' rotate-180' : '')"
+            >
+              <lucide-icon
+                [name]="ChevronDown"
+              />
+            </span>
           </div>
           @if (this.dropdownOpen) {
             <ul [class]="'max-md:max-h-0 overflow-hidden transition-all max-md:bg-[#1E6468] text-[14px]' + (dropdownOpen ? ' max-md:max-h-40 md:absolute md:top-16 md:rounded-md md:bg-slate-500' : '')">
-              <li><a href="#" class="py-4 px-10 hover:text-[#FFF952] flex items-center gap-2"><i class="ri-pie-chart-line"></i> Em Alta</a></li>
-              <li><a href="#" class="py-4 px-10 hover:text-[#FFF952] flex items-center gap-2"><i class="ri-arrow-up-down-line"></i> Metal</a></li>
-              <li><a href="#" class="py-4 px-10 hover:text-[#FFF952] flex items-center gap-2"><i class="ri-arrow-up-down-line"></i> Plastico</a></li>
+              <li><a href="/product?filter=trending" class="py-4 px-10 transition-colors duration-300 ease-in-out hover:text-[#FFF952] flex items-center gap-2"><i class="ri-pie-chart-line"></i> Em Alta</a></li>
+              <li><a href="/product?category=metal" class="py-4 px-10 transition-colors duration-300 ease-in-out hover:text-[#FFF952] flex items-center gap-2"><i class="ri-arrow-up-down-line"></i> Metal</a></li>
+              <li><a href="/product?category=plastic" class="py-4 px-10 transition-colors duration-300 ease-in-out hover:text-[#FFF952] flex items-center gap-2"><i class="ri-arrow-up-down-line"></i> Plastico</a></li>
             </ul>
           }
         </li>
 
-        <li><a href="#" class="py-5 px-6 hover:text-[#FFF952] block font-semibold">Sobre</a></li>
-        <li><a href="#" class="py-5 px-6 hover:text-[#FFF952] block font-semibold">Contato</a></li>
-        <li><a href="#" class="py-5 px-6 hover:text-[#FFF952] block font-semibold">Login</a></li>
+        <li><a href="/about" class="py-5 px-6 transition-colors duration-300 ease-in-out hover:text-[#FFF952] block font-semibold">Sobre</a></li>
+        <li><a href="/contact" class="py-5 px-6 transition-colors duration-300 ease-in-out hover:text-[#FFF952] block font-semibold">Contato</a></li>
+        <li><a href="/login" class="py-5 px-6 transition-colors duration-300 ease-in-out hover:text-[#FFF952] block font-semibold">Login</a></li>
       </ul>
     </div>
   </nav>

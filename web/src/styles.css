@@ -9,7 +9,7 @@
 }
 
 .default-padding {
-  @apply px-6 py-14 md:px-12 md:py-28;
+  @apply px-6 py-14 md:px-32 md:py-28;
 }
 
 .default-paragraph {

@@ -1,0 +1,64 @@
+<div
+  class="flex flex-col justify-center items-center gap-4 hover:scale-105 transition-all cursor-pointer"
+  (click)="onClick()"
+>
+<div class="relative">
+    @if (productSummary().image) {
+      <img
+        [ngSrc]="productSummary().image"
+        width="420"
+        height="300"
+        class="object-cover relative"
+      />
+    }
+    @else {
+      <img
+        [ngSrc]="'/assets/images/product-default.jpg'"
+        width="420"
+        height="300"
+        class="object-cover relative rounded-2xl h-64"
+      />
+    }
+
+    <div class="absolute top-2 left-2 sm:top-[5%] sm:left-[5%] text-[10px] sm:text-[12px] font-medium flex gap-3 tracking-wider">
+      <div class="bg-[#FFF952] p-1 sm:p-2 rounded-md flex items-center justify-center">
+        <p>
+          {{ productSummary().category }}
+        </p>
+      </div>
+      <div class="bg-white p-1 sm:p-2 rounded-md flex items-center justify-center">
+        <p>
+          {{ productSummary().category }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="w-full flex gap-4 min-[472px]:justify-center min-[894px]:justify-start">
+    <span class="flex gap-2">
+      <lucide-icon
+        [name]="MousePointerClick"
+        size="20"
+        strokeWidth="1"
+      />
+      {{ productSummary().interestCount }}
+    </span>
+    <span class="flex gap-2">
+      <lucide-icon
+        [name]="SquareStack"
+        size="20"
+        strokeWidth="1"
+      />
+      {{ productSummary().quantity }}
+    </span>
+  </div>
+
+  <div class="w-full flex flex-col min-[472px]:items-center min-[894px]:items-start">
+    <h4 class="font-semibold">
+      {{ productSummary().name }}
+    </h4>
+    <p class="default-paragraph">
+      {{ productSummary().location }}
+    </p>
+  </div>
+</div>
