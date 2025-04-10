@@ -1,11 +1,54 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { TitleDisplayComponent } from "../../../core/components/title-display/title-display.component";
+import { TextColor } from '../../../core/types/enums';
+import { ProductsService } from '../../../services/product/products.service';
+import { Observable } from 'rxjs';
+import { IProductSummary } from '../../../core/types/product';
+import { ProductCardComponent } from "../../../core/components/product-card/product-card.component";
+import { CommonModule } from '@angular/common';
+import { FilterBarComponent } from '../../../core/components/filter-bar/filter-bar.component';
+import { ActivatedRoute } from '@angular/router';
+import { PaginationComponent } from "../../../core/components/pagination/pagination.component";
 
 @Component({
   selector: 'app-products',
-  imports: [],
+  imports: [CommonModule, TitleDisplayComponent, ProductCardComponent, FilterBarComponent, PaginationComponent],
   templateUrl: './products.component.html',
-  styleUrl: './products.component.css'
+  providers: [ProductsService]
 })
-export class ProductsComponent {
+export class ProductsComponent implements OnInit {
+  productsTexts = {
+    title: 'Produtos Descartados',
+    titleColor: TextColor.black,
+    subtitle: 'Transforme o desperdício em oportunidade',
+    subtitleColor: TextColor.gray
+  }
 
+  products$!: Observable<IProductSummary[]>
+
+  constructor(
+    private route: ActivatedRoute,
+    private readonly productsService: ProductsService
+  ) {}
+
+  ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      const filters = {
+        category: params['category'] || null,
+        condition: params['condition'] || null,
+        material: params['material'] || null,
+        page: params['page'] || 0,
+        size: params['size'] || 5,
+      }
+
+      this.productsService.fetchProducts(
+        filters.size,
+        filters.page,
+        filters.category,
+        filters.condition,
+        filters.material
+      ).subscribe();
+      this.products$ = this.productsService.products$;
+    })
+  }
 }

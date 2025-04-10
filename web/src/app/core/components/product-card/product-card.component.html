@@ -3,12 +3,12 @@
   (click)="onClick()"
 >
 <div class="relative">
-    @if (productSummary().image) {
+    @if (product.thumbnail && product.thumbnail.url) {
       <img
-        [ngSrc]="productSummary().image"
+        [ngSrc]="product.thumbnail.url"
         width="420"
-        height="300"
-        class="object-cover relative"
+        height="630"
+        class="object-cover relative rounded-2xl h-64"
       />
     }
     @else {
@@ -23,12 +23,12 @@
     <div class="absolute top-2 left-2 sm:top-[5%] sm:left-[5%] text-[10px] sm:text-[12px] font-medium flex gap-3 tracking-wider">
       <div class="bg-[#FFF952] p-1 sm:p-2 rounded-md flex items-center justify-center">
         <p>
-          {{ productSummary().category }}
+          {{ product.category | translateEnum: 'Category' }}
         </p>
       </div>
       <div class="bg-white p-1 sm:p-2 rounded-md flex items-center justify-center">
         <p>
-          {{ productSummary().category }}
+          {{ product.condition | translateEnum: 'Condition' }}
         </p>
       </div>
     </div>
@@ -41,7 +41,7 @@
         size="20"
         strokeWidth="1"
       />
-      {{ productSummary().interestCount }}
+      {{ product.interestCount }}
     </span>
     <span class="flex gap-2">
       <lucide-icon
@@ -49,16 +49,16 @@
         size="20"
         strokeWidth="1"
       />
-      {{ productSummary().quantity }}
+      {{ product.quantity }}
     </span>
   </div>
 
   <div class="w-full flex flex-col min-[472px]:items-center min-[894px]:items-start">
     <h4 class="font-semibold">
-      {{ productSummary().name }}
+      {{ product.name }}
     </h4>
     <p class="default-paragraph">
-      {{ productSummary().location }}
+      {{ product.location }}
     </p>
   </div>
 </div>

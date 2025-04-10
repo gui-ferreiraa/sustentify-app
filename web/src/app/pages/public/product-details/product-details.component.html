@@ -1,0 +1,32 @@
+<main
+  class="default-padding max-md:mt-8"
+>
+@if (product$ | async; as product;) {
+  <section>
+    <div>
+
+    </div>
+
+    <h3>
+      {{ product.name }}
+    </h3>
+    <div>
+      <p>
+        {{ product.category }}
+        <strong>Produto id: </strong>
+        {{ product.id }}
+      </p>
+      <p>
+        {{ formatPrice(product.price) }}
+      </p>
+    </div>
+    <p>
+      <strong>Descrição: </strong>
+      {{ product.description }}
+    </p>
+  </section>
+  <section>
+
+  </section>
+}
+</main>

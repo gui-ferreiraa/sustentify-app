@@ -1,0 +1,39 @@
+<form
+  class="w-full flex flex-col sm:flex-row justify-around gap-6"
+  [formGroup]="this.form"
+>
+  <app-select-input
+    inputName="category"
+    label="Categoria"
+    [options]="
+      this.categoryOptions
+    "
+    formControlName="category"
+    class="w-full"
+  />
+  <app-select-input
+    inputName="condition"
+    label="Condição"
+    [options]="
+      this.conditionOptions
+    "
+    formControlName="condition"
+    class="w-full"
+  />
+  <app-select-input
+    inputName="material"
+    label="Material"
+    [options]="
+      this.materialOptions
+    "
+    formControlName="material"
+    class="w-full"
+  />
+
+  <app-button-green
+     title="Buscar"
+     (click)="submitFilters()"
+     [disabled]="false"
+     [type]="'submit'"
+  />
+</form>

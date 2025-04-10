@@ -1,13 +1,32 @@
-export interface IProductSummary {
+import { Category } from "../enums/category.enum";
+import { Condition } from "../enums/condition.enum";
+import { Material } from "../enums/material.enum";
+
+interface IProductImage {
   id: string;
-  name: string;
-  category: string;
-  condition: string;
-  quantity: number;
-  location: string;
-  interestCount: number;
-  image: string;
+  url: string;
+  productId: string;
 }
+
+export interface IProduct {
+    id: number;
+    name: string;
+    category: Category;
+    description: string;
+    condition: Condition;
+    material: Material;
+    productionDate: string;
+    disposalDate: string;
+    price: number;
+    location: string;
+    quantity: string;
+    thumbnail: IProductImage;
+    images: IProductImage[];
+    interestCount: number;
+    company_id: number;
+}
+
+export type IProductSummary = Pick<IProduct, 'id' | 'name' | 'category' | 'condition' | 'quantity' | 'location' | 'interestCount' | 'thumbnail'>;
 
 export interface IProductPagination {
   totalElements: number;
