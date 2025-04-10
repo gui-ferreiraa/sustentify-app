@@ -17,6 +17,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/products")
@@ -100,5 +103,73 @@ public class ProductsController {
         Product product = this.productsService.findById(productId, company);
 
         return this.productsService.delete(product);
+    }
+
+    @PostMapping("/{id}/thumbnail")
+    public ResponseEntity<ResponseDto> thumbnail(
+            @PathVariable("id") Long productId,
+            @RequestParam("file")MultipartFile file
+    ) {
+        productsService.uploadThumbnailImage(productId, file);
+
+        return ResponseEntity
+                .status(HttpStatus.ACCEPTED)
+                .body(new ResponseDto(
+                        HttpStatus.ACCEPTED,
+                        "Thumbnail uploaded successfully",
+                        true,
+                        Optional.empty()
+                ));
+    }
+
+    @PostMapping("/{id}/images")
+    public ResponseEntity<ResponseDto> uploadImages(
+            @PathVariable("id") Long productId,
+            @RequestParam("files")MultipartFile[] files
+    ) {
+        productsService.uploadImages(productId, files);
+
+        return ResponseEntity
+                .status(HttpStatus.ACCEPTED)
+                .body(new ResponseDto(
+                        HttpStatus.ACCEPTED,
+                        "Images uploaded successfully",
+                        true,
+                        Optional.empty()
+                ));
+    }
+
+    @DeleteMapping("/{id}/images")
+    public ResponseEntity<ResponseDto> deleteImage(
+            @PathVariable("id") Long productId,
+            @RequestParam("publicId") String publicId
+    ) {
+        productsService.deleteProductImage(productId, publicId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDto(
+                        HttpStatus.OK,
+                        "Images deleted successfully",
+                        true,
+                        Optional.empty()
+                ));
+    }
+
+    @DeleteMapping("/{id}/thumbnail")
+    public ResponseEntity<ResponseDto> deleteThumbnail(
+            @PathVariable("id") Long productId,
+            @RequestParam("publicId") String publicId
+    ) {
+        productsService.deleteThumbnail(productId, publicId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDto(
+                        HttpStatus.OK,
+                        "Thumbnail deleted successfully",
+                        true,
+                        Optional.empty()
+                ));
     }
 }

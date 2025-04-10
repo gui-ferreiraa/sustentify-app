@@ -34,6 +34,22 @@ CREATE TABLE IF NOT EXISTS products (
       FOREIGN KEY (companies_id) REFERENCES companies(id) ON DELETE SET NULL
 );
 
+CREATE TABLE IF NOT EXISTS products_images (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    public_id VARCHAR(255),
+    url VARCHAR(255),
+    product_id BIGINT NOT NULL,
+    FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+CREATE TABLE IF NOT EXISTS products_thumbnail (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    public_id VARCHAR(255),
+    url VARCHAR(255),
+    product_id BIGINT NOT NULL,
+    FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
 CREATE TABLE IF NOT EXISTS interested_products (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     companies_id BIGINT NOT NULL,

@@ -1,6 +1,7 @@
 package com.sustentify.sustentify_app.config.exceptions;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.sustentify.sustentify_app.app.Upload.exceptions.UploadInvalidException;
 import com.sustentify.sustentify_app.app.auth.jwt.exceptions.TokenValidationException;
 import com.sustentify.sustentify_app.app.companies.exceptions.CompanyAlreadyExistsException;
 import com.sustentify.sustentify_app.app.companies.exceptions.CompanyNotFoundException;
@@ -19,6 +20,7 @@ import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -122,5 +124,17 @@ public class RestExceptionHandler {
 
         ResponseError genericError = new ResponseError(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", List.of("An unexpected error occurred"));
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(genericError);
+    }
+
+    @ExceptionHandler(UploadInvalidException.class)
+    public ResponseEntity<ResponseError> uploadInvalidHandler(UploadInvalidException exception) {
+        ResponseError responseError = new ResponseError(HttpStatus.BAD_REQUEST, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseError);
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ResponseError> maxUploadSizeExceededHandler(MaxUploadSizeExceededException exception) {
+        ResponseError responseError = new ResponseError(HttpStatus.BAD_REQUEST, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseError);
     }
 }

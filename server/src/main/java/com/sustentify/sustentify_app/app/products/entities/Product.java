@@ -71,6 +71,13 @@ public class Product {
     @JsonIgnore
     private List<InterestedProducts> interestedProducts = new ArrayList<>();
 
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ProductThumbnail thumbnail;
+
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductImage> images = new ArrayList<>();
+
     public Product() {
     }
 
@@ -191,4 +198,20 @@ public class Product {
     }
 
     public int getInterestCount() {return interestedProducts.size();}
+
+    public ProductThumbnail getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(ProductThumbnail thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
+    public List<ProductImage> getImages() {
+        return images;
+    }
+
+    public void addImage(ProductImage image) {
+        this.images.add(image);
+    }
 }
