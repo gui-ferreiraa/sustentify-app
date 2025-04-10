@@ -15,7 +15,11 @@ export class CompaniesService {
 
   constructor(private http: HttpClient) { }
 
-  create(company: ICompany) {
+  create(company: Omit<ICompany, 'id'>) {
     return this.http.post<IResponseDto>(`${this.apiUrl}`, company);
   }
+
+  update() {}
+
+  delete() {}
 }

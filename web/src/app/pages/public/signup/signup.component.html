@@ -131,7 +131,8 @@
           type="password"
           [error]="form.controls.confirmPassword.invalid && (form.controls['confirmPassword'].touched || form.controls.confirmPassword.dirty)"
           [errorMessage]="
-            form.controls.confirmPassword.errors?.['required'] && 'Confirmação de Senha é obrigatório'
+            form.controls.confirmPassword.errors?.['required'] && 'Confirmação de Senha é obrigatório' ||
+            form.controls.confirmPassword.errors?.['passwordMismatch'] && 'As senhas não coincidem'
           "
         />
 

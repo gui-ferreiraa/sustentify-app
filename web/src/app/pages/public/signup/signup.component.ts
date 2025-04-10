@@ -11,6 +11,9 @@ import { Department } from '../../../core/enums/department.enum';
 import { EnumTranslations } from '../../../translations/enum-translations';
 import { CompaniesService } from '../../../services/companies/companies.service';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
+import { confirmPasswordValidator } from '../../../core/validators/confirmPassword.validator';
+import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 
 interface SignupForm {
   cnpj: FormControl;
@@ -48,7 +51,9 @@ export class SignupComponent {
   departmentOptions = getEnumOptions(Department, EnumTranslations.Department);
 
   constructor(
-    private readonly companiesService: CompaniesService
+    private readonly companiesService: CompaniesService,
+    private readonly toastService: ToastrService,
+    private readonly router: Router,
   ) {
     this.form = new FormGroup({
       cnpj: new FormControl('', [Validators.required, Validators.pattern(/^\d{2}\.?\d{3}\.?\d{3}\/?\d{4}-?\d{2}$/
@@ -62,7 +67,7 @@ export class SignupComponent {
       phone: new FormControl('', [Validators.required, Validators.pattern(/^\+55\s?\(\d{2}\)\s?\d{5}-\d{4}$/
 )]),
       terms: new FormControl(false, [Validators.requiredTrue])
-    })
+    }, { validators: confirmPasswordValidator() })
   }
 
   submit() {
@@ -71,6 +76,25 @@ export class SignupComponent {
       return;
     }
 
-    console.log(this.form.getRawValue());
+    const fields = this.form.getRawValue();
+
+    this.companiesService.create({
+      address: fields.location,
+      cnpj: fields.cnpj,
+      companyDepartment: fields.department,
+      email: fields.email,
+      name: fields.name,
+      password: fields.password
+    }).subscribe({
+      next: (vl) => {
+        if (vl.successfully) {
+          this.toastService.success("Company Created");
+          this.router.navigate(['/signin'])
+        }
+        else {
+          this.toastService.warning(vl.message);
+        }
+      }
+    })
   }
 }

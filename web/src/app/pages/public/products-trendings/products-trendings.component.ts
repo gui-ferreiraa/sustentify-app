@@ -29,7 +29,7 @@ export class ProductsTrendingsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.productsService.fetchProductsTrending(10, 0).subscribe();
-    // this.products$ = this.productsService.products$;
+    this.productsService.fetchProductsTrending(10, 0).subscribe();
+    this.products$ = this.productsService.products$;
   }
 }

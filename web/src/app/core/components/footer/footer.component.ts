@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { ParagraphSupportComponent } from '../paragraph-support/paragraph-support.component';
 import { TextColor } from '../../types/enums';
-import { LucideAngularModule } from 'lucide-angular';
 import { SustentifyLogoComponent } from "../sustentify-logo/sustentify-logo.component";
 import { Category } from '../../enums/category.enum';
 

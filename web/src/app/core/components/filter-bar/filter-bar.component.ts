@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { getEnumOptions } from '../../utils/enum-options';
 import { Category } from '../../enums/category.enum';
 import { EnumTranslations } from '../../../translations/enum-translations';
@@ -9,6 +9,12 @@ import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angul
 import { ActivatedRoute, Router } from '@angular/router';
 import { SelectInputComponent } from "../inputs/select-input/select-input.component";
 
+interface FiltersForm {
+  category: FormControl;
+  condition: FormControl;
+  material: FormControl;
+}
+
 @Component({
   selector: 'app-filter-bar',
   imports: [ButtonGreenComponent, ReactiveFormsModule, SelectInputComponent],
@@ -18,33 +24,18 @@ export class FilterBarComponent {
   categoryOptions = getEnumOptions(Category, EnumTranslations.Category);
   materialOptions = getEnumOptions(Material, EnumTranslations.Material);
   conditionOptions = getEnumOptions(Condition, EnumTranslations.Condition);
-  form = new FormGroup({
-    category: new FormControl(''),
-    condition: new FormControl(''),
-    material: new FormControl('')
-  })
+
+  form!: FormGroup<FiltersForm>;
 
   constructor(
-    private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router
   ) {
-    this.form = this.fb.group({
-      category: [''],
-      condition: [''],
-      material: [''],
-    })
-    this.route.queryParams.subscribe(params => {
-      const category = params['category'];
-      const material = params['material'];
-      const condition = params['condition'];
-
-      this.form.setValue({
-        category: category ?? '',
-        condition: condition ?? '',
-        material: material ?? '',
-      })
-    })
+    this.form = new FormGroup({
+      category: new FormControl(''),
+      condition: new FormControl(''),
+      material: new FormControl(''),
+    });
   }
 
   submitFilters() {

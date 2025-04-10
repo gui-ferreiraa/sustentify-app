@@ -2,10 +2,10 @@
   <select
     [id]="inputName()"
     class="bg-gray-50 border border-gray-300 text-gray-900 default-paragraph rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full block h-10 p-2"
-    (input)="onInput($event)"
+    (change)="onInput($event)"
     [value]="value"
     >
-    <option [value]="value">{{ label() }}</option>
+    <option value="">{{ label() }}</option>
     @for (option of this.options(); track $index) {
       <option [value]="option.value">{{ option.label }}</option>
     }

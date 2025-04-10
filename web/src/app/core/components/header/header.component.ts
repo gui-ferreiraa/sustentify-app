@@ -1,16 +1,19 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { LucideAngularModule, Menu, X, ChevronDown  } from 'lucide-angular';
 import { SustentifyLogoComponent } from "../sustentify-logo/sustentify-logo.component";
-import { NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { Category } from '../../enums/category.enum';
 import { Material } from '../../enums/material.enum';
+import { AuthService } from '../../../services/auth/auth.service';
+import { Observable } from 'rxjs';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-header',
-  imports: [LucideAngularModule, SustentifyLogoComponent],
+  imports: [LucideAngularModule, SustentifyLogoComponent, CommonModule, RouterModule],
   templateUrl: './header.component.html',
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
   private readonly Menu = Menu;
   private readonly X = X;
   public readonly ChevronDown = ChevronDown;
@@ -20,15 +23,22 @@ export class HeaderComponent {
   public showBackground = false;
   metalSlug = Category.METAL;
   plasticSlug = Category.PLASTIC;
+  protected isAuthenticated!: Observable<boolean>;
 
-  constructor(private router: Router) {
-
+  constructor(
+    private readonly router: Router,
+    private readonly authService: AuthService
+  ) {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         const path = event.urlAfterRedirects;
         this.showBackground = path !== '/';
       }
     })
+  }
+
+  ngOnInit(): void {
+    this.isAuthenticated = this.authService.isAuthenticated$;
   }
 
   getMenuIcon() {

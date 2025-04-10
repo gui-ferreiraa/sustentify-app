@@ -9,6 +9,9 @@ import { ContactComponent } from './pages/public/contact/contact.component';
 import { SigninComponent } from './pages/public/signin/signin.component';
 import { SignupComponent } from './pages/public/signup/signup.component';
 import { TermsComponent } from './pages/public/terms/terms.component';
+import { AuthGuard } from './core/guards/auth/auth.guard';
+import { AutoLoginGuard } from './core/guards/auth/auto-login.guard';
+import { ProfileComponent } from './pages/private/profile/profile.component';
 
 export const routes: Routes = [
   {
@@ -37,15 +40,23 @@ export const routes: Routes = [
   },
   {
     path: 'signin',
-    component: SigninComponent
+    component: SigninComponent,
+    canActivate: [AutoLoginGuard]
   },
   {
     path: 'signup',
-    component: SignupComponent
+    component: SignupComponent,
+    canActivate: [AutoLoginGuard]
   },
   {
     path: 'terms',
     component: TermsComponent
+  },
+  // privates
+  {
+    path: 'profile',
+    component: ProfileComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: '**',

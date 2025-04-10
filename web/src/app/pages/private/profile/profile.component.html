@@ -1,0 +1,25 @@
+<main
+  class="default-padding max-md:mt-8"
+>
+  @if (company$ | async; as company) {
+    <h3>
+      email:
+      {{ company.email }}
+    </h3>
+    <h3>
+      name:
+      {{ company.name }}
+    </h3>
+    <h3>
+      department
+      {{ company.companyDepartment }}
+    </h3>
+  }
+
+  <app-button-green
+    (click)="logout()"
+    [disabled]="false"
+    title="Logout"
+    [type]="'button'"
+  />
+</main>

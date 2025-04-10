@@ -33,15 +33,15 @@ export class ProductsService {
       .set('size', size)
       .set('page', page)
 
-      if (category && isValidEnumValue(Category, category)) {
+      if (category) {
         params = params.set('category', category);
       }
 
-      if (condition && isValidEnumValue(Condition, condition)) {
+      if (condition) {
         params = params.set('condition', condition);
       }
 
-      if (material && isValidEnumValue(Material, material)) {
+      if (material) {
         params = params.set('material', material);
       }
 
@@ -62,8 +62,6 @@ export class ProductsService {
     const params = new HttpParams()
       .set('size', size)
       .set('page', page)
-
-      console.log(params);
 
       return this.http.get<IProductResponse>(`${this.apiUrl}/trending`, {
         params,

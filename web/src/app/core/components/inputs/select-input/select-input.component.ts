@@ -34,7 +34,7 @@ export class SelectInputComponent implements ControlValueAccessor {
   }
 
   writeValue(value: any): void {
-    this.value = value
+    this.value = value ?? '';
   }
 
   registerOnChange(fn: any): void {
