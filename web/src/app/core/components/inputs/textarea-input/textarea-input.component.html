@@ -1,0 +1,24 @@
+<div
+  class="flex flex-col mb-6"
+>
+  <label
+    [for]="inputName()"
+    class="block text-gray-700 default-paragraph mb-2 tracking-wide"
+  >
+    {{ label() }}
+  </label>
+  <textarea
+    [class]="'shadow appearance-none mb-2 rounded bg-[#f4f2f2] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:shadow-gray-300 transition-all placeholder:opacity-50 default-paragraph ' + (error() && 'shadow-red-300')"
+    [id]="inputName()"
+    [placeholder]="placeholder()"
+    (input)="onInput($event)"
+    [value]="value"
+  ></textarea>
+  @if (error()) {
+    <span
+      class="default-paragraph text-red-300"
+    >
+      {{ errorMessage() }}
+    </span>
+  }
+</div>
