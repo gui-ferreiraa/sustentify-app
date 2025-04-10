@@ -5,8 +5,9 @@
     <img
       [ngSrc]="mainSection.image"
       alt=""
-      width="1080"
-      height="720"
+      sizes="(min-width: 768px) 50vw, 100vw"
+      width="774"
+      height="516"
       class="w-full aspect-[3/2] max-sm:h-[600px] sm:h-[80%] md:max-h-screen object-cover object-center brightness-75 relative top-0 left-0"
       priority
     />
@@ -30,6 +31,9 @@
       </div>
       <app-button-green
         title="Explorar"
+        (click)="exploreButtonClicked()"
+        [disabled]="false"
+        [type]="'button'"
       />
     </div>
   </div>

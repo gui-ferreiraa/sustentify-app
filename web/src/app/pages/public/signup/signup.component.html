@@ -1,0 +1,180 @@
+<main
+  class="default-padding max-md:mt-8"
+>
+  <app-title-display
+    [center]="true"
+    [subtitle]="signupTexts.subtitle"
+    [subtitleColor]="signupTexts.subtitleColor"
+    [title]="signupTexts.title"
+    [titleColor]="signupTexts.titleColor"
+  />
+  <div
+    class="flex gap-8 md:flex-row-reverse mt-12 flex-col-reverse"
+  >
+    <section
+      class="w-full md:w-2/4"
+    >
+      <img
+        ngSrc="/assets/images/sustainable-street.jpg"
+        width="720"
+        height="640"
+        class="rounded-xl object-cover h-[342px] md:h-[80%]"
+        priority
+      />
+    </section>
+    <section
+      class="w-full md:w-2/4"
+    >
+      <p
+        class="default-paragraph text-justify"
+      >
+        Cadastre-se na Sustentify para começar a cadastrar seus produtos descartados, buscar soluções sustentáveis e compensar suas emissões de carbono. Torne sua empresa parte da transformação para um futuro mais verde e responsável.
+      </p>
+      <form
+        [formGroup]="form"
+        (ngSubmit)="submit()"
+        class="flex flex-col mt-6 justify-between"
+      >
+        <app-primary-input
+          formControlName="cnpj"
+          inputName="cnpj"
+          label="CNPJ"
+          placeholder="00.000.000/0000-00"
+          type="text"
+          mask="00.000.000/0000-00"
+          [error]="form.controls.cnpj.invalid && (form.controls['cnpj'].touched || form.controls.cnpj.dirty)"
+          [errorMessage]="
+            form.controls.cnpj.errors?.['required'] && 'Cnpj é obrigatório' ||
+            form.controls.cnpj.errors?.['pattern'] && 'Formato inválido. Use: 00.000.000/0000-00'
+          "
+        />
+
+        <app-primary-input
+          formControlName="name"
+          inputName="name"
+          label="Nome da Empresa"
+          placeholder="Company LTDA"
+          type="text"
+          [error]="form.controls.name.invalid && (form.controls['name'].touched || form.controls.name.dirty)"
+          [errorMessage]="
+            form.controls.name.errors?.['required'] && 'Nome da Empresa é obrigatório'
+          "
+        />
+
+        <app-primary-input
+          formControlName="email"
+          inputName="email"
+          label="Email da Empresa"
+          placeholder="email@sustentify.com"
+          type="text"
+          [error]="form.controls.email.invalid && (form.controls['email'].touched || form.controls.email.dirty)"
+          [errorMessage]="
+            form.controls.email.errors?.['required'] && 'Email é obrigatório'
+          "
+        />
+
+        <app-primary-input
+          formControlName="location"
+          inputName="location"
+          label="Localização"
+          placeholder="Rua Monteiro, Vila Soares, n°02 - SP"
+          type="text"
+          [error]="form.controls.location.invalid && (form.controls['location'].touched || form.controls.location.dirty)"
+          [errorMessage]="
+            form.controls.location.errors?.['required'] && 'Localização é obrigatório'
+          "
+        />
+
+        <app-select-input
+          formControlName="department"
+          inputName="department"
+          label="Ramo de Atividade/Setor"
+          [options]="departmentOptions"
+          class="mb-3"
+          [error]="form.controls.department.invalid && (form.controls['department'].touched || form.controls.department.dirty)"
+          [errorMessage]="
+            form.controls.department.errors?.['required'] && 'Ramo de Atividade é obrigatório'
+          "
+        />
+
+        <app-primary-input
+          formControlName="phone"
+          inputName="phone"
+          label="Telefone de Contato"
+          placeholder="+55 (11) 94567-1234"
+          type="text"
+          mask="+00 (00) 00000-0000"
+          [error]="form.controls.phone.invalid && (form.controls['phone'].touched || form.controls.phone.dirty)"
+          [errorMessage]="
+            form.controls.phone.errors?.['required'] && 'Localização é obrigatório' ||
+            form.controls.phone.errors?.['pattern'] && 'Formato inválido. Use: +55 (11) 91234-5678'
+          "
+        />
+
+        <app-primary-input
+          formControlName="password"
+          inputName="password"
+          label="Senha"
+          placeholder="password"
+          type="password"
+          [error]="form.controls.password.invalid && (form.controls['password'].touched || form.controls.password.dirty)"
+          [errorMessage]="
+            form.controls.password.errors?.['required'] && 'Senha é obrigatório'
+          "
+        />
+
+        <app-primary-input
+          formControlName="confirmPassword"
+          inputName="confirmPassword"
+          label="Confirmação de Senha"
+          placeholder="confirmPassword"
+          type="password"
+          [error]="form.controls.confirmPassword.invalid && (form.controls['confirmPassword'].touched || form.controls.confirmPassword.dirty)"
+          [errorMessage]="
+            form.controls.confirmPassword.errors?.['required'] && 'Confirmação de Senha é obrigatório'
+          "
+        />
+
+        <!-- terms -->
+        <label class="flex flex-col items-start gap-2 text-sm text-gray-600 mt-2 mb-4">
+          <div>
+            <input
+              type="checkbox"
+              formControlName="terms"
+              class="mt-1"
+            />
+            <span class="default-paragraph">
+              Eu li e aceito os <a href="/terms" class="text-green-600 underline" target="_blank">Termos de Uso</a> e a
+              <a href="/terms" class="text-green-600 underline" target="_blank">Política de Privacidade</a>.
+            </span>
+          </div>
+          @if (form.controls.terms.invalid && (form.controls['terms'].touched || form.controls.terms.dirty)) {
+            <span
+              class="default-paragraph text-red-300"
+            >
+              Você precisa aceitar os termos para continuar.
+            </span>
+          }
+        </label>
+
+        <app-button-green
+          title="Cadastrar"
+          type="submit"
+          [disabled]="false"
+        />
+        <p
+          class="default-paragraph mt-3"
+        >
+          Já tem conta ?
+          <a
+            href="/signin"
+            class="hover:underline hover:text-blue-600 transition-all duration-300 ease-in-out"
+          >
+            Entre Aqui!
+          </a>
+        </p>
+      </form>
+    </section>
+  </div>
+</main>
+

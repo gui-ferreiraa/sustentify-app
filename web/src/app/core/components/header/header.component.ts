@@ -2,6 +2,8 @@ import { Component, HostListener } from '@angular/core';
 import { LucideAngularModule, Menu, X, ChevronDown  } from 'lucide-angular';
 import { SustentifyLogoComponent } from "../sustentify-logo/sustentify-logo.component";
 import { NavigationEnd, Router } from '@angular/router';
+import { Category } from '../../enums/category.enum';
+import { Material } from '../../enums/material.enum';
 
 @Component({
   selector: 'app-header',
@@ -16,8 +18,11 @@ export class HeaderComponent {
   public dropdownOpen = false;
   public scrolled = false;
   public showBackground = false;
+  metalSlug = Category.METAL;
+  plasticSlug = Category.PLASTIC;
 
   constructor(private router: Router) {
+
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         const path = event.urlAfterRedirects;

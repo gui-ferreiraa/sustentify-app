@@ -1,0 +1,92 @@
+<main
+  class="default-padding max-md:mt-8"
+>
+  <app-title-display
+    [center]="true"
+    [subtitle]="signinTexts.subtitle"
+    [subtitleColor]="signinTexts.subtitleColor"
+    [title]="signinTexts.title"
+    [titleColor]="signinTexts.titleColor"
+  />
+  <div
+    class="flex gap-8 flex-col md:flex-row mt-12"
+  >
+    <section
+      class="w-full md:w-2/4"
+    >
+      <img
+        ngSrc="/assets/images/sustainable-street.jpg"
+        width="720"
+        height="640"
+        class="rounded-xl object-cover h-[342px] md:h-[80%]"
+        priority
+      />
+    </section>
+    <section
+      class="w-full md:w-2/4"
+    >
+      <p
+        class="default-paragraph text-justify"
+      >
+        Tem dúvidas, sugestões ou quer saber mais sobre como a Sustentify pode ajudar sua empresa a reduzir seu impacto ambiental? Nossa equipe está pronta para atender você! Preencha o formulário abaixo ou entre em contato pelos nossos canais e vamos juntos construir um futuro mais sustentável.
+      </p>
+      <form
+        [formGroup]="form"
+        (ngSubmit)="submit()"
+        class="flex flex-col mt-6 justify-between"
+      >
+        <app-primary-input
+          formControlName="email"
+          inputName="email"
+          label="Email da Empresa"
+          placeholder="email@sustentify.com"
+          type="text"
+          [error]="form.controls.email.invalid && (form.controls['email'].touched || form.controls.email.dirty)"
+          [errorMessage]="
+            form.controls.email.errors?.['required'] && 'Email é obrigatório'
+          "
+        />
+
+        <app-primary-input
+          formControlName="password"
+          inputName="password"
+          label="Senha"
+          placeholder="password"
+          type="password"
+          [error]="form.controls.password.invalid && (form.controls['password'].touched || form.controls.password.dirty)"
+          [errorMessage]="
+            form.controls.password.errors?.['required'] && 'Senha é obrigatório'
+          "
+        />
+
+        <app-button-green
+          title="Entrar"
+          type="submit"
+          [disabled]="false"
+        />
+        <p
+          class="default-paragraph mt-3"
+        >
+          Não tem conta ?
+          <a
+            href="/signup"
+            class="hover:underline hover:text-blue-600 transition-all duration-300 ease-in-out"
+          >
+            Cadastra-se Aqui!
+          </a>
+        </p>
+        <p
+          class="default-paragraph mt-3"
+        >
+          <a
+            href="/recover-password"
+            class="hover:underline hover:text-blue-600 transition-all duration-300 ease-in-out"
+          >
+            Esqueceu sua senha ?
+          </a>
+        </p>
+      </form>
+    </section>
+  </div>
+</main>
+

@@ -3,6 +3,7 @@ import { ParagraphSupportComponent } from '../paragraph-support/paragraph-suppor
 import { TextColor } from '../../types/enums';
 import { LucideAngularModule } from 'lucide-angular';
 import { SustentifyLogoComponent } from "../sustentify-logo/sustentify-logo.component";
+import { Category } from '../../enums/category.enum';
 
 @Component({
   selector: 'app-footer',
@@ -12,4 +13,6 @@ import { SustentifyLogoComponent } from "../sustentify-logo/sustentify-logo.comp
 export class FooterComponent {
   public titleLinkColor = TextColor.yellow;
   public subtitleColor = TextColor.white;
+  public metalSlug = Category.METAL;
+  public plasticSlug = Category.PLASTIC;
 }

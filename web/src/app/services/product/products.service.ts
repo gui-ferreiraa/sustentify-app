@@ -1,14 +1,18 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { IProductPagination, IProductResponse, IProductSummary } from '../../core/types/product';
+import { IProduct, IProductPagination, IProductResponse, IProductSummary } from '../../core/types/product';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
+import { Category } from '../../core/enums/category.enum';
+import { Condition } from '../../core/enums/condition.enum';
+import { Material } from '../../core/enums/material.enum';
+import { isValidEnumValue } from '../../core/utils/isValidEnumValue';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductsService {
-  private readonly apiUrl = `${environment.apiUrl}/products`;
+  private readonly apiUrl = `/v1/products`;
 
   private productsSubject = new BehaviorSubject<IProductSummary[]>([]);
   public products$ = this.productsSubject.asObservable();
@@ -25,13 +29,21 @@ export class ProductsService {
     condition?: string,
     material?: string
   ): Observable<IProductResponse> {
-    const params = new HttpParams()
+    let params = new HttpParams()
       .set('size', size)
       .set('page', page)
 
-    if (category) params.set('category', category);
-    if (condition) params.set('condition', condition);
-    if (material) params.set('material', material);
+      if (category && isValidEnumValue(Category, category)) {
+        params = params.set('category', category);
+      }
+
+      if (condition && isValidEnumValue(Condition, condition)) {
+        params = params.set('condition', condition);
+      }
+
+      if (material && isValidEnumValue(Material, material)) {
+        params = params.set('material', material);
+      }
 
     return this.http.get<IProductResponse>(this.apiUrl, {
       params,
@@ -51,7 +63,9 @@ export class ProductsService {
       .set('size', size)
       .set('page', page)
 
-      return this.http.get<IProductResponse>(this.apiUrl, {
+      console.log(params);
+
+      return this.http.get<IProductResponse>(`${this.apiUrl}/trending`, {
         params,
       }).pipe(
         tap(response => {
@@ -59,5 +73,13 @@ export class ProductsService {
           this.productsPaginationSubject.next(response);
         })
       )
+  }
+
+  fetchProductDetails(productId: number): Observable<IProduct> {
+    if (isNaN(productId)) {
+      throw new Error('productid inválido')
+    }
+
+    return this.http.get<IProduct>(`${this.apiUrl}/${productId}`);
   }
 }

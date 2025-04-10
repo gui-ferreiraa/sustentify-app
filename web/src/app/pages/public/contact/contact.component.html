@@ -1,0 +1,93 @@
+<main
+  class="default-padding max-md:mt-8"
+>
+  <app-title-display
+    [center]="true"
+    [subtitle]="contact.subtitle"
+    [subtitleColor]="contact.subtitleColor"
+    [title]="contact.title"
+    [titleColor]="contact.titleColor"
+  />
+  <div
+    class="flex gap-8 flex-col md:flex-row mt-12"
+  >
+    <section
+      class="w-full md:w-2/4"
+    >
+      <img
+        ngSrc="/assets/images/sustainable-agriculture.jpg"
+        width="720"
+        height="640"
+        class="rounded-xl object-cover h-[342px] md:h-[80%]"
+        priority
+      />
+    </section>
+    <section
+      class="w-full md:w-2/4"
+    >
+      <p
+        class="default-paragraph text-justify"
+      >
+        Tem dúvidas, sugestões ou quer saber mais sobre como a Sustentify pode ajudar sua empresa a reduzir seu impacto ambiental? Nossa equipe está pronta para atender você! Preencha o formulário abaixo ou entre em contato pelos nossos canais e vamos juntos construir um futuro mais sustentável.
+      </p>
+      <form
+        [formGroup]="contactForm"
+        (ngSubmit)="submit()"
+        class="flex flex-col mt-6 justify-between"
+      >
+        <app-primary-input
+          formControlName="name"
+          inputName="name"
+          label="Nome da Empresa"
+          placeholder="Company LTDA"
+          type="text"
+          [error]="contactForm.controls.name.invalid && (contactForm.controls['name'].touched || contactForm.controls.name.dirty)"
+          [errorMessage]="
+            contactForm.controls.name.errors?.['required'] && 'Nome é obrigatório'
+          "
+        />
+        <app-primary-input
+          formControlName="email"
+          inputName="email"
+          label="Email"
+          placeholder="company@sustentify.com"
+          type="text"
+          [error]="contactForm.controls.email.invalid && (contactForm.controls.email.touched || contactForm.controls.email.dirty)"
+          [errorMessage]="
+            contactForm.controls.email.errors?.['required'] && 'Email é obrigatório' ||
+            contactForm.controls.email.errors?.['email'] && 'Formato de email inválido'
+          "
+        />
+        <app-primary-input
+          formControlName="location"
+          inputName="location"
+          label="Location"
+          placeholder="Rua Monteiro, Vila Soares, n°02 - SP"
+          type="text"
+          [error]="contactForm.controls.location.invalid && (contactForm.controls.location.touched || contactForm.controls.location.dirty)"
+          [errorMessage]="
+            contactForm.controls.location.errors?.['required'] && 'Localização é obrigatória' ||
+            contactForm.controls.location.errors?.['minlength'] && 'A localização deve ter no mínimo 10 caracteres'
+          "
+        />
+        <app-textarea-input
+          inputName="message"
+          label="Mensagem"
+          placeholder=""
+          formControlName="message"
+          [error]="contactForm.controls.message.invalid && (contactForm.controls.message.touched || contactForm.controls.message.dirty)"
+          [errorMessage]="
+            contactForm.controls.message.errors?.['required'] && 'Mensagem é obrigatória'||
+            contactForm.controls.message.errors?.['minlength'] && 'A localização deve ter no mínimo 15 caracteres'
+          "
+        />
+
+        <app-button-green
+          title="Enviar"
+          type="submit"
+          [disabled]="false"
+        />
+      </form>
+    </section>
+  </div>
+</main>

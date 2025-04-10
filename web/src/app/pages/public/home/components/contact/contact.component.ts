@@ -3,6 +3,7 @@ import { Component } from "@angular/core";
 import { TextColor } from "../../../../../core/types/enums";
 import { SubtitleComponent } from "../../../../../core/components/subtitle/subtitle.component";
 import { ButtonGreenComponent } from "../../../../../core/components/button-green/button-green.component";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-contact',
@@ -34,9 +35,15 @@ import { ButtonGreenComponent } from "../../../../../core/components/button-gree
         <div class="flex flex-col gap-3 w-full sm:flex-row sm:gap-6 justify-center items-center">
           <app-button-green
             title="Explore"
+            (click)="onClickExploreButton()"
+            [disabled]="false"
+            [type]="'button'"
           />
           <app-button-green
             title="Contato"
+            (click)="onClickContactButton()"
+            [disabled]="false"
+            [type]="'button'"
           />
         </div>
       </div>
@@ -49,5 +56,17 @@ export class ContactComponent {
     subtitle: 'Não está convencido ?',
     title: 'Fale conosco',
     description: 'Entre em contato para tirar dúvidas, obter suporte ou saber mais sobre como podemos ajudar sua empresa a se tornar mais sustentável.',
+  }
+
+  constructor(
+    private router: Router
+  ) {}
+
+  onClickExploreButton() {
+    this.router.navigate(['/products']);
+  }
+
+  onClickContactButton() {
+    this.router.navigate(['/contact'])
   }
 }

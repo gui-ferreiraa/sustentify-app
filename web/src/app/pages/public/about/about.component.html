@@ -9,7 +9,7 @@
     [titleColor]="about.titleColor"
   />
   <div
-    class="flex gap-8 flex-col md:flex-row"
+    class="flex gap-8 flex-col md:flex-row mt-12"
   >
     <section
       class="w-full md:w-2/4"
@@ -18,17 +18,43 @@
         ngSrc="/assets/images/meeting.jpg"
         width="720"
         height="640"
-        class="rounded-xl object-cover h-[342px] md:h-[70%]"
+        class="rounded-xl object-cover h-[342px] md:h-[80%]"
       />
     </section>
     <section
       class="w-full md:w-2/4"
     >
-      <p
-        class="default-paragraph text-justify"
+      <app-title-display
+        [center]="false"
+        [subtitle]="'em 2025'"
+        [subtitleColor]="about.subtitleColor"
+        [title]="'história'"
+        [titleColor]="about.titleColor"
+      />
+      <div
+        class="flex flex-col gap-3"
       >
-        Tem dúvidas, sugestões ou quer saber mais sobre como a Sustentify pode ajudar sua empresa a reduzir seu impacto ambiental? Nossa equipe está pronta para atender você! Preencha o formulário abaixo ou entre em contato pelos nossos canais e vamos juntos construir um futuro mais sustentável.
-      </p>
+        <p
+          class="default-paragraph text-justify"
+        >
+          A Sustentify nasceu como um projeto de <strong>Trabalho de Conclusão de Curso (TCC)</strong>, com o objetivo de enfrentar um dos maiores desafios do nosso tempo: a redução dos impactos ambientais causados pelo desperdício de materiais.
+        </p>
+        <p
+          class="default-paragraph text-justify"
+        >
+          O projeto conta com a colaboração de <strong>orientadores da própria universidade</strong>, cujas expertise nas áreas de sustentabilidade, economia circular e inovação tecnológica foram essenciais para moldar a plataforma. A ideia surgiu da necessidade de criar um espaço onde empresas pudessem não apenas descartar seus produtos de maneira mais responsável, mas também encontrar maneiras de reaproveitar materiais que, de outra forma, seriam descartados de forma inadequada.
+        </p>
+        <p
+          class="default-paragraph text-justify"
+        >
+          Nosso compromisso é transformar esses produtos em oportunidades de negócio e, ao mesmo tempo, reduzir o impacto ambiental gerado pelas atividades industriais e comerciais. A plataforma oferece não só a <strong>compra e venda de produtos descartados</strong>, mas também a possibilidade de compensação de carbono, contribuindo para a neutralização das emissões das empresas.
+        </p>
+        <p
+          class="default-paragraph text-justify"
+        >
+          Com a ajuda de nossos orientadores e a dedicação de um time engajado, a Sustentify visa facilitar a implementação da <strong>economia circular</strong> nas empresas, alinhando soluções inovadoras com a necessidade urgente de proteger nosso planeta. Acreditamos que, ao integrar empresas em um ecossistema mais sustentável, podemos juntos criar um futuro mais equilibrado e responsável.
+        </p>
+      </div>
     </section>
   </div>
 </main>

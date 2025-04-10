@@ -12,6 +12,7 @@ import { IProductSummary } from '../../../core/types/product';
 import { ProductCardComponent } from "../../../core/components/product-card/product-card.component";
 import { ContactComponent } from "./components/contact/contact.component";
 import { TitleDisplayComponent } from "../../../core/components/title-display/title-display.component";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -80,12 +81,17 @@ export class HomeComponent implements OnInit {
   products$!: Observable<IProductSummary[]>
 
   constructor(
+    private readonly router: Router,
     private readonly productsService: ProductsService
   ) {}
 
   ngOnInit() {
     this.productsService.fetchProducts().subscribe();
     this.products$ = this.productsService.products$;
+  }
+
+  exploreButtonClicked() {
+    this.router.navigate(['/products'])
   }
 
 }
