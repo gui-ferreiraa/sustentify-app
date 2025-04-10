@@ -11,6 +11,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular/animations": "^19.2.4",
     "@angular/common": "^19.2.0",
     "@angular/compiler": "^19.2.0",
     "@angular/core": "^19.2.0",
@@ -21,6 +22,8 @@
     "@tailwindcss/postcss": "^4.1.2",
     "clsx": "^2.1.1",
     "lucide-angular": "^0.487.0",
+    "ngx-mask": "^19.0.6",
+    "ngx-toastr": "^19.0.0",
     "postcss": "^8.5.3",
     "rxjs": "~7.8.0",
     "tailwind-merge": "^3.1.0",
