@@ -1,8 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { ICompany } from '../../core/types/company';
 import { CookieService } from '../cookies/cookie.service';
+import { REQUIRE_AUTH } from '../../core/interceptors/contexts/authRequire.context';
 
 interface IResponseDto {
   name: string;
@@ -57,35 +58,27 @@ export class AuthService {
     };
 
     this.http.get<ICompany>(`${this.apiUrl}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
+      context: new HttpContext().set(REQUIRE_AUTH, true),
     }).subscribe({
       next: (company) => {
         this.setCompany(company);
         this.loadedSubject.next(true);
       },
       error: (err) => {
-        this.setCompany(null);
         this.loadedSubject.next(true);
-        this.cookieService.removeAccessToken();
+        this.logout();
       }
     });
   }
 
   logout() {
-    const token = this.cookieService.getAccessToken();
-
     this.setCompany(null);
-    this.http.get<IResponseDto>(`${this.apiUrl}/logout`, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    }).subscribe({
-      next(value) {
-      },
-    });
+    
     this.cookieService.removeAccessToken();
-  }
 
+    this.http.get<IResponseDto>(`${this.apiUrl}/logout`, {
+      context: new HttpContext().set(REQUIRE_AUTH, true),
+    }).subscribe(vl => console.log(vl));
+
+  }
 }
