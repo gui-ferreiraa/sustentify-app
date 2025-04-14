@@ -1,0 +1,16 @@
+<div
+  [className]="'fixed inset-0 flex justify-center items-center transition-colors ' + (this.isOpen() ? ' visible bg-black/20 z-50 ' : ' invisible ')"
+>
+  <div
+    (click)="$event.stopPropagation()"
+    [className]="'bg-white rounded-xl shadow-w-[70%] p-6 md:w-2/5 transition-all ' + (this.isOpen() ? ' scale-100 opacity-100 ' : ' scale-125 opacity-0 ')"
+  >
+    <button
+      (click)="onClose()"
+      class="absolute top-2 right-2 p-1 rounded-lg text-gray-400 bg-white hover:bg-gray-50 hover:text-gray-600"
+    >
+      X
+    </button>
+    <ng-content></ng-content>
+  </div>
+</div>
