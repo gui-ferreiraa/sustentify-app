@@ -5,12 +5,18 @@ import { Component, EventEmitter, input, Output } from '@angular/core';
   imports: [],
   template: `
     <button
-      class="bg-[#21926B] px-3 md:px-6 py-3 text-white rounded-lg font-semibold text-[12px] md:text-base hover:bg-[#1A7B5D] transition duration-200 ease-in-out cursor-pointer"
+      class="bg-[#21926B] px-3 md:px-6 py-3 text-white rounded-lg font-semibold text-[12px] md:text-base hover:bg-[#1A7B5D] transition duration-200 ease-in-out cursor-pointer disabled:opacity-40"
       (click)="onClick()"
       [type]="type()"
       [disabled]="disabled()"
     >
-      {{  title() }}
+      @if (disabled()) {
+        Carregando...
+      }
+      @else {
+
+        {{  title() }}
+      }
     </button>`
 })
 export class ButtonGreenComponent {

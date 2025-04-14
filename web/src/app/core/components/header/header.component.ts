@@ -16,13 +16,13 @@ import { CommonModule } from '@angular/common';
 export class HeaderComponent implements OnInit {
   private readonly Menu = Menu;
   private readonly X = X;
-  public readonly ChevronDown = ChevronDown;
-  public isMenuOpen = false;
-  public dropdownOpen = false;
-  public scrolled = false;
-  public showBackground = false;
-  metalSlug = Category.METAL;
-  plasticSlug = Category.PLASTIC;
+  protected readonly ChevronDown = ChevronDown;
+  protected isMenuOpen = false;
+  protected dropdownOpen = false;
+  protected scrolled = false;
+  protected showBackground = false;
+  protected readonly metalSlug = Category.METAL;
+  protected readonly plasticSlug = Category.PLASTIC;
   protected isAuthenticated!: Observable<boolean>;
 
   constructor(
@@ -33,6 +33,9 @@ export class HeaderComponent implements OnInit {
       if (event instanceof NavigationEnd) {
         const path = event.urlAfterRedirects;
         this.showBackground = path !== '/';
+
+        this.isMenuOpen = false;
+        this.dropdownOpen = false;
       }
     })
   }
