@@ -1,0 +1,150 @@
+<form
+  class="h-[605px] flex flex-col gap-2 overflow-y-scroll pr-3"
+  [formGroup]="form"
+  (ngSubmit)="submit()"
+>
+
+  <h4 class="mb-6">
+    Novo Produto
+  </h4>
+
+  <app-primary-input
+    formControlName="name"
+    label="Name"
+    placeholder="Product Name"
+    type="text"
+    [error]="form.controls.name.invalid && (form.controls['name'].touched || form.controls.name.dirty)"
+    [errorMessage]="
+      form.controls.name.errors?.['required'] && 'Nome do Produto é obrigatório'
+    "
+    inputName="name"
+  />
+
+  <app-select-input
+    formControlName="category"
+    inputName="category"
+    label="Categoria"
+    [options]="categoryOptions"
+    class="mb-3"
+    [error]="form.controls.category.invalid && (form.controls['category'].touched || form.controls.category.dirty)"
+    [errorMessage]="
+      form.controls.category.errors?.['required'] && 'Categoria do Produto é obrigatório'
+    "
+  />
+
+  <app-select-input
+    formControlName="condition"
+    inputName="condition"
+    label="Condição"
+    [options]="conditionOptions"
+    class="mb-3"
+    [error]="form.controls.condition.invalid && (form.controls['condition'].touched || form.controls.condition.dirty)"
+    [errorMessage]="
+      form.controls.condition.errors?.['required'] && 'Condição do Produto é obrigatório'
+    "
+  />
+
+  <app-select-input
+    formControlName="material"
+    inputName="material"
+    label="Material"
+    [options]="materialOptions"
+    class="mb-3"
+    [error]="form.controls.material.invalid && (form.controls['material'].touched || form.controls.material.dirty)"
+    [errorMessage]="
+      form.controls.material.errors?.['required'] && 'Material do Produto é obrigatório'
+    "
+  />
+
+  <app-primary-input
+    formControlName="productionDate"
+    label="Data de Fabricação"
+    placeholder=""
+    type="date"
+    [error]="form.controls.productionDate.invalid && (form.controls['productionDate'].touched || form.controls.productionDate.dirty)"
+    [errorMessage]="
+      form.controls.productionDate.errors?.['required'] && 'Data de Fabricação é obrigatório'
+    "
+    inputName="productionDate"
+  />
+
+  <app-primary-input
+    formControlName="price"
+    label="Preço"
+    placeholder="R$ 00.000,00"
+    type="text"
+    [mask]="'separator.2'"
+    [thousandSeparator]="'.'"
+    [decimalMarker]="','"
+    prefix="R$ "
+    [error]="form.controls.price.invalid && (form.controls['price'].touched || form.controls.price.dirty)"
+    [errorMessage]="
+      form.controls.price.errors?.['required'] && 'Preço é obrigatório' ||
+      form.controls.price.errors?.['maxlength'] && 'No maximo até 12 caracteres'
+    "
+    inputName="price"
+    maxlength="12"
+  />
+
+  <app-primary-input
+    formControlName="location"
+    label="Localização"
+    placeholder="Rua monteiro, vila dois, n°123 - SP"
+    type="text"
+    [error]="form.controls.location.invalid && (form.controls['location'].touched || form.controls.location.dirty)"
+    [errorMessage]="
+      form.controls.location.errors?.['required'] && 'Localização é obrigatório'
+    "
+    inputName="location"
+  />
+
+  <app-primary-input
+    formControlName="quantity"
+    label="Quantidade"
+    placeholder=""
+    type="number"
+    [error]="form.controls.quantity.invalid && (form.controls['quantity'].touched || form.controls.quantity.dirty)"
+    [errorMessage]="
+      form.controls.quantity.errors?.['required'] && 'Quantidade é obrigatório'
+    "
+    inputName="quantity"
+  />
+
+  <app-textarea-input
+    formControlName="description"
+    inputName="description"
+    label="Descrição"
+    [error]="form.controls.description.invalid && (form.controls['description'].touched || form.controls.description.dirty)"
+    [errorMessage]="
+      form.controls.description.errors?.['required'] && 'Descrição é obrigatório'
+    "
+    placeholder=""
+  />
+
+  <app-image-upload-input
+    formControlName="thumbnail"
+    label="Thumbnail"
+    inputName="thumbnail"
+    placeholder=""
+    [multiple]="false"
+    [error]="form.controls.thumbnail.invalid && (form.controls['thumbnail'].touched || form.controls.thumbnail.dirty)"
+    [errorMessage]="''"
+  />
+
+  <app-image-upload-input
+    formControlName="images"
+    label="Imagens"
+    inputName="images"
+    placeholder=""
+    [multiple]="true"
+    [error]="form.controls.images.invalid && (form.controls['images'].touched || form.controls.images.dirty)"
+    [errorMessage]="''"
+  />
+
+  <app-button-green
+    title="Cadastrar"
+    [disabled]="buttonDisabled()"
+    [type]="'submit'"
+  />
+
+</form>
