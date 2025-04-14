@@ -1,0 +1,36 @@
+<div class="flex flex-col h-full w-full">
+    <!-- Table -->
+    <div class="w-full bg-white shadow-lg rounded-sm border border-gray-200">
+        <header class="px-5 py-4 border-b border-gray-100 w-full flex justify-between">
+            <div>
+              <h2 class="font-semibold text-gray-800">{{ title() }}</h2>
+              <p>{{ subtitle() }}</p>
+
+            </div>
+
+            <button
+              class="bg-[#21926baa] hover:bg-[#21926b] text-white font-bold py-2 px-4 rounded cursor-pointer text-sm w-max h-max transition-colors ease-in-out duration-200"
+              (click)="onClickButton()"
+            >
+              {{ buttonTitle() }}
+            </button>
+        </header>
+        <div>
+            <div class=" max-h-[500px] overflow-y-auto">
+                <table class="table-auto w-full -z-10">
+                    <thead class="text-xs font-semibold uppercase text-gray-400 bg-gray-50">
+                      <tr>
+                        @for (thead of theads(); track $index) {
+                          <th class="p-2 whitespace-nowrap">
+                              <div class="font-semibold text-left">{{ thead }}</div>
+                          </th>
+                        }
+                      </tr>
+                    </thead>
+                    <tbody class="text-sm divide-y divide-gray-100">
+                      <ng-content></ng-content>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
