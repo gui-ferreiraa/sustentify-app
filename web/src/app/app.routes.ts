@@ -12,6 +12,7 @@ import { TermsComponent } from './pages/public/terms/terms.component';
 import { AuthGuard } from './core/guards/auth/auth.guard';
 import { AutoLoginGuard } from './core/guards/auth/auto-login.guard';
 import { ProfileComponent } from './pages/private/profile/profile.component';
+import { OverviewComponent } from './pages/private/overview/overview.component';
 
 export const routes: Routes = [
   {
@@ -53,6 +54,11 @@ export const routes: Routes = [
     component: TermsComponent
   },
   // privates
+  {
+    path: 'profile/overview/:productId',
+    component: OverviewComponent,
+    canActivate: [AuthGuard]
+  },
   {
     path: 'profile',
     component: ProfileComponent,

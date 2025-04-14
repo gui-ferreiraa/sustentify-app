@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ProductsService } from '../../../services/product/products.service';
 import { Observable } from 'rxjs';
 import { IProductPagination } from '../../types/product';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-pagination',
@@ -19,7 +19,6 @@ export class PaginationComponent {
     private router: Router,
   ) {
     this.pagination$ = this.productsService.productsPagination$;
-    console.log(this.pagination$);
     this.pagination$.subscribe(page => {
       this.currentPage = page.number;
       this.totalPages = page.totalPages;

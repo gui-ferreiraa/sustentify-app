@@ -78,7 +78,7 @@
   <app-table
     (buttonClicked)="openNewProductModal()"
     buttonTitle="Novo Produto"
-    subtitle="''"
+    subtitle="Registrados"
     title="Produtos"
     [theads]="['Nome', 'Category', 'Solicitações', '']"
     class="w-full"
@@ -86,7 +86,7 @@
     @for (prod of products$ | async; track prod.id) {
       <tr>
         <td
-          class="p-4"
+          class="p-4 flex items-center gap-3"
         >
           @if (prod.thumbnail) {
             <img
@@ -94,7 +94,15 @@
               alt=""
               width="60"
               height="60"
-              class="object-cover w-16 h-16"
+              class="object-cover w-14 h-14 rounded-xl max-sm:hidden"
+            />
+          } @else {
+            <img
+              src="/assets/images/product-default.jpg"
+              alt=""
+              width="60"
+              height="60"
+              class="object-cover w-14 h-14 rounded-xl max-sm:hidden"
             />
           }
           {{ prod.name }}
@@ -102,7 +110,7 @@
         <td
           class="p-4"
         >
-          {{ prod.category }}
+          {{ translateCategory(prod.category) }}
         </td>
         <td
           class="p-4"

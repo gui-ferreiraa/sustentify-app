@@ -133,7 +133,7 @@
   />
 
   <div class="group w-max flex gap-2 mb-3">
-    @if (productInput()?.images) {
+    @if (productInput()?.thumbnail) {
       <img
         [ngSrc]="productInput()?.thumbnail?.url ?? ''"
         alt="Thumbnail"

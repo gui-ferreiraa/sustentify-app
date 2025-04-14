@@ -114,7 +114,6 @@ export class ProductUpdateFormComponent implements OnInit {
       },
       error: (err) => {
         this.toastService.error('Erro ao atualizar produto')
-        console.log(err);
         this.buttonDisabled.set(false)
       },
       complete: () => this.buttonDisabled.set(false),

@@ -69,9 +69,13 @@ export class InterestedFormComponent {
       quantity: payload.quantity
     }).subscribe({
       next: (value) => {
-        if (value.successfully) {
-          this.toastService.success('Interesse Registrado!');
-          this.onSubmit.emit();
+        this.toastService.success('Interesse Registrado!');
+        this.onSubmit.emit();
+      },
+      error: (err) => {
+        if (err.error.status === 'CONFLICT') {
+          this.toastService.error('Erro: Interesse já registrado!');
+          this.buttonDisabled.set(false);
         }
       },
       complete: () => this.buttonDisabled.set(false),

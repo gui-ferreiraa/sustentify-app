@@ -13,6 +13,8 @@ import { ModalComponent } from "../../../core/components/modal/modal.component";
 import { ProductUpdateFormComponent } from "./components/product-update-form/product-update-form.component";
 import { ProductFormComponent } from "./components/product-form/product-form.component";
 import { ToastrService } from 'ngx-toastr';
+import { Category } from '../../../core/enums/category.enum';
+import { EnumTranslations } from '../../../translations/enum-translations';
 
 interface IModal {
   label: 'profile' | 'product';
@@ -61,6 +63,10 @@ export class ProfileComponent implements OnInit {
     this.router.navigate(['/signin'])
   }
 
+  translateCategory(category: Category) {
+    return EnumTranslations.Category[category];
+  }
+
   getDropdownOptions(productId: number) {
     return [
       {
@@ -97,7 +103,6 @@ export class ProfileComponent implements OnInit {
     this.productsService.fetchProductDetails(id).subscribe({
       next: (res) => {
         this.productUpdated.set(res);
-        console.log(res);
         this.modalContent.set('edit-product');
         this.modalIsOpen.set(true);
       }
