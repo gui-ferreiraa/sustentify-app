@@ -1,12 +1,17 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { IProduct, IProductPagination, IProductResponse, IProductSummary } from '../../core/types/product';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
-import { Category } from '../../core/enums/category.enum';
-import { Condition } from '../../core/enums/condition.enum';
-import { Material } from '../../core/enums/material.enum';
-import { isValidEnumValue } from '../../core/utils/isValidEnumValue';
+import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
+import { REQUIRE_AUTH } from '../../core/interceptors/contexts/authRequire.context';
+import { IResponseDto } from '../../core/types/response.dto';
+
+interface IProductServiceParams {
+  size: number;
+  page: number;
+  category?: string,
+  condition?: string,
+  material?: string
+}
 
 @Injectable({
   providedIn: 'root'
@@ -73,11 +78,83 @@ export class ProductsService {
       )
   }
 
+  fetchProductsRelated(props: IProductServiceParams): Observable<IProductResponse> {
+    let params = new HttpParams()
+      .set('size', props.size)
+      .set('page', props.page)
+
+      if (props.category) {
+        params = params.set('category', props.category);
+      }
+
+      if (props.condition) {
+        params = params.set('condition', props.condition);
+      }
+
+      if (props.material) {
+        params = params.set('material', props.material);
+      }
+
+    return this.http.get<IProductResponse>(this.apiUrl, {
+      params,
+    }).pipe(
+      tap(response => {
+        this.productsSubject.next(response.content);
+        this.productsPaginationSubject.next(response);
+      })
+    )
+  }
+
   fetchProductDetails(productId: number): Observable<IProduct> {
     if (isNaN(productId)) {
       throw new Error('productid inválido')
     }
 
     return this.http.get<IProduct>(`${this.apiUrl}/${productId}`);
+  }
+
+  fetchProductCreate(product: Omit<IProduct, 'id' | 'disposalDate'>) {
+    return this.http.post<IProduct>(this.apiUrl, product, {
+      context: new HttpContext().set(REQUIRE_AUTH, true),
+    })
+  }
+
+  fetchProductsByCompany(): Observable<IProductResponse> {
+    return this.http.get<IProductResponse>(`${this.apiUrl}/my`, {
+      context: new HttpContext().set(REQUIRE_AUTH, true),
+    })
+  }
+
+  fetchProductUpdate(product: Omit<IProduct, 'disposalDate'>): Observable<IResponseDto> {
+    return this.http.patch<IResponseDto>(`${this.apiUrl}/${product.id}`, {
+      ...product,
+    }, {
+      context: new HttpContext().set(REQUIRE_AUTH, true),
+    })
+  }
+
+  fetchProductDelete(productId: number): Observable<IResponseDto> {
+    return this.http.delete<IResponseDto>(`${this.apiUrl}/${productId}`, {
+      context: new HttpContext().set(REQUIRE_AUTH, true),
+    })
+  }
+
+  fetchUploadThumbnail(productId: number, file: File): Observable<IResponseDto> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.http.post<IResponseDto>(`${this.apiUrl}/${productId}/thumbnail`, formData, {
+      context: new HttpContext().set(REQUIRE_AUTH, true),
+    })
+  }
+
+  fetchUploadImages(productId: number, files: File[]): Observable<IResponseDto> {
+    const formData = new FormData();
+
+    files.forEach(file => formData.append('files', file));
+
+    return this.http.post<IResponseDto>(`${this.apiUrl}/${productId}/images`, formData, {
+      context: new HttpContext().set(REQUIRE_AUTH, true),
+    })
   }
 }

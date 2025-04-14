@@ -47,7 +47,7 @@ export class AuthService {
     return this.http.post<IResponseDto>(`${this.apiUrl}/login`, loginDto);
   }
 
-  loadCompanyFromToken() {
+  getCompanyLogged() {
     const token = this.cookieService.getAccessToken();
 
     if (!token) {

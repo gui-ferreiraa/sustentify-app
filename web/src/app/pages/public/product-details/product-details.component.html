@@ -1,32 +1,196 @@
 <main
-  class="default-padding max-md:mt-8"
 >
-@if (product$ | async; as product;) {
-  <section>
-    <div>
+  <div
+    class="default-padding max-md:mt-8 flex flex-col gap-16"
+  >
 
-    </div>
+    @if (product$ | async; as product;) {
+      <section class="flex flex-col gap-4">
+        <div
+          class="flex flex-col gap-2"
+        >
+          <p
+            class="bg-[#FFF952] rounded-md flex w-max p-1 uppercase default-paragraph"
+          >
+            {{ translateCategory(product.category) }}
+          </p>
 
-    <h3>
-      {{ product.name }}
+          <h3
+            class="text-xl font-semibold"
+          >
+            {{ product.name }}
+          </h3>
+        </div>
+        <div>
+          <p class="default-paragraph">
+            {{ translateCategory(product.category) }}
+          </p>
+          <p class="default-paragraph">
+            {{ formatPrice(product.price) }}
+          </p>
+        </div>
+        <div class="flex flex-col gap-2">
+          <h5 class="default-paragraph">
+            Descrição:
+          </h5>
+          <p>
+            {{ product.description }}
+          </p>
+        </div>
+      </section>
+      <section>
+        <h3
+          class="text-xl font-semibold"
+        >
+          Detalhes
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16">
+          <app-details-wrapper
+            [content]="product.quantity"
+            title="Quantidade"
+          >
+            <lucide-angular
+              [name]="RulerIcon"
+              size="20"
+            />
+          </app-details-wrapper>
+          <app-details-wrapper
+            [content]="product.interestCount.toString()"
+            title="Solicitações"
+          >
+            <lucide-angular
+              [name]="BaggageClaimIcon"
+              size="20"
+            />
+          </app-details-wrapper>
+          <app-details-wrapper
+            [content]="translateCondition(product.condition)"
+            title="Condição"
+          >
+            <lucide-angular
+              [name]="ChartNoAxesColumnDecreasingIcon"
+              size="20"
+            />
+          </app-details-wrapper>
+          <app-details-wrapper
+            [content]="translateMaterial(product.material)"
+            title="Material"
+          >
+            <lucide-angular
+              [name]="BrickWallIcon"
+              size="20"
+            />
+          </app-details-wrapper>
+          <app-details-wrapper
+            [content]="translateCategory(product.category)"
+            title="Categoria"
+          >
+            <lucide-angular
+              [name]="StickyNoteIcon"
+              size="20"
+            />
+          </app-details-wrapper>
+          <app-details-wrapper
+            [content]="formatDate(product.productionDate)"
+            title="Data de Produção"
+          >
+            <lucide-angular
+              [name]="CalendarSyncIcon"
+              size="20"
+            />
+          </app-details-wrapper>
+        </div>
+      </section>
+      <section class="flex flex-col gap-4">
+        <div class="flex flex-col gap-2">
+          <h3
+            class="text-xl font-semibold"
+          >
+            Localização
+          </h3>
+          <p>
+            {{ product.location }}
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          @if (product.thumbnail) {
+            <img
+              [ngSrc]="product.thumbnail.url"
+              width="1220"
+              height="840"
+              class="object-cover relative rounded-2xl h-[640px] w-full"
+            />
+          }
+          @else {
+            <img
+              [ngSrc]="'/assets/images/product-default.jpg'"
+              width="1220"
+              height="840"
+              class="object-cover relative rounded-2xl h-[640px] w-full"
+            />
+          }
+
+          <div
+            class="w-full grid grid-cols-[repeat(auto-fit,1fr)] md:grid-cols-[repeat(auto-fit,minmax(264px,1fr))] gap-4 mb-8"
+          >
+            @if(product.images && product.images.length > 0) {
+              @for (image of product.images; track $index) {
+                <img
+                  [ngSrc]="image.url"
+                  width="300"
+                  height="300"
+                  class="object-cover relative rounded-2xl h-[640px] w-full"
+                />
+              }
+            }
+          </div>
+        </div>
+      </section>
+
+      @if (showRequestButton()) {
+        <app-button-green
+          title="Solicitar"
+          [disabled]="false"
+          [type]="'button'"
+          (click)="onClick()"
+        />
+      }
+    }
+  </div>
+  <section
+    class="default-padding max-md:mt-8 flex flex-col gap-16 bg-[#F2F1EB]"
+  >
+    <h3
+      class="text-xl font-semibold"
+    >
+      Produtos Relacionados
     </h3>
-    <div>
-      <p>
-        {{ product.category }}
-        <strong>Produto id: </strong>
-        {{ product.id }}
-      </p>
-      <p>
-        {{ formatPrice(product.price) }}
-      </p>
+    <div
+      class="w-full grid grid-cols-[repeat(auto-fit,1fr)] md:grid-cols-[repeat(auto-fit,minmax(264px,1fr))] gap-4 mb-8"
+    >
+      @if (productsRelated$ | async) {
+        @for (prod of productsRelated$ | async; track prod.id) {
+          <app-product-card
+            [productSummary]="prod"
+          />
+        }
+        @empty {
+          <p>Nenhum produto...</p>
+        }
+      }
+      @else {
+        <p>Nenhum produto...</p>
+      }
     </div>
-    <p>
-      <strong>Descrição: </strong>
-      {{ product.description }}
-    </p>
   </section>
-  <section>
-
-  </section>
-}
 </main>
+<app-modal
+  (clickedOutside)="toggleModal()"
+  [isOpen]="modalIsOpen()"
+>
+  <app-interested-form
+    (onSubmit)="onSubmitInterested()"
+    [productId]="productId()"
+  />
+</app-modal>

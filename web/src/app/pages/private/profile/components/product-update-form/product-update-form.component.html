@@ -121,6 +121,7 @@
     placeholder=""
   />
 
+
   <app-image-upload-input
     formControlName="thumbnail"
     label="Thumbnail"
@@ -130,6 +131,19 @@
     [error]="form.controls.thumbnail.invalid && (form.controls['thumbnail'].touched || form.controls.thumbnail.dirty)"
     [errorMessage]="''"
   />
+
+  <div class="group w-max flex gap-2 mb-3">
+    @if (productInput()?.images) {
+      <img
+        [ngSrc]="productInput()?.thumbnail?.url ?? ''"
+        alt="Thumbnail"
+        width="60"
+        height="60"
+        (click)="removeThumbnail(productInput()?.thumbnail)"
+        class="w-20 h-20 object-cover rounded-xl cursor-pointer hover:opacity-70 transition z-10"
+      />
+    }
+  </div>
 
   <app-image-upload-input
     formControlName="images"
@@ -141,8 +155,23 @@
     [errorMessage]="''"
   />
 
+  <div class="w-full flex gap-2 mb-3">
+    @if (productInput()?.images) {
+        @for (image of productInput()?.images; track $index) {
+          <img
+            [ngSrc]="image.url"
+            alt="Thumbnail"
+            width="60"
+            height="60"
+            (click)="''"
+            class="w-20 h-20 object-cover rounded-xl cursor-pointer hover:opacity-70 transition z-10"
+          />
+        }
+      }
+  </div>
+
   <app-button-green
-    title="Cadastrar"
+    title="Editar"
     [disabled]="buttonDisabled()"
     [type]="'submit'"
   />

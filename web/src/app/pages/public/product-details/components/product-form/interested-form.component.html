@@ -1,0 +1,52 @@
+<form
+  class="h-[605px] flex flex-col gap-2 pr-3"
+  [formGroup]="form"
+  (ngSubmit)="submit()"
+>
+
+  <h4 class="mb-6">
+    Registrar Interesse
+  </h4>
+
+  <app-primary-input
+    formControlName="name"
+    label="Nome"
+    placeholder=""
+    type="text"
+    [error]="form.controls.name.invalid && (form.controls['name'].touched || form.controls.name.dirty)"
+    [errorMessage]="
+      form.controls.name.errors?.['required'] && 'Nome do Produto é obrigatório'
+    "
+    inputName="name"
+  />
+
+  <app-primary-input
+    formControlName="quantity"
+    label="Quantidade"
+    placeholder=""
+    type="number"
+    [error]="form.controls.quantity.invalid && (form.controls['quantity'].touched || form.controls.quantity.dirty)"
+    [errorMessage]="
+      form.controls.quantity.errors?.['required'] && 'Quantidade é obrigatório'
+    "
+    inputName="quantity"
+  />
+
+  <app-textarea-input
+    formControlName="message"
+    inputName="message"
+    label="Mensagem"
+    [error]="form.controls.message.invalid && (form.controls['message'].touched || form.controls.message.dirty)"
+    [errorMessage]="
+      form.controls.message.errors?.['required'] && 'Descrição é obrigatório'
+    "
+    placeholder=""
+  />
+
+  <app-button-green
+    title="Cadastrar"
+    [disabled]="buttonDisabled()"
+    [type]="'submit'"
+  />
+
+</form>

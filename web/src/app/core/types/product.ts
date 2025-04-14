@@ -2,7 +2,7 @@ import { Category } from "../enums/category.enum";
 import { Condition } from "../enums/condition.enum";
 import { Material } from "../enums/material.enum";
 
-interface IProductImage {
+export interface IProductImage {
   id: string;
   url: string;
   productId: string;

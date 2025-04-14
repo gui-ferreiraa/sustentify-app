@@ -12,7 +12,9 @@ import { ProductsService } from '../../../../../services/product/products.servic
 import { TextareaInputComponent } from "../../../../../core/components/inputs/textarea-input/textarea-input.component";
 import { ImageUploadInputComponent } from "../../../../../core/components/inputs/image-upload-input/image-upload-input.component";
 import { ToastrService } from 'ngx-toastr';
-import { IProduct } from '../../../../../core/types/product';
+import { IProduct, IProductImage } from '../../../../../core/types/product';
+import { NgOptimizedImage } from '@angular/common';
+import { ModalComponent } from "../../../../../core/components/modal/modal.component";
 
 interface ProductForm {
   name: FormControl;
@@ -30,7 +32,7 @@ interface ProductForm {
 
 @Component({
   selector: 'app-product-update-form',
-  imports: [PrimaryInputComponent, ReactiveFormsModule, SelectInputComponent, ButtonGreenComponent, TextareaInputComponent, ImageUploadInputComponent],
+  imports: [PrimaryInputComponent, ReactiveFormsModule, SelectInputComponent, ButtonGreenComponent, TextareaInputComponent, ImageUploadInputComponent, NgOptimizedImage],
   templateUrl: './product-update-form.component.html',
 })
 export class ProductUpdateFormComponent implements OnInit {
@@ -104,7 +106,7 @@ export class ProductUpdateFormComponent implements OnInit {
     const payload = this.prepareFormPayload();
 
     this.buttonDisabled.set(true);
-    this.productsService.fetchUpdateProduct(payload)
+    this.productsService.fetchProductUpdate(payload)
       .subscribe({
       next: (response) => {
         this.toastService.success('Produto atualizado com sucesso!');
@@ -112,9 +114,16 @@ export class ProductUpdateFormComponent implements OnInit {
       },
       error: (err) => {
         this.toastService.error('Erro ao atualizar produto')
+        console.log(err);
         this.buttonDisabled.set(false)
       },
       complete: () => this.buttonDisabled.set(false),
     });
+  }
+
+  removeThumbnail(image?: IProductImage) {
+    if (!image) return;
+
+    window.prompt('Yes baby')
   }
 };

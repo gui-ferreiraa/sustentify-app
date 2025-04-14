@@ -1,25 +1,145 @@
 <main
-  class="default-padding max-md:mt-8"
+  class="default-padding max-md:mt-8 flex flex-col gap-5 lg:flex-row"
 >
   @if (company$ | async; as company) {
-    <h3>
-      email:
-      {{ company.email }}
-    </h3>
-    <h3>
-      name:
-      {{ company.name }}
-    </h3>
-    <h3>
-      department
-      {{ company.companyDepartment }}
-    </h3>
+    <div class="bg-white overflow-hidden shadow rounded-lg border w-full lg:w-[387px]">
+      <div class="px-4 py-5 sm:px-6">
+          <h3 class="text-lg leading-6 font-medium text-gray-900">
+              Empresa
+          </h3>
+          <p class="mt-1 max-w-2xl text-sm text-gray-500">
+              Informações
+          </p>
+      </div>
+      <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
+          <dl class="sm:divide-y sm:divide-gray-200">
+              <div class="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt class="text-sm font-medium text-gray-500">
+                      Nome
+                  </dt>
+                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                      {{ company.name }}
+                  </dd>
+              </div>
+              <div class="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt class="text-sm font-medium text-gray-500">
+                      Email
+                  </dt>
+                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                      {{ company.email }}
+                  </dd>
+              </div>
+              <div class="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt class="text-sm font-medium text-gray-500">
+                      Segmento
+                  </dt>
+                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                      {{ company.companyDepartment }}
+                  </dd>
+              </div>
+              <div class="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt class="text-sm font-medium text-gray-500">
+                      Phone
+                  </dt>
+                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                      {{ company.name }}
+                  </dd>
+              </div>
+              <div class="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt class="text-sm font-medium text-gray-500">
+                      Endereço
+                  </dt>
+                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                      {{ company.address }}
+                  </dd>
+              </div>
+              <div
+                class="flex gap-6 justify-center p-5"
+              >
+                <app-button-green
+                  (click)="logout()"
+                  [disabled]="false"
+                  title="Logout"
+                  [type]="'button'"
+                />
+                <app-button-green
+                  (click)="openEditCompanyModal()"
+                  [disabled]="false"
+                  title="Editar"
+                  [type]="'button'"
+                  class="h-3"
+                />
+              </div>
+          </dl>
+      </div>
+    </div>
   }
 
-  <app-button-green
-    (click)="logout()"
-    [disabled]="false"
-    title="Logout"
-    [type]="'button'"
-  />
+  <app-table
+    (buttonClicked)="openNewProductModal()"
+    buttonTitle="Novo Produto"
+    subtitle="''"
+    title="Produtos"
+    [theads]="['Nome', 'Category', 'Solicitações', '']"
+    class="w-full"
+  >
+    @for (prod of products$ | async; track prod.id) {
+      <tr>
+        <td
+          class="p-4"
+        >
+          @if (prod.thumbnail) {
+            <img
+              [src]="prod.thumbnail.url"
+              alt=""
+              width="60"
+              height="60"
+              class="object-cover w-16 h-16"
+            />
+          }
+          {{ prod.name }}
+        </td>
+        <td
+          class="p-4"
+        >
+          {{ prod.category }}
+        </td>
+        <td
+          class="p-4"
+        >
+          {{ prod.interestCount }}
+        </td>
+        <td
+          class="p-4"
+        >
+          <app-menu-dropdown
+            (clickedOutside)="toggleDropdown(-1)"
+            [isOpen]="dropdownIsOpen() == prod.id"
+            [options]="getDropdownOptions(prod.id)"
+            (toggle)="toggleDropdown(prod.id)"
+          />
+        </td>
+      </tr>
+    }
+  </app-table>
+
+  <app-modal
+    (clickedOutside)="closeModal()"
+    [isOpen]="modalIsOpen()"
+  >
+    @if (modalContent() == 'edit-profile') {
+      <p>profile</p>
+    }
+    @if (modalContent() == 'edit-product') {
+      <app-product-update-form
+        [productInput]="productUpdated()"
+        (onSubmit)="submitProductUpdateModal()"
+      />
+    }
+    @if (modalContent() == 'new-product') {
+      <app-product-form
+        (productCreated)="submitNewProductModal($event)"
+      />
+    }
+  </app-modal>
 </main>

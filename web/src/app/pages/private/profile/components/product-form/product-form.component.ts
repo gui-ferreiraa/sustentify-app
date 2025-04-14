@@ -59,8 +59,6 @@ export class ProductFormComponent {
       thumbnail: new FormControl<File | null>(null, []),
       images: new FormControl<File[] | null>([], []),
     })
-
-    console.log(this.form.getRawValue());
   }
 
   private prepareFormPayload(): any {
@@ -87,16 +85,16 @@ export class ProductFormComponent {
     const payload = this.prepareFormPayload();
 
     this.buttonDisabled.set(true);
-    this.productsService.create(payload).pipe(
+    this.productsService.fetchProductCreate(payload).pipe(
       switchMap(product => {
         const uploadRequests = [];
 
         if (this.form.value.thumbnail) {
-          uploadRequests.push(this.productsService.uploadThumbnail(product.id, this.form.value.thumbnail));
+          uploadRequests.push(this.productsService.fetchUploadThumbnail(product.id, this.form.value.thumbnail));
         }
 
         if (this.form.value.images && this.form.value.images.length > 0) {
-          uploadRequests.push(this.productsService.uploadImages(product.id, this.form.value.images));
+          uploadRequests.push(this.productsService.fetchUploadImages(product.id, this.form.value.images));
         }
 
         return uploadRequests.length

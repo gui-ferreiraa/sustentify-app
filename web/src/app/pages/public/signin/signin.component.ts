@@ -63,7 +63,7 @@ export class SigninComponent {
     }).subscribe({
       next: (vl) => {
         this.cookieService.setAccessToken(vl.accessToken);
-        this.authService.loadCompanyFromToken();
+        this.authService.getCompanyLogged();
         this.authService.isAuthenticated$
           .pipe(
             filter(Boolean),

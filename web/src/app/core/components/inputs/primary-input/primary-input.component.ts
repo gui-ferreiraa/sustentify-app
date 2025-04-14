@@ -1,14 +1,15 @@
 import { Component, forwardRef, input, Input } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
+import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { NgxMaskDirective } from 'ngx-mask';
 
-type InputTypes = "text" | "email" | "password"
+type InputTypes = "text" | "email" | "password" | "date" | "number"
 
 @Component({
   selector: 'app-primary-input',
   imports: [
     ReactiveFormsModule,
     NgxMaskDirective,
+    FormsModule,
   ],
   templateUrl: './primary-input.component.html',
   providers: [
@@ -27,6 +28,10 @@ export class PrimaryInputComponent implements ControlValueAccessor {
   error = input.required<boolean>();
   errorMessage = input.required<string>();
   mask = input<string>();
+  thousandSeparator = input<string>();
+  decimalMarker = input<'.' | ',' | ['.', ',']>();
+  prefix = input<string>();
+
 
   value: string = ''
   onChange: any = () => {}
@@ -34,7 +39,11 @@ export class PrimaryInputComponent implements ControlValueAccessor {
 
   onInput(event: Event){
     const value = (event.target as HTMLInputElement).value
-    this.onChange(value)
+
+    const valueFormat = value
+      .replace("R$ ", '')
+
+    this.onChange(valueFormat)
   }
 
   writeValue(value: any): void {
