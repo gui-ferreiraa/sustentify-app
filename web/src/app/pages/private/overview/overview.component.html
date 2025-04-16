@@ -1,8 +1,59 @@
 <main
   class="default-padding"
 >
-  <h2>Overview</h2>
+  <section>
+    <app-title-display
+      [center]="true"
+      [subtitle]="overview.subtitle"
+      [subtitleColor]="overview.subtitleColor"
+      [title]="overview.title"
+      [titleColor]="overview.titleColor"
+    />
 
-  
+    @if (product$ | async; as product) {
+      <div
+        class="w-full p-3 flex gap-2 shadow-md items-center"
+      >
+        <span class="bg-emerald-400 border-3 border-emerald-300 outline-3 outline-emerald-100 w-4 h-4 rounded-full"></span>
+        <h4 class="capitalize">
+          {{ product.name }}
+        </h4>
+        <p>
+          /
+        </p>
+        <h4>
+          {{ translateCategory(product.category) }}
+        </h4>
+      </div>
 
+      <section
+      class="grid grid-cols-1 md:grid-cols-3"
+      >
+        <app-overview-card
+        [content]="product.interestCount.toString()"
+        title="Solicitações"
+        />
+        <app-overview-card
+        [content]="product.quantity"
+        title="Quantidade"
+        />
+        <app-overview-card
+        content="400"
+        title="Finalizadas"
+        />
+      </section>
+    }
+
+    <section class="mt-3">
+      <app-table
+        (buttonClicked)="''"
+        buttonTitle="Produto"
+        title="Interessados"
+        [theads]="['Empresa', 'Data de Criação', 'Status', 'Quantidade', 'Departamento', 'Ações']"
+        subtitle="Aqui estão as últimas solicitações"
+      >
+
+    </app-table>
+  </section>
+</section>
 </main>

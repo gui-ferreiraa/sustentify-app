@@ -60,7 +60,7 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
-    path: 'profile',
+    path: 'dashboard',
     component: ProfileComponent,
     canActivate: [AuthGuard]
   },

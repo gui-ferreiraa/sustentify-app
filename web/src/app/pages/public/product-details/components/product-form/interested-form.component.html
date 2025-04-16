@@ -1,5 +1,5 @@
 <form
-  class="h-[605px] flex flex-col gap-2 pr-3"
+  class=" flex flex-col gap-2 pr-3"
   [formGroup]="form"
   (ngSubmit)="submit()"
 >
@@ -7,18 +7,6 @@
   <h4 class="mb-6">
     Registrar Interesse
   </h4>
-
-  <app-primary-input
-    formControlName="name"
-    label="Nome"
-    placeholder=""
-    type="text"
-    [error]="form.controls.name.invalid && (form.controls['name'].touched || form.controls.name.dirty)"
-    [errorMessage]="
-      form.controls.name.errors?.['required'] && 'Nome do Produto é obrigatório'
-    "
-    inputName="name"
-  />
 
   <app-primary-input
     formControlName="quantity"

@@ -11,10 +11,8 @@ import { TextareaInputComponent } from "../../../../../core/components/inputs/te
 import { ToastrService } from 'ngx-toastr';
 import { InterestedProductsService } from '../../../../../services/interested/interested-products.service';
 import { ActivatedRoute } from '@angular/router';
-import { pipe, switchMap, tap } from 'rxjs';
 
 interface ProductForm {
-  name: FormControl;
   message: FormControl;
   quantity: FormControl;
 }
@@ -36,10 +34,8 @@ export class InterestedFormComponent {
   constructor(
     private readonly interestedService: InterestedProductsService,
     private readonly toastService: ToastrService,
-    private route: ActivatedRoute,
   ) {
     this.form = new FormGroup({
-      name: new FormControl('', [Validators.required]),
       message: new FormControl('', [Validators.required]),
       quantity: new FormControl('', [Validators.required]),
     })
@@ -49,7 +45,6 @@ export class InterestedFormComponent {
     const fields = this.form.getRawValue();
     return {
       message: fields.message,
-      name: fields.name,
       quantity: fields.quantity
     }
   };

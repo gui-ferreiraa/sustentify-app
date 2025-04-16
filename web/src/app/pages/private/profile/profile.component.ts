@@ -15,6 +15,9 @@ import { ProductFormComponent } from "./components/product-form/product-form.com
 import { ToastrService } from 'ngx-toastr';
 import { Category } from '../../../core/enums/category.enum';
 import { EnumTranslations } from '../../../translations/enum-translations';
+import { Department } from '../../../core/enums/department.enum';
+import { TitleDisplayComponent } from "../../../core/components/title-display/title-display.component";
+import { TextColor } from '../../../core/types/enums';
 
 interface IModal {
   label: 'profile' | 'product';
@@ -31,11 +34,18 @@ interface IModal {
     MenuDropdownComponent,
     ModalComponent,
     ProductUpdateFormComponent,
-    ProductFormComponent
+    ProductFormComponent,
+    TitleDisplayComponent
 ],
   templateUrl: './profile.component.html',
 })
 export class ProfileComponent implements OnInit {
+  protected readonly profileTexts = {
+    title: 'Dashboard',
+    subtitle: 'Gerencie sua empresa e produtos',
+    subtitleColor: TextColor.gray,
+    titleColor: TextColor.black,
+  }
   protected company$!: Observable<ICompany | null>;
   protected products$!: Observable<IProductSummary[]>;
   protected dropdownIsOpen = signal(-1);
@@ -65,6 +75,10 @@ export class ProfileComponent implements OnInit {
 
   translateCategory(category: Category) {
     return EnumTranslations.Category[category];
+  }
+
+  translateDepartment(department: Department) {
+    return EnumTranslations.Department[department];
   }
 
   getDropdownOptions(productId: number) {

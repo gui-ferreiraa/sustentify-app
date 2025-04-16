@@ -42,7 +42,7 @@
         <li><a routerLink="/about" class="py-5 px-6 transition-colors duration-300 ease-in-out hover:text-[#FFF952] block font-semibold">Sobre</a></li>
         <li><a routerLink="/contact" class="py-5 px-6 transition-colors duration-300 ease-in-out hover:text-[#FFF952] block font-semibold">Contato</a></li>
         @if (isAuthenticated | async) {
-          <li><a routerLink="/profile" class="py-5 px-6 transition-colors duration-300 ease-in-out hover:text-[#FFF952] block font-semibold">Profile</a></li>
+          <li><a routerLink="/dashboard" class="py-5 px-6 transition-colors duration-300 ease-in-out hover:text-[#FFF952] block font-semibold">Dashboard</a></li>
         }
         @else {
           <li><a routerLink="/signin" class="py-5 px-6 transition-colors duration-300 ease-in-out hover:text-[#FFF952] block font-semibold">Login</a></li>
