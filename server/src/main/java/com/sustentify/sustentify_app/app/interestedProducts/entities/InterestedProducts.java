@@ -24,6 +24,7 @@ public class InterestedProducts {
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
+    @JsonIgnore
     private Product product;
 
     @Column(name = "status", nullable = false)
@@ -59,17 +60,19 @@ public class InterestedProducts {
         this.id = id;
     }
 
-    public Company getBuyer() {
-        return buyer;
-    }
-
     public void setBuyer(Company company) {
         this.buyer = company;
     }
 
+    public Company getBuyer() { return buyer; }
+
+    public Long getBuyerId() { return buyer.getId(); }
+
     public void setProduct(Product product) {
         this.product = product;
     }
+
+    public Product getProduct() { return product; }
 
     public InterestStatus getStatus() {
         return status;
@@ -88,8 +91,6 @@ public class InterestedProducts {
     public void setMessage(String message) { this.message = message; }
 
     public Double getUnitPrice() { return product != null ? product.getPrice() : 0.0; }
-
-    public Long getBuyerId() { return buyer.getId(); }
 
     public Long getProductId() { return product.getId(); }
 

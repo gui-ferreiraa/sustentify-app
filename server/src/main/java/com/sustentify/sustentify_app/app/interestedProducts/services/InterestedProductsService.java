@@ -2,8 +2,10 @@ package com.sustentify.sustentify_app.app.interestedProducts.services;
 
 import com.sustentify.sustentify_app.app.companies.entities.Company;
 import com.sustentify.sustentify_app.app.interestedProducts.InterestStatus;
+import com.sustentify.sustentify_app.app.interestedProducts.dtos.InterestedProductsDto;
 import com.sustentify.sustentify_app.app.interestedProducts.dtos.RegisterInterestProductDto;
 import com.sustentify.sustentify_app.app.interestedProducts.entities.InterestedProducts;
+import com.sustentify.sustentify_app.app.interestedProducts.exceptions.InterestedProductsNotFoundException;
 import com.sustentify.sustentify_app.app.interestedProducts.repositories.InterestedProductsRepository;
 import com.sustentify.sustentify_app.app.products.entities.Product;
 import com.sustentify.sustentify_app.app.products.services.ProductsService;
@@ -36,11 +38,17 @@ public class InterestedProductsService {
         return this.interestedProductsRepository.findByBuyerAndProduct(company, product);
     }
 
-    public ResponseEntity<List<InterestedProducts>> findByProductId(Long productId) {
-        Product product = this.productsService.findById(productId);
-        List<InterestedProducts> interestedProductsList = this.interestedProductsRepository.findByProduct(product);
+    public InterestedProductsDto findById(Long id) {
 
-        return ResponseEntity.status(HttpStatus.OK).body(interestedProductsList);
+        InterestedProducts interested = this.interestedProductsRepository.findById(id).orElseThrow(InterestedProductsNotFoundException::new);
+
+        return new InterestedProductsDto(interested);
+    }
+
+    public List<InterestedProducts> findByProductId(Long productId) {
+        Product product = this.productsService.findById(productId);
+
+        return this.interestedProductsRepository.findByProduct(product);
     }
 
     public ResponseEntity<InterestedProducts> create(Company company, Product product, RegisterInterestProductDto interestProductDto) {
