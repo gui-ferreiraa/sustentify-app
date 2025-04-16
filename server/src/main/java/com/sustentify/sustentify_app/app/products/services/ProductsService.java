@@ -1,7 +1,7 @@
 package com.sustentify.sustentify_app.app.products.services;
 
-import com.sustentify.sustentify_app.app.Upload.dtos.CloudinaryResponse;
-import com.sustentify.sustentify_app.app.Upload.services.CloudinaryService;
+import com.sustentify.sustentify_app.app.upload.dtos.CloudinaryResponse;
+import com.sustentify.sustentify_app.app.upload.services.CloudinaryService;
 import com.sustentify.sustentify_app.app.companies.entities.Company;
 import com.sustentify.sustentify_app.app.products.dtos.ProductFilterDto;
 import com.sustentify.sustentify_app.app.products.dtos.ProductSummaryDto;

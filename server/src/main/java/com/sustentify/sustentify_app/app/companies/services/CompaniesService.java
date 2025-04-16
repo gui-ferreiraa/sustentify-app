@@ -47,6 +47,8 @@ public class CompaniesService {
         newCompany.setAddress(registerCompanyDto.address());
         newCompany.setCompanyDepartment(registerCompanyDto.companyDepartment());
         newCompany.setCnpj(registerCompanyDto.cnpj());
+        newCompany.setPhone(registerCompanyDto.phone());
+
         this.companiesRepository.save(newCompany);
 
         return ResponseEntity

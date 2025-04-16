@@ -5,7 +5,8 @@ CREATE TABLE IF NOT EXISTS companies (
        password VARCHAR(255) NOT NULL,
        cnpj VARCHAR(20) NOT NULL,
        address VARCHAR(255) NOT NULL,
-       company_department VARCHAR(50) NOT NULL
+       phone VARCHAR(20) NOT NULL,
+       company_department ENUM('ADMINISTRATIVE', 'SALES', 'FINANCE', 'HR', 'MARKETING', 'IT', 'PRODUCTION', 'LEGAL', 'SUPPORT', 'LOGISTICS', 'SUSTAINABILITY') NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS companies_deleted (
@@ -15,6 +16,7 @@ CREATE TABLE IF NOT EXISTS companies_deleted (
     password VARCHAR(255) NOT NULL,
     cnpj VARCHAR(20) NOT NULL,
     address VARCHAR(255) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
     company_department ENUM('ADMINISTRATIVE', 'SALES', 'FINANCE', 'HR', 'MARKETING', 'IT', 'PRODUCTION', 'LEGAL', 'SUPPORT', 'LOGISTICS', 'SUSTAINABILITY') NOT NULL
 );
 
@@ -56,6 +58,7 @@ CREATE TABLE IF NOT EXISTS interested_products (
     product_id BIGINT NOT NULL,
     status ENUM('PENDING', 'APPROVED', 'REJECTED') NOT NULL,
     quantity INT NOT NULL CHECK (quantity >= 1),
+    message VARCHAR(250),
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (companies_id) REFERENCES companies(id) ON DELETE CASCADE,

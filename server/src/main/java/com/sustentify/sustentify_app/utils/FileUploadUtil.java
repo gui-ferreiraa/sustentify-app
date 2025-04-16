@@ -1,6 +1,6 @@
 package com.sustentify.sustentify_app.utils;
 
-import com.sustentify.sustentify_app.app.Upload.exceptions.UploadInvalidException;
+import com.sustentify.sustentify_app.app.upload.exceptions.UploadInvalidException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.text.DateFormat;

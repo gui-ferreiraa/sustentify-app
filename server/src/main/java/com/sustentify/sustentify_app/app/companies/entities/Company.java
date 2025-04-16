@@ -25,6 +25,8 @@ public class Company {
 
     private String address;
 
+    private String phone;
+
     @Enumerated(EnumType.STRING)
     private CompanyDepartment companyDepartment;
 
@@ -35,12 +37,13 @@ public class Company {
     public Company() {
     }
 
-    public Company(String name, String email, String password, String cnpj, String address, CompanyDepartment companyDepartment) {
+    public Company(String name, String email, String password, String cnpj, String address,String phone, CompanyDepartment companyDepartment) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.cnpj = cnpj;
         this.address = address;
+        this.phone = phone;
         this.companyDepartment = companyDepartment;
     }
 
@@ -103,6 +106,10 @@ public class Company {
     public Set<Product> getProducts() {
         return products;
     }
+
+    public String getPhone() { return phone; }
+
+    public void setPhone(String phone) { this.phone = phone; }
 
     public void setProducts(Set<Product> products) {
         this.products = products;

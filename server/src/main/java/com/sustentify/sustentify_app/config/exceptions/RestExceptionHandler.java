@@ -1,7 +1,7 @@
 package com.sustentify.sustentify_app.config.exceptions;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import com.sustentify.sustentify_app.app.Upload.exceptions.UploadInvalidException;
+import com.sustentify.sustentify_app.app.upload.exceptions.UploadInvalidException;
 import com.sustentify.sustentify_app.app.auth.jwt.exceptions.TokenValidationException;
 import com.sustentify.sustentify_app.app.companies.exceptions.CompanyAlreadyExistsException;
 import com.sustentify.sustentify_app.app.companies.exceptions.CompanyNotFoundException;

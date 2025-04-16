@@ -1,6 +1,6 @@
 -- Inserir uma empresa
-INSERT INTO companies (name, email, password, cnpj, address, company_department)
-VALUES ('MataSelva Solutions', 'contato@mataselva.com', '123', '12.345.678/0001-99', 'Rua Verde, 123, São Paulo, SP', 'SALES');
+INSERT INTO companies (name, email, password, cnpj, address, phone, company_department)
+VALUES ('MataSelva Solutions', 'contato@mataselva.com', '123', '12.345.678/0001-99', 'Rua Verde, 123, São Paulo, SP', '123456', 'SALES');
 
 -- Capturar o ID da empresa recém-criada
 SET @company_id = LAST_INSERT_ID();

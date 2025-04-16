@@ -1,4 +1,4 @@
-package com.sustentify.sustentify_app.app.Upload.exceptions;
+package com.sustentify.sustentify_app.app.upload.exceptions;
 
 public class UploadInvalidException extends RuntimeException {
     public UploadInvalidException(String message) {

@@ -35,6 +35,15 @@ public class InterestedProductsController {
         return this.interestedProductsService.findByBuyer(company);
     }
 
+    @GetMapping("{id}")
+    public ResponseEntity<List<InterestedProducts>> getInterestedProductsByProductId(
+            @PathVariable(value = "id") Long productId
+    ) {
+        Company company = SecurityUtils.getCurrentCompany();
+
+        return this.interestedProductsService.findByProductId(productId);
+    }
+
     @PostMapping("{id}")
     public ResponseEntity<InterestedProducts> create(
             @PathVariable(value = "id") Long productId,
@@ -56,7 +65,7 @@ public class InterestedProductsController {
                     throw new InterestedProductsInvalidException("Interest Duplicate");
                 });
 
-        return this.interestedProductsService.create(company, product, registerInterestProductDto.quantity());
+        return this.interestedProductsService.create(company, product, registerInterestProductDto);
     }
 
     @DeleteMapping("{id}")

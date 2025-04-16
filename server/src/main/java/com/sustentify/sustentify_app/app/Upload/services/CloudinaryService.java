@@ -1,8 +1,8 @@
-package com.sustentify.sustentify_app.app.Upload.services;
+package com.sustentify.sustentify_app.app.upload.services;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-import com.sustentify.sustentify_app.app.Upload.dtos.CloudinaryResponse;
+import com.sustentify.sustentify_app.app.upload.dtos.CloudinaryResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 

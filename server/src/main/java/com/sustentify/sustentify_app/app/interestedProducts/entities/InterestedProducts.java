@@ -32,6 +32,8 @@ public class InterestedProducts {
 
     private int quantity;
 
+    private String message;
+
     @UpdateTimestamp
     private Instant updatedAt;
 
@@ -41,11 +43,12 @@ public class InterestedProducts {
     public InterestedProducts() {
     }
 
-    public InterestedProducts(Company buyer, Product product, InterestStatus status, int quantity) {
+    public InterestedProducts(Company buyer, Product product, InterestStatus status, int quantity, String message) {
         this.buyer = buyer;
         this.product = product;
         this.status = status;
         this.quantity = quantity;
+        this.message = message;
     }
 
     public Long getId() {
@@ -64,10 +67,6 @@ public class InterestedProducts {
         this.buyer = company;
     }
 
-    public Product getProduct() {
-        return product;
-    }
-
     public void setProduct(Product product) {
         this.product = product;
     }
@@ -84,7 +83,15 @@ public class InterestedProducts {
 
     public void setQuantity(int quantity) { this.quantity = quantity; }
 
+    public String getMessage() { return message; }
+
+    public void setMessage(String message) { this.message = message; }
+
     public Double getUnitPrice() { return product != null ? product.getPrice() : 0.0; }
+
+    public Long getBuyerId() { return buyer.getId(); }
+
+    public Long getProductId() { return product.getId(); }
 
     public Double getTotalPrice() { return quantity * getUnitPrice(); }
 

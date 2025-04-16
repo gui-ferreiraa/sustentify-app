@@ -12,6 +12,7 @@ public record RegisterCompanyDto(
         String password,
         String cnpj,
         String address,
+        String phone,
         CompanyDepartment companyDepartment
 ) {
 }

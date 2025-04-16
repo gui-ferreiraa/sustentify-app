@@ -22,6 +22,8 @@ public class CompanyDeleted {
 
     private String address;
 
+    private String phone;
+
     @Enumerated(EnumType.STRING)
     private CompanyDepartment companyDepartment;
 
@@ -35,6 +37,7 @@ public class CompanyDeleted {
         this.cnpj = company.getCnpj();
         this.address = company.getAddress();
         this.companyDepartment = company.getCompanyDepartment();
+        this.phone = company.getPhone();
     }
 
     public Long getId() {
@@ -84,6 +87,10 @@ public class CompanyDeleted {
     public void setAddress(String address) {
         this.address = address;
     }
+
+    public String getPhone() { return phone; }
+
+    public void setPhone(String phone) { this.phone = phone; }
 
     public CompanyDepartment getCompanyDepartment() {
         return companyDepartment;

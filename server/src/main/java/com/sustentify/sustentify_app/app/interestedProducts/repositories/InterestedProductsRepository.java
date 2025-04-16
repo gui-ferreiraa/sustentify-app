@@ -11,5 +11,6 @@ import java.util.Optional;
 public interface InterestedProductsRepository extends JpaRepository<InterestedProducts, Long> {
     List<InterestedProducts> findByBuyer(Company buyer);
     Optional<InterestedProducts> findByBuyerAndProduct(Company buyer, Product product);
+    List<InterestedProducts> findByProduct(Product product);
 
 }
