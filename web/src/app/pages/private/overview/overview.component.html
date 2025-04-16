@@ -27,7 +27,7 @@
       </div>
 
       <section
-      class="grid grid-cols-1 md:grid-cols-3"
+      class="grid grid-cols-1 md:grid-cols-4"
       >
         <app-overview-card
         [content]="product.interestCount.toString()"
@@ -38,22 +38,145 @@
         title="Quantidade"
         />
         <app-overview-card
-        content="400"
+        content="0"
         title="Finalizadas"
         />
+        <app-overview-card
+        content="0"
+        title="Cancelados"
+        />
       </section>
+      <section class="mt-3">
+        <app-table
+          (buttonClicked)="navigateToSolicitation(product.id)"
+          buttonTitle="Produto"
+          title="Interessados"
+          [theads]="['Status', 'Quantidade', 'Preço Total', 'Data', 'Ações']"
+          subtitle="Aqui estão as últimas solicitações"
+        >
+          @for (interested of solicitations$ | async; track interested.id) {
+            <tr>
+              <td class="p-4">
+                {{ translateStatus(interested.status) }}
+              </td>
+              <td class="p-4">
+                {{ interested.quantity }}
+              </td>
+              <td class="p-4">
+                {{ formatPrice(interested.totalPrice) }}
+              </td>
+              <td class="p-4 text-nowrap">
+                {{ formatDate(interested.createdAt) }}
+              </td>
+              <td
+                class="p-4 flex flex-col gap-2 font-semibold"
+              >
+                <button
+                  class="bg-emerald-100 text-gray-700 rounded-lg px-4 py-1 cursor-pointer hover:bg-emerald-200 transition-colors duration-400 ease-in-out"
+                  (click)="openModal(interested.id)"
+                >
+                  Detalhes
+                </button>
+                <button
+                  class="bg-emerald-300 text-gray-700 rounded-lg px-4 py-1 cursor-pointer hover:bg-emerald-400 transition-colors duration-400 ease-in-out"
+                >
+                  Finalizar
+                </button>
+                <button
+                  class="bg-red-400 text-gray-700 rounded-lg px-4 py-1 cursor-pointer hover:bg-red-500 transition-colors duration-400 ease-in-out"
+                  (click)="deleteInterestedProduct(interested.productId)"
+                  >
+                  Deletar
+                </button>
+              </td>
+            </tr>
+          }
+      </app-table>
+    </section>
     }
 
-    <section class="mt-3">
-      <app-table
-        (buttonClicked)="''"
-        buttonTitle="Produto"
-        title="Interessados"
-        [theads]="['Empresa', 'Data de Criação', 'Status', 'Quantidade', 'Departamento', 'Ações']"
-        subtitle="Aqui estão as últimas solicitações"
-      >
-
-    </app-table>
-  </section>
 </section>
 </main>
+<app-modal
+  [isOpen]="modalIsOpen()"
+  (clickedOutside)="closeModal()"
+>
+<div class="max-h-[532px] md:max-h-[645px] overflow-y-scroll sm:rounded-lg">
+    <div class="px-4 py-5 sm:px-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900">
+            Solicitação
+        </h3>
+        <p class="mt-1 max-w-2xl text-sm text-gray-500">
+            Informações sobre a solicitação do produto
+        </p>
+    </div>
+    <div class="border-t border-gray-200">
+        <dl>
+            <div class="bg-gray-50 px-4 py-5 lg:grid lg:grid-cols-3 lg:gap-4 lg:px-6">
+                <dt class="text-sm font-medium text-gray-500">
+                    Empresa
+                </dt>
+                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    {{ modalInterested()?.buyer?.name }}
+                </dd>
+            </div>
+            <div class="bg-white px-4 py-5 lg:grid lg:grid-cols-3 lg:gap-4 lg:px-6">
+                <dt class="text-sm font-medium text-gray-500">
+                    Email
+                </dt>
+                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    {{  modalInterested()?.buyer?.email }}
+                </dd>
+            </div>
+            <div class="bg-white px-4 py-5 lg:grid lg:grid-cols-3 lg:gap-4 lg:px-6">
+                <dt class="text-sm font-medium text-gray-500">
+                    Contato
+                </dt>
+                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    {{  modalInterested()?.buyer?.phone }}
+                </dd>
+            </div>
+            <div class="bg-white px-4 py-5 lg:grid lg:grid-cols-3 lg:gap-4 lg:px-6">
+                <dt class="text-sm font-medium text-gray-500">
+                    Departamento
+                </dt>
+                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    {{  translateDepartment(modalInterested()?.buyer?.companyDepartment) }}
+                </dd>
+            </div>
+            <div class="bg-gray-50 px-4 py-5 lg:grid lg:grid-cols-3 lg:gap-4 lg:px-6">
+                <dt class="text-sm font-medium text-gray-500">
+                    Quantidade
+                </dt>
+                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    {{ modalInterested()?.quantity }}
+                </dd>
+            </div>
+            <div class="bg-white px-4 py-5 lg:grid lg:grid-cols-3 lg:gap-4 lg:px-6">
+                <dt class="text-sm font-medium text-gray-500">
+                    Preço Unitário
+                </dt>
+                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    {{ formatPrice(modalInterested()?.unitPrice) }}
+                </dd>
+            </div>
+            <div class="bg-white px-4 py-5 lg:grid lg:grid-cols-3 lg:gap-4 lg:px-6">
+                <dt class="text-sm font-medium text-gray-500">
+                    Preço Total
+                </dt>
+                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    {{ formatPrice(modalInterested()?.totalPrice) }}
+                </dd>
+            </div>
+            <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                <dt class="text-sm font-medium text-gray-500">
+                    Mensagem
+                </dt>
+                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    {{ modalInterested()?.message }}
+                </dd>
+            </div>
+        </dl>
+    </div>
+  </div>
+</app-modal>

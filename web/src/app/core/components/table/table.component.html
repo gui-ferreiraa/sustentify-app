@@ -8,12 +8,14 @@
 
             </div>
 
-            <button
-              class="bg-[#21926baa] hover:bg-[#21926b] text-white font-bold py-2 px-4 rounded cursor-pointer text-sm w-max h-max transition-colors ease-in-out duration-200"
-              (click)="onClickButton()"
-            >
-              {{ buttonTitle() }}
-            </button>
+            @if (buttonTitle()) {
+              <button
+                class="bg-[#21926baa] hover:bg-[#21926b] text-white font-bold py-2 px-4 rounded cursor-pointer text-sm w-max h-max transition-colors ease-in-out duration-200"
+                (click)="onClickButton()"
+                >
+                {{ buttonTitle() }}
+              </button>
+            }
         </header>
         <div>
             <div class=" max-h-[500px] overflow-y-auto">

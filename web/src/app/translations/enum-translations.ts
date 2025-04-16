@@ -44,5 +44,13 @@ export const EnumTranslations = {
     LOGISTICS: 'Logística',
     RESEARCH_AND_DEVELOPMENT: 'Pesquisa e Desenvolvimento',
     SUSTAINABILITY: 'Sustentabilidade',
+  },
+  Status: {
+    PENDING: 'Pendente',
+    REJECTED: 'Rejeitado',
+    COMPLETED: 'Concluído',
+    CANCELLED: 'Cancelado',
+    ACCEPTED: 'Aceito',
   }
+
 } as const;

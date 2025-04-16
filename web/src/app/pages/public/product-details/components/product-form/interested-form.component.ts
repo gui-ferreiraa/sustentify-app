@@ -61,7 +61,8 @@ export class InterestedFormComponent {
 
     this.interestedService.fetchInterestedCreate({
       productId: this.productId(),
-      quantity: payload.quantity
+      quantity: payload.quantity,
+      message: payload.message,
     }).subscribe({
       next: (value) => {
         this.toastService.success('Interesse Registrado!');

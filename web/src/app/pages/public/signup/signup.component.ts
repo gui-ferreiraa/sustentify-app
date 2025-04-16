@@ -84,6 +84,7 @@ export class SignupComponent {
       companyDepartment: fields.department,
       email: fields.email,
       name: fields.name,
+      phone: fields.phone,
       password: fields.password
     }).subscribe({
       next: (vl) => {

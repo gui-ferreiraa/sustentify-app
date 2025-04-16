@@ -18,6 +18,9 @@ import { EnumTranslations } from '../../../translations/enum-translations';
 import { Department } from '../../../core/enums/department.enum';
 import { TitleDisplayComponent } from "../../../core/components/title-display/title-display.component";
 import { TextColor } from '../../../core/types/enums';
+import { IInterestedProduct, IInterestedProductSummary } from '../../../core/types/interested-products';
+import { InterestedProductsService } from '../../../services/interested/interested-products.service';
+import { InterestStatus } from '../../../core/enums/InterestStatus';
 
 interface IModal {
   label: 'profile' | 'product';
@@ -31,7 +34,6 @@ interface IModal {
     AsyncPipe,
     ButtonGreenComponent,
     TableComponent,
-    MenuDropdownComponent,
     ModalComponent,
     ProductUpdateFormComponent,
     ProductFormComponent,
@@ -52,10 +54,12 @@ export class ProfileComponent implements OnInit {
   protected modalIsOpen = signal(false);
   protected modalContent = signal<'edit-profile' | 'edit-product' | 'new-product' | null>(null);
   protected productUpdated = signal<IProduct | null>(null);
+  protected interestedProducts$!: Observable<IInterestedProductSummary[]>;
 
   constructor(
     private readonly authService: AuthService,
     private readonly productsService: ProductsService,
+    private readonly interestedService: InterestedProductsService,
     private readonly router: Router,
     private readonly toastService: ToastrService
   ) {}
@@ -66,6 +70,8 @@ export class ProfileComponent implements OnInit {
     this.products$ = this.productsService.fetchProductsByCompany().pipe(
       map(res => res.content)
     );
+
+    this.interestedProducts$ = this.interestedService.fetchInterestedByCompany();
   }
 
   logout() {
@@ -111,6 +117,8 @@ export class ProfileComponent implements OnInit {
     this.products$ = this.productsService.fetchProductsByCompany().pipe(
       map(res => res.content)
     );
+
+    this.interestedProducts$ = this.interestedService.fetchInterestedByCompany();
   }
 
   openEditProductModal(id: number) {
@@ -149,6 +157,7 @@ export class ProfileComponent implements OnInit {
         }
       },
       error: (err) => {
+        console.log(err);
         this.toastService.error('Erro ao deletar!');
       },
       complete: () => this.closeModal(),
@@ -163,5 +172,41 @@ export class ProfileComponent implements OnInit {
 
   openOverview(productId: number) {
     this.router.navigate([`/profile/overview/${productId}`]);
+  }
+
+  deleteInterestedProduct(productId: number) {
+    this.interestedService.fetchInterestedDelete(productId).subscribe({
+      next: (value) => {
+        if (value.successfully) {
+          this.toastService.success('Solicitação Deletada!');
+          this.updateProductsList();
+          this.closeModal();
+        }
+      },
+      error: (err) => {
+        this.toastService.error('Erro ao deletar!');
+      },
+      complete: () => this.closeModal(),
+    })
+  }
+
+  formatPrice(price: number) {
+    return price.toLocaleString('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    });
+  }
+
+  formatDate(date: string) {
+    const dateObj = new Date(date);
+    return dateObj.toLocaleDateString('pt-BR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
+  }
+
+  translateStatus(status: InterestStatus) {
+    return EnumTranslations.Status[status];
   }
 }

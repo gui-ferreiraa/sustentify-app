@@ -70,7 +70,7 @@ export class SigninComponent {
             take(1)
           )
           .subscribe(() => {
-            this.router.navigate(['/profile'])
+            this.router.navigate(['/dashboard'])
           })
       },
       error: (err) => {
