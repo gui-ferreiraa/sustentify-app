@@ -13,6 +13,7 @@ import { ProductCardComponent } from "../../../core/components/product-card/prod
 import { ContactComponent } from "./components/contact/contact.component";
 import { TitleDisplayComponent } from "../../../core/components/title-display/title-display.component";
 import { Router } from '@angular/router';
+import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-home',
@@ -82,10 +83,15 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private readonly router: Router,
-    private readonly productsService: ProductsService
+    private readonly productsService: ProductsService,
+    private readonly titleService: Title,
+    private readonly metaService: Meta,
   ) {}
 
   ngOnInit() {
+    this.titleService.setTitle('Sustentify | Conectando empresas a soluções sustentáveis');
+    this.metaService.updateTag({ name: 'description', content: 'Descubra como a Sustentify pode ajudar sua empresa a promover práticas sustentáveis com tecnologia e inovação.' });
+
     this.productsService.fetchProducts().subscribe();
     this.products$ = this.productsService.products$;
   }

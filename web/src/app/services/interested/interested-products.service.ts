@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { IResponseDto } from '../../core/types/response.dto';
 import { REQUIRE_AUTH } from '../../core/interceptors/contexts/authRequire.context';
 import { IInterestedProduct, IInterestedProductSummary } from '../../core/types/interested-products';
+import { InterestStatus } from '../../core/enums/InterestStatus';
 
 interface IInterestedProps {
   productId: number;
@@ -56,6 +57,17 @@ export class InterestedProductsService {
     interestedId: number
   ): Observable<IResponseDto> {
     return this.http.delete<IResponseDto>(`${this.apiUrl}/${interestedId}`, {
+      context: new HttpContext().set(REQUIRE_AUTH, true),
+    });
+  }
+
+  fetchInterestedUpdate(
+    interestedId: number,
+    status: InterestStatus,
+  ): Observable<IResponseDto> {
+    return this.http.patch<IResponseDto>(`${this.apiUrl}/${interestedId}`, {
+      status
+    }, {
       context: new HttpContext().set(REQUIRE_AUTH, true),
     });
   }

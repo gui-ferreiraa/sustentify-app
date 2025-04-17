@@ -55,7 +55,7 @@ export const routes: Routes = [
   },
   // privates
   {
-    path: 'profile/overview/:productId',
+    path: 'dashboard/overview/:productId',
     component: OverviewComponent,
     canActivate: [AuthGuard]
   },

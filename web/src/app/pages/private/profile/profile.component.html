@@ -44,7 +44,7 @@
                         Segmento
                     </dt>
                     <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                        {{ translateDepartment(company.companyDepartment) }}
+                        {{ company.companyDepartment | translateEnum: 'Department' }}
                     </dd>
                 </div>
                 <div class="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
@@ -64,21 +64,26 @@
                     </dd>
                 </div>
                 <div
-                  class="flex gap-6 justify-center p-5"
+                  class="flex flex-col gap-6 justify-center p-5 text-gray-500 font-semibold"
                 >
-                  <app-button-green
+                <button
+                    class="bg-emerald-100 text-gray-700 rounded-lg px-4 py-1 cursor-pointer hover:bg-emerald-200 transition-colors duration-400 ease-in-out"
+                    (click)="profileEditModalIsOpen.set(true)"
+                  >
+                    Editar
+                  </button>
+                  <button
+                    class="bg-emerald-300 text-gray-700 rounded-lg px-4 py-1 cursor-pointer hover:bg-emerald-400 transition-colors duration-400 ease-in-out"
+                    (click)="onClickRecoverPassword()"
+                  >
+                    Editar Senha
+                  </button>
+                  <button
+                    class="bg-red-400 text-gray-700 rounded-lg px-4 py-1 cursor-pointer hover:bg-red-500 transition-colors duration-400 ease-in-out"
                     (click)="logout()"
-                    [disabled]="false"
-                    title="Logout"
-                    [type]="'button'"
-                  />
-                  <app-button-green
-                    (click)="openEditCompanyModal()"
-                    [disabled]="false"
-                    title="Editar"
-                    [type]="'button'"
-                    class="h-3"
-                  />
+                  >
+                    Logout
+                  </button>
                 </div>
             </dl>
         </div>
@@ -88,7 +93,7 @@
       class="flex flex-col gap-5 w-full lg:w-[calc(100%-387px)]"
     >
       <app-table
-        (buttonClicked)="openNewProductModal()"
+        (buttonClicked)="productCreateModalIsOpen.set(true)"
         buttonTitle="Novo Produto"
         subtitle="Registrados"
         title="Produtos"
@@ -123,7 +128,7 @@
             <td
               class="p-4"
             >
-              {{ translateCategory(prod.category) }}
+              {{ prod.category | translateEnum: 'Category'}}
             </td>
             <td
               class="p-4"
@@ -150,7 +155,7 @@
                 </button>
                 <button
                   class="bg-red-400 text-gray-700 rounded-lg px-4 py-1 cursor-pointer hover:bg-red-500 transition-colors duration-400 ease-in-out"
-                  (click)="deleteProductModal(prod.id)"
+                  (click)="this.productDeleteModalIsOpen.set(true); this.idSelected.set(prod.id)"
                 >
                   Delete
                 </button>
@@ -170,7 +175,7 @@
             <td
               class="p-4 uppercase"
             >
-              {{ translateStatus(interested.status) }}
+              {{ interested.status | translateEnum: 'Status' }}
             </td>
             <td
               class="p-4"
@@ -180,12 +185,12 @@
             <td
               class="p-4"
             >
-              {{ formatPrice(interested.totalPrice) }}
+              {{ interested.totalPrice | formatPrice }}
             </td>
             <td
               class="p-4"
             >
-              {{ formatDate(interested.createdAt) }}
+              {{ interested.createdAt | formatDate }}
             </td>
             <td
               class="p-4 flex flex-col gap-2 font-semibold"
@@ -198,7 +203,7 @@
               </a>
               <button
                 class="bg-red-400 text-gray-700 rounded-lg px-4 py-1 cursor-pointer hover:bg-red-500 transition-colors duration-400 ease-in-out"
-                (click)="deleteInterestedProduct(interested.productId)"
+                (click)="this.modalDeleteInterestedIsOpen.set(true); this.idSelected.set(interested.id)"
               >
                 Deletar
               </button>
@@ -209,23 +214,43 @@
     </section>
   </section>
 
-  <app-modal
-    (clickedOutside)="closeModal()"
-    [isOpen]="modalIsOpen()"
-  >
-    @if (modalContent() == 'edit-profile') {
-      <p>profile</p>
-    }
-    @if (modalContent() == 'edit-product') {
-      <app-product-update-form
-        [productInput]="productUpdated()"
-        (onSubmit)="submitProductUpdateModal()"
-      />
-    }
-    @if (modalContent() == 'new-product') {
-      <app-product-form
-        (productCreated)="submitNewProductModal($event)"
-      />
-    }
-  </app-modal>
 </main>
+
+<app-profile-update-form
+  (successfully)="this.profileEditModalIsOpen.set(false)"
+  [isOpen]="profileEditModalIsOpen()"
+  (clickedOutside)="this.profileEditModalIsOpen.set(false)"
+/>
+
+<app-product-form
+  (successfully)="this.productCreateModalIsOpen.set(false); updateProductsList()"
+  [isOpen]="productCreateModalIsOpen()"
+  (clickedOutside)="this.productCreateModalIsOpen.set(false)"
+/>
+
+@if (this.productUpdated()) {
+  <app-product-update-form
+    [isOpen]="productEditModalIsOpen()"
+    (clickedOutside)="this.productEditModalIsOpen.set(false)"
+    [product]="productUpdated()"
+    (successfully)="this.productEditModalIsOpen.set(false); updateProductsList()"
+  />
+}
+
+<app-modal-delete
+  title="Deletar Produto"
+  message="Você tem certeza que deseja deletar esse Produto?"
+  [isOpen]="productDeleteModalIsOpen()"
+  (clickedOutside)="this.productDeleteModalIsOpen.set(false)"
+  (confirm)="deleteProductModal(idSelected()); this.productDeleteModalIsOpen.set(false)"
+  (cancel)="this.productDeleteModalIsOpen.set(false)"
+/>
+
+<app-modal-delete
+  title="Deletar Solicitação"
+  message="Você tem certeza que deseja deletar essa Solicitação?"
+  [isOpen]="modalDeleteInterestedIsOpen()"
+  (clickedOutside)="this.modalDeleteInterestedIsOpen.set(false)"
+  (confirm)="deleteInterestedProduct(idSelected()); this.modalDeleteInterestedIsOpen.set(false)"
+  (cancel)="this.modalDeleteInterestedIsOpen.set(false)"
+/>

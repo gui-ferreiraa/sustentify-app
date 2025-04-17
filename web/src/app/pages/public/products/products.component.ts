@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { FilterBarComponent } from '../../../core/components/filter-bar/filter-bar.component';
 import { ActivatedRoute } from '@angular/router';
 import { PaginationComponent } from "../../../core/components/pagination/pagination.component";
+import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-products',
@@ -28,10 +29,16 @@ export class ProductsComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private readonly productsService: ProductsService
+    private readonly productsService: ProductsService,
+    private readonly titleService: Title,
+    private readonly metaService: Meta,
+
   ) {}
 
   ngOnInit(): void {
+    this.titleService.setTitle('Produtos Descartados - Sustentify');
+    this.metaService.updateTag({ name: 'description', content: 'Explore nossa lista de produtos sustentáveis disponíveis para aquisição e descarte consciente.' });
+
     this.route.queryParams.subscribe(params => {
       const filters = {
         category: params['category'] || null,

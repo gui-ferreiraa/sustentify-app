@@ -12,7 +12,7 @@
           <p
             class="bg-[#FFF952] rounded-md flex w-max p-1 uppercase default-paragraph"
           >
-            {{ translateCategory(product.category) }}
+            {{ product.category | translateEnum: 'Category' }}
           </p>
 
           <h3
@@ -23,10 +23,10 @@
         </div>
         <div>
           <p class="default-paragraph">
-            {{ translateCategory(product.category) }}
+            {{ product.category | translateEnum: 'Category' }}
           </p>
           <p class="default-paragraph">
-            {{ formatPrice(product.price) }}
+            {{ product.price | formatPrice }}
           </p>
         </div>
         <div class="flex flex-col gap-2">
@@ -64,7 +64,7 @@
             />
           </app-details-wrapper>
           <app-details-wrapper
-            [content]="translateCondition(product.condition)"
+            [content]="product.condition | translateEnum: 'Condition'"
             title="Condição"
           >
             <lucide-angular
@@ -73,7 +73,7 @@
             />
           </app-details-wrapper>
           <app-details-wrapper
-            [content]="translateMaterial(product.material)"
+            [content]="product.material | translateEnum: 'Material'"
             title="Material"
           >
             <lucide-angular
@@ -82,7 +82,7 @@
             />
           </app-details-wrapper>
           <app-details-wrapper
-            [content]="translateCategory(product.category)"
+            [content]="product.category | translateEnum: 'Category'"
             title="Categoria"
           >
             <lucide-angular
@@ -91,7 +91,7 @@
             />
           </app-details-wrapper>
           <app-details-wrapper
-            [content]="formatDate(product.productionDate)"
+            [content]="product.productionDate | formatDate"
             title="Data de Produção"
           >
             <lucide-angular

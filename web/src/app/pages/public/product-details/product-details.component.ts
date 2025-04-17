@@ -1,26 +1,37 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { ProductsService } from '../../../services/product/products.service';
 import { ActivatedRoute } from '@angular/router';
-import { filter, firstValueFrom, map, Observable, shareReplay, switchMap, take, tap } from 'rxjs';
+import { map, Observable, switchMap, take, tap } from 'rxjs';
 import { IProduct, IProductSummary } from '../../../core/types/product';
 import { AsyncPipe, CommonModule, NgOptimizedImage } from '@angular/common';
-import { Category } from '../../../core/enums/category.enum';
-import { EnumTranslations } from '../../../translations/enum-translations';
-import { Condition } from '../../../core/enums/condition.enum';
-import { Material } from '../../../core/enums/material.enum';
 import { DetailsWrapperComponent } from "../../../core/components/details-wrapper/details-wrapper.component";
 import { BaggageClaim, BrickWall, CalendarRange, CalendarSync, ChartNoAxesColumnDecreasing, LucideAngularModule, Ruler, StickyNote } from 'lucide-angular';
 import { ProductCardComponent } from "../../../core/components/product-card/product-card.component";
 import { ButtonGreenComponent } from "../../../core/components/button-green/button-green.component";
 import { ICompany } from '../../../core/types/company';
 import { AuthService } from '../../../services/auth/auth.service';
-import { InterestedProductsService } from '../../../services/interested/interested-products.service';
 import { ModalComponent } from "../../../core/components/modal/modal.component";
 import { InterestedFormComponent } from "./components/product-form/interested-form.component";
+import { Meta, Title } from '@angular/platform-browser';
+import { FormatDatePipe } from '../../../pipes/formats/format-date.pipe';
+import { FormatPricePipe } from '../../../pipes/formats/format-price.pipe';
+import { TranslateEnumPipe } from '../../../pipes/translate-enum.pipe';
 
 @Component({
   selector: 'app-product-details',
-  imports: [AsyncPipe, DetailsWrapperComponent, LucideAngularModule, NgOptimizedImage, ProductCardComponent, ButtonGreenComponent, ModalComponent, InterestedFormComponent],
+  imports: [
+    AsyncPipe,
+    FormatDatePipe,
+    FormatPricePipe,
+    TranslateEnumPipe,
+    DetailsWrapperComponent,
+    LucideAngularModule,
+    NgOptimizedImage,
+    ProductCardComponent,
+    ButtonGreenComponent,
+    ModalComponent,
+    InterestedFormComponent
+  ],
   templateUrl: './product-details.component.html',
 })
 export class ProductDetailsComponent implements OnInit{
@@ -47,10 +58,14 @@ export class ProductDetailsComponent implements OnInit{
     private route: ActivatedRoute,
     private readonly authService: AuthService,
     private readonly productsService: ProductsService,
+    private readonly titleService: Title,
+    private readonly metaService: Meta,
   ) {
   }
 
   ngOnInit(): void {
+    this.metaService.updateTag({ name: 'description', content: 'Veja informações detalhadas sobre este produto sustentável, suas características e impacto ambiental.' });
+
     this.company$ = this.authService.company$;
 
     this.product$ = this.route.params.pipe(
@@ -61,7 +76,9 @@ export class ProductDetailsComponent implements OnInit{
       tap(product => this.productCompanyId.set(product.company_id)),
       tap(product => {
         this.authService.company$.pipe(take(1)).subscribe(company => {
+          this.titleService.setTitle(`Produto - ${product.name} | Sustentify`);
           if (!company) this.showRequestButton.set(true);
+
           else if (company.id !== product.company_id) {
             this.showRequestButton.set(true);
             this.companyId.set(company.id);
@@ -90,34 +107,6 @@ export class ProductDetailsComponent implements OnInit{
         );
       }),
     )
-  }
-
-  formatPrice(price: number) {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currencyDisplay: 'code',
-      currency: 'BRL',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 3
-    }).format(price)
-  }
-
-  translateCategory(category: Category) {
-    return EnumTranslations.Category[category];
-  }
-
-  translateCondition(condition: Condition) {
-    return EnumTranslations.Condition[condition];
-  }
-
-  translateMaterial(material: Material) {
-    return EnumTranslations.Material[material];
-  }
-
-  formatDate(date: string) {
-    return new Date(date).toLocaleDateString('pt-BR', {
-      dateStyle: 'medium'
-    })
   }
 
   toggleModal(value?: boolean) {

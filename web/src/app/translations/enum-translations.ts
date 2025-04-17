@@ -47,10 +47,9 @@ export const EnumTranslations = {
   },
   Status: {
     PENDING: 'Pendente',
-    REJECTED: 'Rejeitado',
     COMPLETED: 'Concluído',
     CANCELLED: 'Cancelado',
-    ACCEPTED: 'Aceito',
+    APPROVED: 'Aceito',
   }
 
 } as const;

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TextColor } from '../../../core/types/enums';
 import { TitleDisplayComponent } from "../../../core/components/title-display/title-display.component";
 import { PrimaryInputComponent } from "../../../core/components/inputs/primary-input/primary-input.component";
@@ -8,6 +8,7 @@ import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } 
 import { Event, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { TextareaInputComponent } from "../../../core/components/inputs/textarea-input/textarea-input.component";
+import { Meta, Title } from '@angular/platform-browser';
 
 interface ContactForm {
   location: FormControl;
@@ -28,7 +29,7 @@ interface ContactForm {
 ],
   templateUrl: './contact.component.html',
 })
-export class ContactComponent {
+export class ContactComponent implements OnInit {
   contact = {
     title: 'Fale Conosco',
     titleColor: TextColor.black,
@@ -39,8 +40,9 @@ export class ContactComponent {
   contactForm!: FormGroup<ContactForm>;
 
   constructor(
-    private router: Router,
-    private toastService: ToastrService
+    private toastService: ToastrService,
+    private readonly titleService: Title,
+    private readonly metaService: Meta,
   ) {
     this.contactForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email]),
@@ -48,6 +50,11 @@ export class ContactComponent {
       message: new FormControl('', [Validators.required, Validators.minLength(15)]),
       name: new FormControl('', [Validators.required])
     })
+  }
+
+  ngOnInit(): void {
+    this.titleService.setTitle('Contato | Sustentify');
+    this.metaService.updateTag({ name: 'description', content: 'Fale com a equipe Sustentify. Tire dúvidas, envie sugestões ou saiba como podemos colaborar.' });
   }
 
   submit() {

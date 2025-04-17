@@ -15,6 +15,7 @@ import { ToastrService } from 'ngx-toastr';
 import { IProduct, IProductImage } from '../../../../../core/types/product';
 import { NgOptimizedImage } from '@angular/common';
 import { ModalComponent } from "../../../../../core/components/modal/modal.component";
+import { ModalDeleteComponent } from "../../../../../core/components/modal-delete/modal-delete.component";
 
 interface ProductForm {
   name: FormControl;
@@ -32,17 +33,22 @@ interface ProductForm {
 
 @Component({
   selector: 'app-product-update-form',
-  imports: [PrimaryInputComponent, ReactiveFormsModule, SelectInputComponent, ButtonGreenComponent, TextareaInputComponent, ImageUploadInputComponent, NgOptimizedImage],
+  imports: [PrimaryInputComponent, ReactiveFormsModule, SelectInputComponent, ButtonGreenComponent, TextareaInputComponent, ImageUploadInputComponent, NgOptimizedImage, ModalDeleteComponent, ModalComponent],
   templateUrl: './product-update-form.component.html',
 })
 export class ProductUpdateFormComponent implements OnInit {
+  isOpen = input(false);
+  product = input.required<IProduct | null>();
+  @Output() successfully = new EventEmitter<IProduct>();
+  @Output() clickedOutside = new EventEmitter<void>();
   form!: FormGroup<ProductForm>;
   categoryOptions = getEnumOptions(Category, EnumTranslations.Category);
   conditionOptions = getEnumOptions(Condition, EnumTranslations.Condition);
   materialOptions = getEnumOptions(Material, EnumTranslations.Material);
   buttonDisabled = signal(false);
-  @Output() onSubmit = new EventEmitter<IProduct>();
-  productInput = input.required<IProduct | null>();
+
+  protected readonly modalIsOpen = signal(false);
+  protected thumbnailDeleted = signal<IProductImage | null>(null);
 
   constructor(
     private readonly productsService: ProductsService,
@@ -66,17 +72,17 @@ export class ProductUpdateFormComponent implements OnInit {
       images: new FormControl<File[] | null>([], []),
     })
 
-    if (this.productInput()) {
+    if (this.product()) {
       this.form.patchValue({
-        category: this.productInput()?.category,
-        condition: this.productInput()?.condition,
-        location: this.productInput()?.location,
-        material: this.productInput()?.material,
-        name: this.productInput()?.name,
-        price: this.productInput()?.price,
-        productionDate: this.productInput()?.productionDate,
-        quantity: this.productInput()?.quantity,
-        description: this.productInput()?.description,
+        category: this.product()?.category,
+        condition: this.product()?.condition,
+        location: this.product()?.location,
+        material: this.product()?.material,
+        name: this.product()?.name,
+        price: this.product()?.price,
+        productionDate: this.product()?.productionDate,
+        quantity: this.product()?.quantity,
+        description: this.product()?.description,
       });
     }
   }
@@ -84,7 +90,7 @@ export class ProductUpdateFormComponent implements OnInit {
   private prepareFormPayload(): any {
     const fields = this.form.getRawValue();
     return {
-      id: this.productInput()?.id,
+      id: this.product()?.id,
       category: fields.category,
       condition: fields.condition,
       description: fields.description,
@@ -110,7 +116,7 @@ export class ProductUpdateFormComponent implements OnInit {
       .subscribe({
       next: (response) => {
         this.toastService.success('Produto atualizado com sucesso!');
-        this.onSubmit.emit();
+        this.successfully.emit();
       },
       error: (err) => {
         this.toastService.error('Erro ao atualizar produto')
@@ -120,9 +126,16 @@ export class ProductUpdateFormComponent implements OnInit {
     });
   }
 
-  removeThumbnail(image?: IProductImage) {
+  openModal() { this.modalIsOpen.set(true) }
+
+  handleRemoveThumbnail(image?: IProductImage) {
     if (!image) return;
 
-    window.prompt('Yes baby')
+    this.openModal();
+    this.thumbnailDeleted.set(image);
+  }
+
+  deleteImage() {
+    console.log('DELETE IMAGE', this.thumbnailDeleted());
   }
 };

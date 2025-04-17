@@ -1,1 +1,73 @@
-<p>profile-update-form works!</p>
+<app-modal
+  [isOpen]="isOpen()"
+  (clickedOutside)="this.clickedOutside.emit()"
+>
+  <form
+    [formGroup]="form"
+    (ngSubmit)="submit()"
+    class="flex flex-col mt-6 justify-between"
+  >
+    <h4 class="text-2xl font-bold">
+      Atualizar Empresa
+    </h4>
+
+    <p class="text-sm text-gray-500 mb-6">Atualize os dados da sua empresa</p>
+
+    <app-primary-input
+      formControlName="name"
+      inputName="name"
+      label="Nome da Empresa"
+      placeholder="Company LTDA"
+      type="text"
+      [error]="form.controls.name.invalid && (form.controls['name'].touched || form.controls.name.dirty)"
+      [errorMessage]="
+        form.controls.name.errors?.['required'] && 'Nome da Empresa é obrigatório'
+      "
+    />
+
+    <app-primary-input
+      formControlName="address"
+      inputName="address"
+      label="Localização"
+      placeholder="Rua Monteiro, Vila Soares, n°02 - SP"
+      type="text"
+      [error]="form.controls.address.invalid && (form.controls['address'].touched || form.controls.address.dirty)"
+      [errorMessage]="
+        form.controls.address.errors?.['required'] && 'Localização é obrigatório'
+      "
+    />
+
+    <app-select-input
+      formControlName="companyDepartment"
+      inputName="companyDepartment"
+      label="Ramo de Atividade/Setor"
+      [options]="departmentOptions"
+      class="mb-3"
+      [error]="form.controls.companyDepartment.invalid && (form.controls['companyDepartment'].touched || form.controls.companyDepartment.dirty)"
+      [errorMessage]="
+        form.controls.companyDepartment.errors?.['required'] && 'Ramo de Atividade é obrigatório'
+      "
+    />
+
+    <app-primary-input
+      formControlName="phone"
+      inputName="phone"
+      label="Telefone de Contato"
+      placeholder="+55 (11) 94567-1234"
+      type="text"
+      mask="+00 (00) 00000-0000"
+      [error]="form.controls.phone.invalid && (form.controls['phone'].touched || form.controls.phone.dirty)"
+      [errorMessage]="
+        form.controls.phone.errors?.['required'] && 'Localização é obrigatório' ||
+        form.controls.phone.errors?.['pattern'] && 'Formato inválido. Use: +55 (11) 91234-5678'
+      "
+    />
+
+    <app-button-green
+      [disabled]="btnDisabled()"
+      title="Atualizar"
+      type="submit"
+    />
+  </form>
+</app-modal>
+

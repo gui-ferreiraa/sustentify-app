@@ -14,6 +14,7 @@ import { ImageUploadInputComponent } from "../../../../../core/components/inputs
 import { ToastrService } from 'ngx-toastr';
 import { forkJoin, of, switchMap } from 'rxjs';
 import { IProduct } from '../../../../../core/types/product';
+import { ModalComponent } from "../../../../../core/components/modal/modal.component";
 
 interface ProductForm {
   name: FormControl;
@@ -31,16 +32,18 @@ interface ProductForm {
 
 @Component({
   selector: 'app-product-form',
-  imports: [PrimaryInputComponent, ReactiveFormsModule, SelectInputComponent, ButtonGreenComponent, TextareaInputComponent, ImageUploadInputComponent],
+  imports: [PrimaryInputComponent, ReactiveFormsModule, SelectInputComponent, ButtonGreenComponent, TextareaInputComponent, ImageUploadInputComponent, ModalComponent],
   templateUrl: './product-form.component.html',
 })
 export class ProductFormComponent {
+  isOpen = input(false);
+  @Output() clickedOutside = new EventEmitter<void>();
+  @Output() successfully = new EventEmitter<IProduct>();
   form!: FormGroup<ProductForm>;
   categoryOptions = getEnumOptions(Category, EnumTranslations.Category);
   conditionOptions = getEnumOptions(Condition, EnumTranslations.Condition);
   materialOptions = getEnumOptions(Material, EnumTranslations.Material);
   buttonDisabled = signal(false);
-  @Output() productCreated = new EventEmitter<IProduct>();
 
   constructor(
     private readonly productsService: ProductsService,
@@ -104,7 +107,7 @@ export class ProductFormComponent {
     ).subscribe({
       next: (createdProduct) => {
         this.toastService.success('Produto criado com sucesso!');
-        this.productCreated.emit(createdProduct);
+        this.successfully.emit(createdProduct);
       },
       error: () => this.toastService.error('Erro ao criar produto ou enviar imagens.'),
       complete: () => this.buttonDisabled.set(false),

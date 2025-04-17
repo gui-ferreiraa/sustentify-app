@@ -16,11 +16,18 @@ import { ToastrService } from 'ngx-toastr';
 import { ModalComponent } from "../../../core/components/modal/modal.component";
 import { InterestStatus } from '../../../core/enums/InterestStatus';
 import { Department } from '../../../core/enums/department.enum';
+import { Meta, Title } from '@angular/platform-browser';
+import { TranslateEnumPipe } from '../../../pipes/translate-enum.pipe';
+import { FormatPricePipe } from '../../../pipes/formats/format-price.pipe';
+import { FormatDatePipe } from '../../../pipes/formats/format-date.pipe';
 
 @Component({
   selector: 'app-overview',
   imports: [
     AsyncPipe,
+    TranslateEnumPipe,
+    FormatPricePipe,
+    FormatDatePipe,
     TitleDisplayComponent,
     OverviewCardComponent,
     TableComponent,
@@ -46,9 +53,14 @@ export class OverviewComponent implements OnInit {
     private readonly productsService: ProductsService,
     private readonly interestedService: InterestedProductsService,
     private readonly toastService: ToastrService,
+    private readonly titleService: Title,
+    private readonly metaService: Meta,
   ) {}
 
   ngOnInit(): void {
+    this.titleService.setTitle('Visão Geral | Sustentify');
+    this.metaService.updateTag({ name: 'description', content: 'Acompanhe o desempenho da sua empresa na Sustentify com uma visão completa de métricas e atividades.' });
+
     const productId$ = this.route.params.pipe(
       switchMap(params => this.productsService.fetchProductDetails(Number(params['productId'])))
     );
@@ -60,12 +72,14 @@ export class OverviewComponent implements OnInit {
     );
   }
 
-  translateCategory(category: Category): string {
-    return EnumTranslations.Category[category]
-  }
-
   navigateToSolicitation(productId: number): void {
     this.router.navigate([`/products/${productId}`]);
+  }
+
+  refreshLists() {
+    this.solicitations$ = this.product$.pipe(
+      switchMap(product => this.interestedService.fetchInterestedByProductId(product.id))
+    );
   }
 
   deleteInterestedProduct(productId: number) {
@@ -73,12 +87,27 @@ export class OverviewComponent implements OnInit {
       next: (value) => {
         if (value.successfully) {
           this.toastService.success('Solicitação Deletada!');
+          this.refreshLists();
         }
       },
       error: (err) => {
         this.toastService.error('Erro ao deletar!');
       }
     })
+  }
+
+  updateInterestedProduct(id: number, status: InterestStatus) {
+    this.interestedService.fetchInterestedUpdate(id, status).subscribe({
+      next: (value) => {
+        if (value.successfully) {
+          this.toastService.success('Solicitação Atualizada!');
+          this.refreshLists();
+        }
+      },
+      error: (err) => {
+        this.toastService.error('Erro ao atualizar!');
+      }
+    });
   }
 
   openModal(id: number) {
@@ -94,27 +123,5 @@ export class OverviewComponent implements OnInit {
   closeModal() {
     this.modalInterested.set(null);
     this.modalIsOpen.set(false);
-  }
-
-  formatPrice(price?: number): string {
-    if (!price) return '';
-
-    return price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-  }
-
-  translateStatus(status: InterestStatus) {
-    return EnumTranslations.Status[status];
-  }
-
-  translateDepartment(department?: Department) {
-    if (!department) return 'Outro';
-
-    return EnumTranslations.Department[department];
-  }
-
-  formatDate(date?: string): string {
-    return date ? new Date(date).toLocaleDateString('pt-BR', {
-      dateStyle: 'medium'
-    }) : '';
   }
 }

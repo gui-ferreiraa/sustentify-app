@@ -22,7 +22,7 @@
           /
         </p>
         <h4>
-          {{ translateCategory(product.category) }}
+          {{ product.category | translateEnum: 'Category' }}
         </h4>
       </div>
 
@@ -57,16 +57,16 @@
           @for (interested of solicitations$ | async; track interested.id) {
             <tr>
               <td class="p-4">
-                {{ translateStatus(interested.status) }}
+                {{ interested.status | translateEnum: 'Status' }}
               </td>
               <td class="p-4">
                 {{ interested.quantity }}
               </td>
               <td class="p-4">
-                {{ formatPrice(interested.totalPrice) }}
+                {{ interested.totalPrice | formatPrice }}
               </td>
               <td class="p-4 text-nowrap">
-                {{ formatDate(interested.createdAt) }}
+                {{ interested.createdAt | formatDate }}
               </td>
               <td
                 class="p-4 flex flex-col gap-2 font-semibold"
@@ -77,17 +77,30 @@
                 >
                   Detalhes
                 </button>
-                <button
-                  class="bg-emerald-300 text-gray-700 rounded-lg px-4 py-1 cursor-pointer hover:bg-emerald-400 transition-colors duration-400 ease-in-out"
-                >
-                  Finalizar
-                </button>
-                <button
-                  class="bg-red-400 text-gray-700 rounded-lg px-4 py-1 cursor-pointer hover:bg-red-500 transition-colors duration-400 ease-in-out"
-                  (click)="deleteInterestedProduct(interested.productId)"
+                @if (interested.status !== 'APPROVED') {
+                  <button
+                    class="bg-emerald-300 text-gray-700 rounded-lg px-4 py-1 cursor-pointer hover:bg-emerald-400 transition-colors duration-400 ease-in-out"
+                    (click)="updateInterestedProduct(interested.id, 'APPROVED')"
                   >
-                  Deletar
-                </button>
+                    Aceitar
+                  </button>
+                }
+                @if (interested.status !== 'CANCELLED') {
+                  <button
+                    class="bg-red-400 text-gray-700 rounded-lg px-4 py-1 cursor-pointer hover:bg-red-500 transition-colors duration-400 ease-in-out"
+                    (click)="updateInterestedProduct(interested.id, 'CANCELLED')"
+                  >
+                    Cancelar
+                  </button>
+                }
+                @else {
+                  <button
+                    class="bg-red-400 text-gray-700 rounded-lg px-4 py-1 cursor-pointer hover:bg-red-500 transition-colors duration-400 ease-in-out"
+                    (click)="deleteInterestedProduct(interested.id)"
+                    >
+                    Deletar
+                  </button>
+                }
               </td>
             </tr>
           }
@@ -141,7 +154,7 @@
                     Departamento
                 </dt>
                 <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {{  translateDepartment(modalInterested()?.buyer?.companyDepartment) }}
+                    {{  modalInterested()?.buyer?.companyDepartment | translateEnum: 'Department' }}
                 </dd>
             </div>
             <div class="bg-gray-50 px-4 py-5 lg:grid lg:grid-cols-3 lg:gap-4 lg:px-6">
@@ -157,7 +170,7 @@
                     Preço Unitário
                 </dt>
                 <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {{ formatPrice(modalInterested()?.unitPrice) }}
+                    {{ modalInterested()?.unitPrice || 0 | formatPrice }}
                 </dd>
             </div>
             <div class="bg-white px-4 py-5 lg:grid lg:grid-cols-3 lg:gap-4 lg:px-6">
@@ -165,7 +178,7 @@
                     Preço Total
                 </dt>
                 <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {{ formatPrice(modalInterested()?.totalPrice) }}
+                    {{ modalInterested()?.totalPrice || 0 | formatPrice }}
                 </dd>
             </div>
             <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">

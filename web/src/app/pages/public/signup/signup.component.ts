@@ -1,5 +1,5 @@
 import { NgOptimizedImage } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TitleDisplayComponent } from "../../../core/components/title-display/title-display.component";
 import { TextColor } from '../../../core/types/enums';
@@ -10,10 +10,10 @@ import { getEnumOptions } from '../../../core/utils/enum-options';
 import { Department } from '../../../core/enums/department.enum';
 import { EnumTranslations } from '../../../translations/enum-translations';
 import { CompaniesService } from '../../../services/companies/companies.service';
-import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { confirmPasswordValidator } from '../../../core/validators/confirmPassword.validator';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
+import { Meta, Title } from '@angular/platform-browser';
 
 interface SignupForm {
   cnpj: FormControl;
@@ -39,7 +39,7 @@ interface SignupForm {
 ],
   templateUrl: './signup.component.html',
 })
-export class SignupComponent {
+export class SignupComponent implements OnInit {
   signupTexts = {
     title: 'Crie sua conta',
     subtitle: 'Dê o Primeiro Passo para um Negócio Mais Sustentável',
@@ -55,6 +55,8 @@ export class SignupComponent {
     private readonly companiesService: CompaniesService,
     private readonly toastService: ToastrService,
     private readonly router: Router,
+    private readonly titleService: Title,
+    private readonly metaService: Meta,
   ) {
     this.form = new FormGroup({
       cnpj: new FormControl('', [Validators.required, Validators.pattern(/^\d{2}\.?\d{3}\.?\d{3}\/?\d{4}-?\d{2}$/
@@ -69,6 +71,11 @@ export class SignupComponent {
 )]),
       terms: new FormControl(false, [Validators.requiredTrue])
     }, { validators: confirmPasswordValidator() })
+  }
+
+  ngOnInit(): void {
+    this.titleService.setTitle('Cadastro - Sustentify');
+    this.metaService.updateTag({ name: 'description', content: 'Crie sua conta na Sustentify e comece a contribuir para um futuro mais sustentável.' });
   }
 
   submit() {
