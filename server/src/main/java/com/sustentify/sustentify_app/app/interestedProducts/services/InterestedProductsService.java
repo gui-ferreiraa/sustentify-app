@@ -2,14 +2,13 @@ package com.sustentify.sustentify_app.app.interestedProducts.services;
 
 import com.sustentify.sustentify_app.app.companies.entities.Company;
 import com.sustentify.sustentify_app.app.interestedProducts.InterestStatus;
-import com.sustentify.sustentify_app.app.interestedProducts.dtos.InterestedProductsDto;
 import com.sustentify.sustentify_app.app.interestedProducts.dtos.RegisterInterestProductDto;
+import com.sustentify.sustentify_app.app.interestedProducts.dtos.UpdateInterestDto;
 import com.sustentify.sustentify_app.app.interestedProducts.entities.InterestedProducts;
 import com.sustentify.sustentify_app.app.interestedProducts.exceptions.InterestedProductsNotFoundException;
 import com.sustentify.sustentify_app.app.interestedProducts.repositories.InterestedProductsRepository;
 import com.sustentify.sustentify_app.app.products.entities.Product;
 import com.sustentify.sustentify_app.app.products.services.ProductsService;
-import com.sustentify.sustentify_app.dtos.ResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -38,11 +37,9 @@ public class InterestedProductsService {
         return this.interestedProductsRepository.findByBuyerAndProduct(company, product);
     }
 
-    public InterestedProductsDto findById(Long id) {
+    public InterestedProducts findById(Long id) {
 
-        InterestedProducts interested = this.interestedProductsRepository.findById(id).orElseThrow(InterestedProductsNotFoundException::new);
-
-        return new InterestedProductsDto(interested);
+        return this.interestedProductsRepository.findById(id).orElseThrow(InterestedProductsNotFoundException::new);
     }
 
     public List<InterestedProducts> findByProductId(Long productId) {
@@ -51,7 +48,7 @@ public class InterestedProductsService {
         return this.interestedProductsRepository.findByProduct(product);
     }
 
-    public ResponseEntity<InterestedProducts> create(Company company, Product product, RegisterInterestProductDto interestProductDto) {
+    public InterestedProducts create(Company company, Product product, RegisterInterestProductDto interestProductDto) {
         InterestedProducts interestedProducts = new InterestedProducts();
         interestedProducts.setBuyer(company);
         interestedProducts.setProduct(product);
@@ -59,23 +56,19 @@ public class InterestedProductsService {
         interestedProducts.setStatus(InterestStatus.PENDING);
         interestedProducts.setMessage(interestProductDto.message());
 
-        InterestedProducts newInterestedProduct = this.interestedProductsRepository.save(interestedProducts);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(newInterestedProduct);
+        return this.interestedProductsRepository.save(interestedProducts);
     }
 
-    public ResponseEntity<InterestedProducts> updateInterestedStatus(InterestedProducts interestedProducts, InterestStatus interestStatus) {
-        interestedProducts.setStatus(interestStatus);
+    public InterestedProducts updateInterestedStatus(InterestedProducts interestedProducts, UpdateInterestDto dto) {
+        interestedProducts.setStatus(dto.status());
         this.interestedProductsRepository.save(interestedProducts);
 
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(interestedProducts);
+        return interestedProducts;
     }
 
-    public ResponseEntity<ResponseDto> delete(InterestedProducts interestedProducts) {
+    public void delete(InterestedProducts interestedProducts) {
+
         this.interestedProductsRepository.delete(interestedProducts);
 
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(new ResponseDto(HttpStatus.OK, "Interested Product Deleted", true, Optional.empty()));
     }
 }
