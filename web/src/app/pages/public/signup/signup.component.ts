@@ -1,5 +1,5 @@
 import { NgOptimizedImage } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TitleDisplayComponent } from "../../../core/components/title-display/title-display.component";
 import { TextColor } from '../../../core/types/enums';
@@ -48,6 +48,7 @@ export class SignupComponent {
   }
 
   form!: FormGroup<SignupForm>;
+  btnDisabled = signal(false);
   departmentOptions = getEnumOptions(Department, EnumTranslations.Department);
 
   constructor(
@@ -78,6 +79,7 @@ export class SignupComponent {
 
     const fields = this.form.getRawValue();
 
+    this.btnDisabled.set(true);
     this.companiesService.create({
       address: fields.location,
       cnpj: fields.cnpj,
@@ -89,13 +91,19 @@ export class SignupComponent {
     }).subscribe({
       next: (vl) => {
         if (vl.successfully) {
-          this.toastService.success("Company Created");
+          this.toastService.success("Cadastro realizado com sucesso!");
           this.router.navigate(['/signin'])
         }
-        else {
-          this.toastService.warning(vl.message);
-        }
-      }
+      },
+      error: (err) => {
+        if (err.error.status == 'CONFLICT') this.toastService.error("Email ja cadastrado!");
+        else if (err.error.status == 'BAD_REQUEST') this.toastService.error("CNPJ inválido!");
+        else if (err.error.status == 'FORBIDDEN') this.toastService.error("CNPJ já cadastrado!");
+        else this.toastService.error("Erro ao cadastrar empresa! Tente novamente mais tarde.");
+
+        this.btnDisabled.set(false);
+      },
+      complete: () => this.btnDisabled.set(false),
     })
   }
 }

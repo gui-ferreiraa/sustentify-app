@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { TitleDisplayComponent } from "../../../core/components/title-display/title-display.component";
 import { TextColor } from '../../../core/types/enums';
 import { PrimaryInputComponent } from "../../../core/components/inputs/primary-input/primary-input.component";
@@ -36,6 +36,7 @@ export class SigninComponent {
   }
 
   form!: FormGroup<SigninForm>;
+  btnDisabled = signal(false);
 
   constructor(
     private readonly authService: AuthService,
@@ -57,6 +58,7 @@ export class SigninComponent {
 
     const fields = this.form.getRawValue();
 
+    this.btnDisabled.set(true);
     this.authService.login({
       email: fields.email,
       password: fields.password
@@ -74,8 +76,16 @@ export class SigninComponent {
           })
       },
       error: (err) => {
-        this.toastService.error(err.error.message);
+        console.log(err);
+        if (err.error.status == "NOT_FOUND") this.toastService.error("Email não encontrado");
+        else if (err.error.status == "BAD_REQUEST") this.toastService.error("Email ou senha inválidos");
+        else if (err.error.status == "UNAUTHORIZED") this.toastService.error("Email ou senha inválidos");
+        else if (err.error.status == "FORBIDDEN") this.toastService.error("Email ou senha inválidos");
+        else this.toastService.error("Erro ao fazer login, tente novamente mais tarde.");
+        
+        this.btnDisabled.set(false);
       },
+      complete: () => this.btnDisabled.set(false),
     })
   }
 }
