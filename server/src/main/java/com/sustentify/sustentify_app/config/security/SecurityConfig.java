@@ -41,6 +41,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/v1/products").permitAll()
                         .requestMatchers(HttpMethod.GET, "/v1/products/trending").permitAll()
                         .requestMatchers(HttpMethod.GET, "/v1/products/{id}").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/v1/auth/recover").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/v1/auth/update-password/{token}").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

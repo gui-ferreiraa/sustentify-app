@@ -3,10 +3,10 @@ package com.sustentify.sustentify_app.app.upload.services;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.sustentify.sustentify_app.app.upload.dtos.CloudinaryResponse;
+import com.sustentify.sustentify_app.app.upload.exceptions.UploadInvalidException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Map;
 
 @Service
@@ -27,16 +27,16 @@ public class CloudinaryService {
             final String publicId = (String) result.get("public_id");
 
             return new CloudinaryResponse(publicId, url);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new UploadInvalidException("Error while uploading image");
         }
     }
 
     public void deleteImage(String publicId) {
         try {
             cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new UploadInvalidException("Error while deleting image");
         }
     }
 }

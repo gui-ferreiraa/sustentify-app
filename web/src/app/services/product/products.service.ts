@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { IProduct, IProductPagination, IProductResponse, IProductSummary } from '../../core/types/product';
+import { IProduct, IProductImage, IProductPagination, IProductResponse, IProductSummary } from '../../core/types/product';
 import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { REQUIRE_AUTH } from '../../core/interceptors/contexts/authRequire.context';
 import { IResponseDto } from '../../core/types/response.dto';
@@ -156,5 +156,19 @@ export class ProductsService {
     return this.http.post<IResponseDto>(`${this.apiUrl}/${productId}/images`, formData, {
       context: new HttpContext().set(REQUIRE_AUTH, true),
     })
+  }
+
+  fetchUploadDeleteImage(productId: number, image: IProductImage): Observable<IResponseDto> {
+    return this.http.delete<IResponseDto>(`${this.apiUrl}/${productId}/images`, {
+      params: new HttpParams().set('publicId', image.id),
+      context: new HttpContext().set(REQUIRE_AUTH, true),
+    });
+  }
+
+  fetchUploadDeleteThumbnail(productId: number, image: IProductImage): Observable<IResponseDto> {
+    return this.http.delete<IResponseDto>(`${this.apiUrl}/${productId}/thumbnail`, {
+      params: new HttpParams().set('publicId', image.id),
+      context: new HttpContext().set(REQUIRE_AUTH, true),
+    });
   }
 }

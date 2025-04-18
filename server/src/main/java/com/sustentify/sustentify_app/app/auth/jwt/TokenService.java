@@ -41,6 +41,21 @@ public class TokenService {
         }
     }
 
+    public String generateAccessToken(Company company, int plusHours, long minutes) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+
+            return JWT.create()
+                    .withIssuer(issuer)
+                    .withSubject(company.getEmail())
+                    .withExpiresAt(this.generateExpirationDate(plusHours, minutes))
+                    .sign(algorithm);
+
+        } catch (JWTCreationException exception) {
+            throw new TokenGenerationException("Token generation Error", exception);
+        }
+    }
+
     public String generateRefreshToken(Company company) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
@@ -87,5 +102,9 @@ public class TokenService {
 
     private Instant generateExpirationDate(int plusHours) {
         return LocalDateTime.now().plusHours(plusHours).toInstant(ZoneOffset.of("-03:00"));
+    }
+
+    private Instant generateExpirationDate(int plusHours, Long minutes) {
+        return LocalDateTime.now().plusHours(plusHours).plusMinutes(minutes).toInstant(ZoneOffset.of("-03:00"));
     }
 }

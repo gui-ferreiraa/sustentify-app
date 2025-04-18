@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -113,7 +114,7 @@ public class ProductsService {
     public void uploadThumbnailImage(final Long productId, final MultipartFile file) {
         final Product product = findById(productId);
 
-        String fileName = FileUploadUtil.getFileName(file.getOriginalFilename());
+        String fileName = FileUploadUtil.getFileName(Objects.requireNonNull(file.getOriginalFilename()));
         FileUploadUtil.assertAllowed(file, FileUploadUtil.IMAGE_PATTERN);
         final CloudinaryResponse response = this.cloudinaryService.upload(file, fileName);
 
@@ -130,7 +131,7 @@ public class ProductsService {
         final Product product = findById(productId);
 
         for (MultipartFile file: files) {
-            String fileName = FileUploadUtil.getFileName(file.getOriginalFilename());
+            String fileName = FileUploadUtil.getFileName(Objects.requireNonNull(file.getOriginalFilename()));
             FileUploadUtil.assertAllowed(file, FileUploadUtil.IMAGE_PATTERN);
             final CloudinaryResponse response = this.cloudinaryService.upload(file, fileName);
 
@@ -150,12 +151,15 @@ public class ProductsService {
 
         cloudinaryService.deleteImage(publicId);
 
+
         List<ProductImage> images = product.getImages();
         images.forEach(image -> {
             if (image.getPublicId().equals(publicId)) {
                 product.getImages().remove(image);
             }
         });
+
+        System.out.println(product.getImages());
 
         productsRepository.save(product);
     }

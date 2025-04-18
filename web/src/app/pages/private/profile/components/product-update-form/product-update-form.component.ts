@@ -48,7 +48,7 @@ export class ProductUpdateFormComponent implements OnInit {
   buttonDisabled = signal(false);
 
   protected readonly modalIsOpen = signal(false);
-  protected thumbnailDeleted = signal<IProductImage | null>(null);
+  protected selectedImageDelete = signal<IProductImage & { type: 'thumbnail' | 'image' } | null>(null);
 
   constructor(
     private readonly productsService: ProductsService,
@@ -85,6 +85,8 @@ export class ProductUpdateFormComponent implements OnInit {
         description: this.product()?.description,
       });
     }
+
+    console.log(this.product())
   }
 
   private prepareFormPayload(): any {
@@ -128,14 +130,53 @@ export class ProductUpdateFormComponent implements OnInit {
 
   openModal() { this.modalIsOpen.set(true) }
 
-  handleRemoveThumbnail(image?: IProductImage) {
+  handleRemoveImage(image?: IProductImage, type: 'thumbnail' | 'image' = 'image') {
     if (!image) return;
 
     this.openModal();
-    this.thumbnailDeleted.set(image);
+    this.selectedImageDelete.set({
+      type,
+      ...image,
+    })
   }
 
-  deleteImage() {
-    console.log('DELETE IMAGE', this.thumbnailDeleted());
+  deleteThumbnail() {
+    const productId = this.product()?.id;
+    const image = this.selectedImageDelete();
+
+    if (productId && image) {
+      if (image.type === 'thumbnail') {
+        this.productsService.fetchUploadDeleteThumbnail(productId, image).subscribe({
+          next: (res) => {
+            this.toastService.success('Thumbnail deletada com sucesso!');
+          },
+          error: (err) => {
+            this.toastService.error('Erro ao deletar imagem!');
+            this.modalIsOpen.set(false);
+          },
+          complete: () => {
+            this.selectedImageDelete.set(null);
+            this.modalIsOpen.set(false);
+          },
+        })
+      }
+      else if (image.type === 'image') {
+        this.productsService.fetchUploadDeleteImage(productId, image).subscribe({
+          next: (res) => {
+            this.toastService.success('Imagem deletada com sucesso!');
+          },
+          error: (err) => {
+            this.toastService.error('Erro ao deletar imagem!');
+            this.modalIsOpen.set(false);
+          },
+          complete: () => {
+            this.selectedImageDelete.set(null);
+            this.modalIsOpen.set(false);
+          },
+        })
+      }
+
+      return;
+    }
   }
 };

@@ -5,7 +5,7 @@ import { Material } from "../enums/material.enum";
 export interface IProductImage {
   id: string;
   url: string;
-  productId: string;
+  publicId: string;
 }
 
 export interface IProduct {

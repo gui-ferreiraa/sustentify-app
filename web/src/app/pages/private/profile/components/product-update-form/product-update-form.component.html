@@ -143,7 +143,7 @@
           alt="Thumbnail"
           width="60"
           height="60"
-          (click)="handleRemoveThumbnail(product()?.thumbnail)"
+          (click)="handleRemoveImage(product()?.thumbnail, 'thumbnail')"
           class="w-20 h-20 object-cover rounded-xl cursor-pointer hover:opacity-70 transition z-10"
         />
       }
@@ -167,7 +167,7 @@
               alt="Thumbnail"
               width="60"
               height="60"
-              (click)="''"
+              (click)="handleRemoveImage(image)"
               class="w-20 h-20 object-cover rounded-xl cursor-pointer hover:opacity-70 transition z-10"
             />
           }
@@ -186,7 +186,7 @@
 <app-modal-delete
   (clickedOutside)="this.modalIsOpen.set(false)"
   [isOpen]="modalIsOpen()"
-  (confirm)="deleteImage()"
+  (confirm)="deleteThumbnail()"
   (cancel)="this.modalIsOpen.set(false)"
   message="Você tem certeza que deseja excluir esta imagem?"
   title="Excluir Imagem"

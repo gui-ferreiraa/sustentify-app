@@ -1,6 +1,7 @@
 package com.sustentify.sustentify_app.config.exceptions;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.sustentify.sustentify_app.app.emails.exceptions.EmailSendingException;
 import com.sustentify.sustentify_app.app.upload.exceptions.UploadInvalidException;
 import com.sustentify.sustentify_app.app.auth.jwt.exceptions.TokenValidationException;
 import com.sustentify.sustentify_app.app.companies.exceptions.CompanyAlreadyExistsException;
@@ -134,6 +135,12 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<ResponseError> maxUploadSizeExceededHandler(MaxUploadSizeExceededException exception) {
+        ResponseError responseError = new ResponseError(HttpStatus.BAD_REQUEST, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseError);
+    }
+
+    @ExceptionHandler(EmailSendingException.class)
+    public ResponseEntity<ResponseError> emailSendingHandler(EmailSendingException exception) {
         ResponseError responseError = new ResponseError(HttpStatus.BAD_REQUEST, exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseError);
     }

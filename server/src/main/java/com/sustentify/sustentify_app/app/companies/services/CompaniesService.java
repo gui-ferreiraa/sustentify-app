@@ -68,6 +68,15 @@ public class CompaniesService {
                 .body(new ResponseDto(HttpStatus.OK, "Company Updated", true, Optional.ofNullable(company.getName())));
     }
 
+    public ResponseEntity<ResponseDto> update(Company company) {
+
+        this.companiesRepository.save(company);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new ResponseDto(HttpStatus.OK, "Company Updated", true, Optional.ofNullable(company.getName())));
+    }
+
     public ResponseEntity<ResponseDto> delete(Company company) {
         CompanyDeleted companyDeleted = new CompanyDeleted(company);
         this.companiesDeletedRepository.save(companyDeleted);

@@ -1,6 +1,8 @@
 package com.sustentify.sustentify_app.app.auth;
 
 import com.sustentify.sustentify_app.app.auth.dtos.LoginCompanyDto;
+import com.sustentify.sustentify_app.app.auth.dtos.RecoverDto;
+import com.sustentify.sustentify_app.app.auth.dtos.RecoverPasswordDto;
 import com.sustentify.sustentify_app.app.auth.dtos.ResponseDto;
 import com.sustentify.sustentify_app.app.auth.jwt.TokenService;
 import com.sustentify.sustentify_app.app.auth.jwt.exceptions.TokenValidationException;
@@ -8,6 +10,8 @@ import com.sustentify.sustentify_app.app.companies.entities.Company;
 import com.sustentify.sustentify_app.app.companies.exceptions.CompanyNotFoundException;
 import com.sustentify.sustentify_app.app.companies.exceptions.CompanyPasswordInvalidException;
 import com.sustentify.sustentify_app.app.companies.services.CompaniesService;
+import com.sustentify.sustentify_app.app.emails.EmailDto;
+import com.sustentify.sustentify_app.app.emails.EmailsService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,11 +27,13 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
     private final CompaniesService companiesService;
+    private final EmailsService emailsService;
 
-    public AuthService(PasswordEncoder passwordEncoder, TokenService tokenService, CompaniesService companiesService) {
+    public AuthService(PasswordEncoder passwordEncoder, TokenService tokenService, CompaniesService companiesService, EmailsService emailsService) {
         this.passwordEncoder = passwordEncoder;
         this.tokenService = tokenService;
         this.companiesService = companiesService;
+        this.emailsService = emailsService;
     }
 
     public ResponseEntity<Company> companyLogged(String accessToken) {
@@ -105,5 +111,30 @@ public class AuthService {
         refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7);
 
         response.addCookie(refreshTokenCookie);
+    }
+
+    public void sendEmailRecoverPassword(RecoverDto dto) {
+        Company company = this.companiesService.findByEmail(dto.email()).orElseThrow(CompanyNotFoundException::new);
+
+        String token = this.tokenService.generateAccessToken(company, 0, 1);
+
+        System.out.println("recoveryToken: " + token);
+
+        EmailDto email = new EmailDto(company.getName(), company.getEmail(), "Recuperação de senha", token);
+        this.emailsService.sendEmail(email);
+    }
+
+    public void updatePassword(RecoverPasswordDto dto, String token) {
+        String email = this.tokenService.validateToken(token);
+
+        Company company = this.companiesService.findByEmail(email).orElseThrow(CompanyNotFoundException::new);
+
+        String hashedPassword = this.passwordEncoder.encode(dto.password());
+
+        company.setPassword(hashedPassword);
+
+        this.companiesService.update(company);
+
+        this.tokenService.revokeToken(token);
     }
 }

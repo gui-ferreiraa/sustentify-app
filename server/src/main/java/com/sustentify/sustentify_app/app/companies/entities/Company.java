@@ -15,16 +15,18 @@ public class Company {
 
     private String name;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
     @JsonIgnore
     private String password;
 
+    @Column(unique = true, nullable = false)
     private String cnpj;
 
     private String address;
 
+    @Column(unique = true, nullable = false)
     private String phone;
 
     @Enumerated(EnumType.STRING)

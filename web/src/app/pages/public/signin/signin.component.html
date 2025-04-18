@@ -43,7 +43,8 @@
           type="text"
           [error]="form.controls.email.invalid && (form.controls['email'].touched || form.controls.email.dirty)"
           [errorMessage]="
-            form.controls.email.errors?.['required'] && 'Email é obrigatório'
+            form.controls.email.errors?.['required'] && 'Email é obrigatório' ||
+            form.controls.email.errors?.['email'] && 'Email invalido'
           "
         />
 
