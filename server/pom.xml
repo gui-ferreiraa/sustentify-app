@@ -125,10 +125,12 @@
 			<artifactId>cloudinary-taglib</artifactId>
 			<version>2.0.0</version>
 		</dependency>
+
+<!--		ENVIRONMENTS -->
 		<dependency>
 			<groupId>io.github.cdimascio</groupId>
 			<artifactId>dotenv-java</artifactId>
-			<version>2.2.4</version>
+			<version>3.0.0</version>
 		</dependency>
 
 <!--		EMAIL -->

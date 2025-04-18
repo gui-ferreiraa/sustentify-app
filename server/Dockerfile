@@ -15,6 +15,7 @@ FROM eclipse-temurin:21-jdk-alpine
 WORKDIR /usr/src/server
 
 COPY --from=build /usr/src/server/target/sustentify-app-0.0.1-SNAPSHOT.jar ./app.jar
+COPY --from=build /usr/src/server/target/classes/templates ./templates
 
 ENV PORT=${PORT}
 
