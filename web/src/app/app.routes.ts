@@ -13,6 +13,8 @@ import { AuthGuard } from './core/guards/auth/auth.guard';
 import { AutoLoginGuard } from './core/guards/auth/auto-login.guard';
 import { ProfileComponent } from './pages/private/profile/profile.component';
 import { OverviewComponent } from './pages/private/overview/overview.component';
+import { RecoverPasswordComponent } from './pages/public/recover-password/recover-password.component';
+import { UpdatePasswordComponent } from './pages/private/update-password/update-password.component';
 
 export const routes: Routes = [
   {
@@ -63,6 +65,14 @@ export const routes: Routes = [
     path: 'dashboard',
     component: ProfileComponent,
     canActivate: [AuthGuard]
+  },
+  {
+    path: 'recover-password',
+    component: RecoverPasswordComponent,
+  },
+  {
+    path: 'update-password/:token',
+    component: UpdatePasswordComponent,
   },
   {
     path: '**',

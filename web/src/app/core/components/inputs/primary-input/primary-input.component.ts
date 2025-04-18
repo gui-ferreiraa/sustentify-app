@@ -26,6 +26,7 @@ export class PrimaryInputComponent implements ControlValueAccessor {
   label = input.required<string>();
   inputName = input.required<string>();
   error = input.required<boolean>();
+  isDisabled = false;
   errorMessage = input.required<string>();
   mask = input<string>();
   thousandSeparator = input<string>();
@@ -58,6 +59,8 @@ export class PrimaryInputComponent implements ControlValueAccessor {
     this.onTouched = fn
   }
 
-  setDisabledState(isDisabled: boolean): void {}
+  setDisabledState(isDisabled: boolean): void {
+    this.isDisabled = isDisabled
+  }
 
 }

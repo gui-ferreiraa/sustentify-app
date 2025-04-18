@@ -103,6 +103,10 @@ export class SignupComponent implements OnInit {
         }
       },
       error: (err) => {
+        if (err.status == 500) {
+          this.toastService.error("Erro ao fazer login, tente novamente mais tarde");
+          this.btnDisabled.set(false);
+        }
         if (err.error.status == 'CONFLICT') this.toastService.error("Email ja cadastrado!");
         else if (err.error.status == 'BAD_REQUEST') this.toastService.error("CNPJ inválido!");
         else if (err.error.status == 'FORBIDDEN') this.toastService.error("CNPJ já cadastrado!");

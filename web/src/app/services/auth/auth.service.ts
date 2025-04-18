@@ -48,6 +48,14 @@ export class AuthService {
     return this.http.post<IResponseDto>(`${this.apiUrl}/login`, loginDto);
   }
 
+  verifyEmail(token: string): Observable<ICompany> {
+    return this.http.get<ICompany>(`${this.apiUrl}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+     });
+  }
+
   getCompanyLogged() {
     const token = this.cookieService.getAccessToken();
 
@@ -73,12 +81,17 @@ export class AuthService {
 
   logout() {
     this.setCompany(null);
-    
+
     this.cookieService.removeAccessToken();
 
     this.http.get<IResponseDto>(`${this.apiUrl}/logout`, {
       context: new HttpContext().set(REQUIRE_AUTH, true),
-    }).subscribe(vl => console.log(vl));
+    }).subscribe();
 
   }
+
+  recoverPassword(email: string) {
+    return this.http.post(`${this.apiUrl}/recover`, { email });
+  }
+
 }
