@@ -21,10 +21,9 @@ export class CompaniesService {
   }
 
   update(
-    id: number,
     company: Partial<ICompany>
   ) {
-    return this.http.patch<IResponseDto>(`${this.apiUrl}/${id}`, company, {
+    return this.http.patch<IResponseDto>(`${this.apiUrl}`, company, {
       context: new HttpContext().set(REQUIRE_AUTH, true)
     });
   }

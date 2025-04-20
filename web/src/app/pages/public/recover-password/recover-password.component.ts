@@ -6,7 +6,7 @@ import { ButtonGreenComponent } from "../../../core/components/button-green/butt
 import { PrimaryInputComponent } from "../../../core/components/inputs/primary-input/primary-input.component";
 import { AuthService } from '../../../services/auth/auth.service';
 import { ToastrService } from 'ngx-toastr';
-import { Meta, Title } from '@angular/platform-browser';
+import { Meta, provideProtractorTestingSupport, Title } from '@angular/platform-browser';
 
 interface RecoverForm {
   email: FormControl;
@@ -33,6 +33,7 @@ export class RecoverPasswordComponent implements OnInit{
   protected form!: FormGroup<RecoverForm>;
   protected btnDisabled = signal(false);
   protected isSuccess = signal(false);
+  protected errorMessage = signal('');
 
   constructor(
     private readonly authService: AuthService,
@@ -53,25 +54,49 @@ export class RecoverPasswordComponent implements OnInit{
     });
   }
 
+  hasRecentPasswordResetAttempt(): boolean {
+    const cooldownMinutes = 5;
+    const lastAttemptKey = 'lastPasswordResetAttempt';
+    const now = Date.now();
+    const lastAttemptStr = localStorage.getItem(lastAttemptKey);
+
+    if (lastAttemptStr) {
+      const lastAttemptTime = parseInt(lastAttemptStr, 10);
+      const diffInMinutes = (now - lastAttemptTime) / 1000 / 60;
+
+      if (diffInMinutes < cooldownMinutes) {
+        this.toastService.warning(`Aguarde ${Math.ceil(cooldownMinutes - diffInMinutes)} minuto(s) para tentar novamente.`);
+        this.isSuccess.set(true);
+        return true;
+      }
+    }
+    return false;
+  }
+
   submit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
 
+    if (this.hasRecentPasswordResetAttempt()) return;
+
     const fields = this.form.getRawValue();
     const { email } = fields;
     this.btnDisabled.set(true);
     this.authService.recoverPassword(email).subscribe({
       next: (res) => {
+        localStorage.setItem('lastPasswordResetAttempt', Date.now().toString());
         this.form.reset();
-        this.toastService.success('E-mail enviado com sucesso!');
+        this.toastService.success('E-mail enviado!');
         this.isSuccess.set(true);
       },
       error: (err) => {
-        console.log(err)
         if (err.status == 400) this.toastService.error('E-mail inválido!');
-        if (err.status == 404) this.toastService.error('E-mail não encontrado!');
+        if (err.status == 404) {
+          this.form.get('email')?.setErrors({ 'notfound': true });
+          this.toastService.error('E-mail não encontrado!');
+        }
         else {
           this.toastService.error('Erro tente novamente mais tarde!');
         }

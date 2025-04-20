@@ -97,6 +97,7 @@ export class ProfileComponent implements OnInit {
   }
 
   openEditProductModal(id: number) {
+    this.productUpdated.set(null);
     this.productsService.fetchProductDetails(id).subscribe({
       next: (res) => {
         this.productUpdated.set(res);

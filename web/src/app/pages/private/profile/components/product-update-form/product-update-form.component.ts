@@ -85,8 +85,6 @@ export class ProductUpdateFormComponent implements OnInit {
         description: this.product()?.description,
       });
     }
-
-    console.log(this.product())
   }
 
   private prepareFormPayload(): any {
@@ -101,7 +99,7 @@ export class ProductUpdateFormComponent implements OnInit {
       name: fields.name,
       price: fields.price,
       productionDate: new Date(fields.productionDate).toISOString(),
-      quantity: fields.quantity
+      quantity: fields.quantity,
     }
   };
 

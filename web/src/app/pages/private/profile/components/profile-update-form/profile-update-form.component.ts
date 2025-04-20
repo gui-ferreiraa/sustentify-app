@@ -33,7 +33,7 @@ interface EditProfileForm {
   templateUrl: './profile-update-form.component.html',
 })
 export class ProfileUpdateFormComponent implements OnInit {
-  company$!: Observable<ICompany | null>;
+  protected company$!: Observable<ICompany | null>;
   form!: FormGroup<EditProfileForm>;
   protected departmentOptions = getEnumOptions(Department, EnumTranslations.Department);
   protected btnDisabled = signal(false);
@@ -50,22 +50,15 @@ export class ProfileUpdateFormComponent implements OnInit {
   ngOnInit(): void {
     this.company$ = this.authService.company$;
 
-    this.form = new FormGroup({
-      name: new FormControl('', { nonNullable: true }),
-      address: new FormControl('', { nonNullable: true }),
-      companyDepartment: new FormControl('', { nonNullable: true }),
-      phone: new FormControl('', { nonNullable: true, validators: [Validators.pattern(/^\+55\s?\(\d{2}\)\s?\d{5}-\d{4}$/
-      )]})
-    });
-
     this.company$.subscribe({
       next: (company) => {
         if (company) {
-          this.form.patchValue({
-            name: company.name,
-            address: company.address,
-            companyDepartment: company.companyDepartment,
-            phone: company.phone,
+          this.form = new FormGroup({
+            name: new FormControl(company.name, { nonNullable: true }),
+            address: new FormControl(company.address, { nonNullable: true }),
+            companyDepartment: new FormControl(company.companyDepartment, { nonNullable: true }),
+            phone: new FormControl(company.phone, { nonNullable: true, validators: [Validators.pattern(/^\+55\s?\(\d{2}\)\s?\d{5}-\d{4}$/
+            )]})
           });
         }
       }
@@ -86,12 +79,13 @@ export class ProfileUpdateFormComponent implements OnInit {
         return;
       }
 
-      this.companiesService.update(company.id, fields).subscribe({
+      this.companiesService.update(fields).subscribe({
         next: () => {
           this.toastService.success('Perfil atualizado com sucesso!');
           this.successfully.emit();
         },
-        error: () => {
+        error: (err) => {
+          console.log(err)
           this.toastService.error('Erro ao atualizar perfil!'),
           this.btnDisabled.set(false);
         },

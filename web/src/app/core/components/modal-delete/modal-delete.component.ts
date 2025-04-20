@@ -1,8 +1,11 @@
 import { Component, ElementRef, EventEmitter, HostListener, input, Output } from '@angular/core';
+import { LucideAngularComponent, LucideAngularModule, X } from 'lucide-angular';
 
 @Component({
   selector: 'app-modal-delete',
-  imports: [],
+  imports: [
+    LucideAngularModule,
+  ],
   templateUrl: './modal-delete.component.html'
 })
 export class ModalDeleteComponent {
@@ -12,6 +15,7 @@ export class ModalDeleteComponent {
   @Output() clickedOutside = new EventEmitter<void>();
   @Output() confirm = new EventEmitter<void>();
   @Output() cancel = new EventEmitter<void>();
+  protected readonly closeIcon = X;
 
   constructor(
     private readonly elementRef: ElementRef,

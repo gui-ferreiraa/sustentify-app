@@ -9,6 +9,7 @@ import { AuthService } from '../../../services/auth/auth.service';
 import { ICompany } from '../../../core/types/company';
 import { ToastrService } from 'ngx-toastr';
 import { confirmPasswordValidator } from '../../../core/validators/confirmPassword.validator';
+import { Meta, Title } from '@angular/platform-browser';
 
 interface UpdatePasswordForm {
   email: FormControl;
@@ -35,23 +36,28 @@ export class UpdatePasswordComponent implements OnInit{
     subtitleColor: TextColor.gray,
   }
   protected btnDisabled = signal(false);
-  form!: FormGroup<UpdatePasswordForm>;
-  companyUpdated: WritableSignal<ICompany> = signal({} as ICompany);
-  isTokenValid = signal(false);
+  protected form!: FormGroup<UpdatePasswordForm>;
+  protected companyUpdated: WritableSignal<ICompany> = signal({} as ICompany);
+  protected token = signal('');
+  protected isTokenValid = signal(false);
 
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly toastService: ToastrService,
     private readonly authService: AuthService,
+    private readonly titleService: Title,
+    private readonly metaService: Meta,
   ) { }
 
   ngOnInit(): void {
+    this.titleService.setTitle('Atualizar senha | Sustentify');
+    this.metaService.updateTag({ name: 'description', content: 'Atualize sua senha de acesso ao sistema' });
 
     this.route.params.subscribe(params => {
-      const token = params['token'];
+      this.token.set(params['token']);
 
-      this.authService.verifyEmail(token).subscribe({
+      this.authService.verifyEmail(this.token()).subscribe({
         next: (response) => {
           this.companyUpdated.set(response);
           this.form = new FormGroup<UpdatePasswordForm>({
@@ -77,8 +83,17 @@ export class UpdatePasswordComponent implements OnInit{
     }
 
     const fields = this.form.getRawValue();
-    const { email, password, confirmPassword } = fields;
+    const { password } = fields;
     this.btnDisabled.set(true);
-    console.log(email, password, confirmPassword);
+    this.authService.updatePassword(this.token(), password).subscribe({
+      next: () => {
+        this.toastService.success('Senha atualizada com sucesso!');
+        this.router.navigate(['/login']);
+      },
+      error: (error) => {
+        this.toastService.error(error.error.message);
+        this.btnDisabled.set(false);
+      }
+    });
   }
 }

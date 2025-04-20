@@ -105,23 +105,6 @@
               class="p-4"
             >
               <div class="flex gap-4 items-center">
-                @if (prod.thumbnail) {
-                  <img
-                    [src]="prod.thumbnail.url"
-                    alt=""
-                    width="60"
-                    height="60"
-                    class="object-cover w-14 h-14 rounded-xl max-sm:hidden"
-                  />
-                } @else {
-                  <img
-                    src="/assets/images/product-default.jpg"
-                    alt=""
-                    width="60"
-                    height="60"
-                    class="object-cover w-14 h-14 rounded-xl max-sm:hidden"
-                  />
-                }
                 {{ prod.name }}
               </div>
             </td>
