@@ -1,9 +1,10 @@
 package com.sustentify.sustentify_app.app.emails;
 
+import com.sustentify.sustentify_app.app.companies.entities.Company;
+
 public record EmailDto(
-        String name,
-        String email,
+        Company company,
         String subject,
-        String recoveryLink
+        String token
 ) {
 }

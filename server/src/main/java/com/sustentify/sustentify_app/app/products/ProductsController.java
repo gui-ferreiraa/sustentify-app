@@ -60,13 +60,13 @@ public class ProductsController {
     }
 
     @GetMapping("/my")
-    public ResponseEntity<Page<Product>> findMyProducts(
+    public ResponseEntity<Page<ProductSummaryDto>> findMyProducts(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size
     ) {
         Company company = SecurityUtils.getCurrentCompany();
 
-        Page<Product> productList = this.productsService.getProductsByCompany(company, page, size);
+        Page<ProductSummaryDto> productList = this.productsService.getProductsByCompany(company, page, size).map(ProductSummaryDto::new);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -74,10 +74,16 @@ public class ProductsController {
     }
 
     @PostMapping
-    public ResponseEntity<Product> create(@Validated @RequestBody RegisterProductDto registerProductDto) {
+    public ResponseEntity<ResponseDto> create(@Validated @RequestBody RegisterProductDto registerProductDto) {
         Company company = SecurityUtils.getCurrentCompany();
 
-        return this.productsService.create(registerProductDto, company);
+        Product product = this.productsService.create(registerProductDto, company);
+
+        ResponseDto res = new ResponseDto(HttpStatus.CREATED, "Product Created", true, Optional.ofNullable(product.getName()));
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(res);
     }
 
     @GetMapping("/{id}")
@@ -92,17 +98,29 @@ public class ProductsController {
     @PatchMapping("/{id}")
     public ResponseEntity<ResponseDto> update(@PathVariable("id") Long productId, @RequestBody UpdateProductDto updateProductDto) {
         Company company = SecurityUtils.getCurrentCompany();
-        Product product = this.productsService.findById(productId, company);
 
-        return this.productsService.update(product, updateProductDto);
+        Product product = this.productsService.findByIdAndCompany(productId, company);
+
+        Product productUpdated = this.productsService.update(product, updateProductDto);
+
+        ResponseDto res = new ResponseDto(HttpStatus.OK, "Product Updated", true, Optional.ofNullable(productUpdated.getName()));
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(res);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseDto> delete(@PathVariable("id") Long productId) {
         Company company = SecurityUtils.getCurrentCompany();
-        Product product = this.productsService.findById(productId, company);
+        Product product = this.productsService.findByIdAndCompany(productId, company);
 
-        return this.productsService.delete(product);
+        this.productsService.delete(product);
+
+        ResponseDto res = new ResponseDto(HttpStatus.ACCEPTED, "Product Deleted", true, Optional.ofNullable(product.getName()));
+        return ResponseEntity
+                .status(HttpStatus.ACCEPTED)
+                .body(res);
     }
 
     @PostMapping("/{id}/thumbnail")
@@ -147,9 +165,9 @@ public class ProductsController {
         productsService.deleteProductImage(productId, publicId);
 
         return ResponseEntity
-                .status(HttpStatus.OK)
+                .status(HttpStatus.ACCEPTED)
                 .body(new ResponseDto(
-                        HttpStatus.OK,
+                        HttpStatus.ACCEPTED,
                         "Images deleted successfully",
                         true,
                         Optional.empty()
@@ -164,9 +182,9 @@ public class ProductsController {
         productsService.deleteThumbnail(productId, publicId);
 
         return ResponseEntity
-                .status(HttpStatus.OK)
+                .status(HttpStatus.ACCEPTED)
                 .body(new ResponseDto(
-                        HttpStatus.OK,
+                        HttpStatus.ACCEPTED,
                         "Thumbnail deleted successfully",
                         true,
                         Optional.empty()

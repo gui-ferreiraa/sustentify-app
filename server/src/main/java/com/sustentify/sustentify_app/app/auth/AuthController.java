@@ -3,10 +3,11 @@ package com.sustentify.sustentify_app.app.auth;
 import com.sustentify.sustentify_app.app.auth.dtos.LoginCompanyDto;
 import com.sustentify.sustentify_app.app.auth.dtos.RecoverDto;
 import com.sustentify.sustentify_app.app.auth.dtos.RecoverPasswordDto;
-import com.sustentify.sustentify_app.app.auth.dtos.ResponseDto;
+import com.sustentify.sustentify_app.app.auth.dtos.AuthResponseDto;
 import com.sustentify.sustentify_app.app.companies.entities.Company;
 import com.sustentify.sustentify_app.app.companies.services.CompaniesService;
 import com.sustentify.sustentify_app.app.emails.EmailsService;
+import com.sustentify.sustentify_app.dtos.ResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/auth")
@@ -37,12 +39,12 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ResponseDto> login(@RequestBody LoginCompanyDto loginCompanyDto, HttpServletResponse response) {
+    public ResponseEntity<AuthResponseDto> login(@RequestBody LoginCompanyDto loginCompanyDto, HttpServletResponse response) {
         return this.authService.signin(loginCompanyDto, response);
     }
 
     @GetMapping("/refresh")
-    public ResponseEntity<ResponseDto> refreshToken(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<AuthResponseDto> refreshToken(HttpServletRequest request, HttpServletResponse response) {
         return this.authService.refreshToken(request, response);
     }
 
@@ -57,22 +59,27 @@ public class AuthController {
     }
 
     @PostMapping("/recover")
-    public ResponseEntity<Void> recover(@RequestBody RecoverDto dto) {
+    public ResponseEntity<ResponseDto> recover(@RequestBody RecoverDto dto) {
         this.authService.sendEmailRecoverPassword(dto);
 
-       return ResponseEntity.noContent().build();
+        ResponseDto res = new ResponseDto(HttpStatus.ACCEPTED, "Email sending", true, Optional.empty());
+        return ResponseEntity
+                .status(HttpStatus.ACCEPTED)
+                .body(res);
     }
 
     @PatchMapping("/update-password/{token}")
-    public ResponseEntity<String> updatePassword(
+    public ResponseEntity<ResponseDto> updatePassword(
             @PathVariable String token,
             @RequestBody RecoverPasswordDto recoverPasswordDto
 
     ) {
         this.authService.updatePassword(recoverPasswordDto, token);
 
+        var res = new ResponseDto(HttpStatus.ACCEPTED, "Password Updated", true, Optional.empty());
+
         return ResponseEntity
                 .status(HttpStatus.ACCEPTED)
-                .body("");
+                .body(res);
     }
 }

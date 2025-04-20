@@ -15,6 +15,9 @@ public class EmailsService {
     @Value("${spring.mail.username}")
     private String sender;
 
+    @Value("${api.web.domain}")
+    private String webDomain;
+
     private final JavaMailSender mailSender;
     private final SpringTemplateEngine templateEngine;
 
@@ -31,10 +34,13 @@ public class EmailsService {
 
             helper.setFrom(sender);
             helper.setSubject(dto.subject());
-            helper.setTo(dto.email());
+            helper.setTo(dto.company().getEmail());
 
             Context context = new Context();
-            context.setVariable("dto", dto);
+            context.setVariable("subject", dto.subject());
+            context.setVariable("company", dto.company());
+            context.setVariable("token", dto.token());
+            context.setVariable("domain", webDomain);
             String htmlBody = templateEngine.process("recover-password.html", context);
 
             helper.setText(htmlBody, true);

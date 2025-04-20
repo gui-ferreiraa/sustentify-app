@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/v1/companies")
 public class CompaniesController {
@@ -22,12 +24,24 @@ public class CompaniesController {
 
     @PostMapping
     public ResponseEntity<ResponseDto> create(@RequestBody RegisterCompanyDto company) {
-        return this.companiesService.create(company);
+        Company companyCreated = this.companiesService.create(company);
+        ResponseDto res = new ResponseDto(HttpStatus.CREATED, "Company created", true, Optional.empty());
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(res);
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<ResponseDto> update(@PathVariable Long id, @RequestBody UpdateCompanyDto updateCompanyDto) {
-        return this.companiesService.update(id, updateCompanyDto);
+    @PatchMapping()
+    public ResponseEntity<ResponseDto> update(@RequestBody UpdateCompanyDto updateCompanyDto) {
+        Company company = SecurityUtils.getCurrentCompany();
+
+        this.companiesService.update(company, updateCompanyDto);
+
+        ResponseDto res = new ResponseDto(HttpStatus.OK, "Company updated", true, Optional.empty());
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(res);
     }
 
     @GetMapping("/{id}")
@@ -43,6 +57,11 @@ public class CompaniesController {
     public ResponseEntity<ResponseDto> delete() {
         Company company = SecurityUtils.getCurrentCompany();
 
-        return this.companiesService.delete(company);
+        this.companiesService.delete(company);
+        ResponseDto res = new ResponseDto(HttpStatus.OK, "Company deleted", true, Optional.empty());
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(res);
     }
 }

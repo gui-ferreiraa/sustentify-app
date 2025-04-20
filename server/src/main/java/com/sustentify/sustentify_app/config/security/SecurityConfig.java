@@ -20,13 +20,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    private CustomCompanyDetailsService customCompanyDetailsService;
-    private SecurityFilter securityFilter;
-    @Value("${api.cors.origin}")
-    private String corsOrigin;
 
-    public SecurityConfig(CustomCompanyDetailsService customCompanyDetailsService, SecurityFilter securityFilter) {
-        this.customCompanyDetailsService = customCompanyDetailsService;
+    private final SecurityFilter securityFilter;
+
+    @Value("${api.cors.origin}")
+    private String[] corsOrigin;
+
+    public SecurityConfig(SecurityFilter securityFilter) {
         this.securityFilter = securityFilter;
     }
 

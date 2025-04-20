@@ -20,7 +20,7 @@ public class EmailConfig {
         FileTemplateResolver templateResolver = new FileTemplateResolver();
         templateResolver.setPrefix(mailTemplatesPath);
         templateResolver.setSuffix(".html");
-        templateResolver.setTemplateMode("HTML5");
+        templateResolver.setTemplateMode("HTML");
         templateResolver.setCharacterEncoding("UTF-8");
         return templateResolver;
     }

@@ -1,9 +1,9 @@
 package com.sustentify.sustentify_app.app.auth;
 
+import com.sustentify.sustentify_app.app.auth.dtos.AuthResponseDto;
 import com.sustentify.sustentify_app.app.auth.dtos.LoginCompanyDto;
 import com.sustentify.sustentify_app.app.auth.dtos.RecoverDto;
 import com.sustentify.sustentify_app.app.auth.dtos.RecoverPasswordDto;
-import com.sustentify.sustentify_app.app.auth.dtos.ResponseDto;
 import com.sustentify.sustentify_app.app.auth.jwt.TokenService;
 import com.sustentify.sustentify_app.app.auth.jwt.exceptions.TokenValidationException;
 import com.sustentify.sustentify_app.app.companies.entities.Company;
@@ -44,7 +44,7 @@ public class AuthService {
         return ResponseEntity.ok(company);
     }
 
-    public ResponseEntity<ResponseDto> signin(LoginCompanyDto loginCompanyDto, HttpServletResponse response) {
+    public ResponseEntity<AuthResponseDto> signin(LoginCompanyDto loginCompanyDto, HttpServletResponse response) {
         Company company = this.companiesService.findByEmail(loginCompanyDto.email()).orElseThrow(CompanyNotFoundException::new);
 
         if (!passwordEncoder.matches(loginCompanyDto.password(), company.getPassword())) throw new CompanyPasswordInvalidException();
@@ -54,10 +54,10 @@ public class AuthService {
 
         createCookieWithRefreshToken(refreshToken, response);
 
-        return ResponseEntity.ok(new ResponseDto(company.getName(), company.getEmail(), accessToken));
+        return ResponseEntity.ok(new AuthResponseDto(company.getName(), company.getEmail(), accessToken));
     }
 
-    public ResponseEntity<ResponseDto> refreshToken(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<AuthResponseDto> refreshToken(HttpServletRequest request, HttpServletResponse response) {
         String accessToken = request.getHeader("Authorization");
         if (accessToken != null && accessToken.startsWith("Bearer ")) {
             accessToken = accessToken.replace("Bearer ", "");
@@ -87,7 +87,7 @@ public class AuthService {
 
         return ResponseEntity
                 .status(HttpStatus.ACCEPTED)
-                .body(new ResponseDto(company.getName(), company.getEmail(), newAccessToken));
+                .body(new AuthResponseDto(company.getName(), company.getEmail(), newAccessToken));
     }
 
     public ResponseEntity<Map<String, String>> logout(HttpServletResponse response, String accessToken) {
@@ -118,9 +118,7 @@ public class AuthService {
 
         String token = this.tokenService.generateAccessToken(company, 0, 1);
 
-        System.out.println("recoveryToken: " + token);
-
-        EmailDto email = new EmailDto(company.getName(), company.getEmail(), "Recuperação de senha", token);
+        EmailDto email = new EmailDto(company, "Recuperação de senha", token);
         this.emailsService.sendEmail(email);
     }
 
@@ -129,11 +127,7 @@ public class AuthService {
 
         Company company = this.companiesService.findByEmail(email).orElseThrow(CompanyNotFoundException::new);
 
-        String hashedPassword = this.passwordEncoder.encode(dto.password());
-
-        company.setPassword(hashedPassword);
-
-        this.companiesService.update(company);
+        this.companiesService.updatePassword(company, dto.password());
 
         this.tokenService.revokeToken(token);
     }

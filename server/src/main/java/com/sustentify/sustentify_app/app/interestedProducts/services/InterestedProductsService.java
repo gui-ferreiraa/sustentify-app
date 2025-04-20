@@ -9,8 +9,6 @@ import com.sustentify.sustentify_app.app.interestedProducts.exceptions.Intereste
 import com.sustentify.sustentify_app.app.interestedProducts.repositories.InterestedProductsRepository;
 import com.sustentify.sustentify_app.app.products.entities.Product;
 import com.sustentify.sustentify_app.app.products.services.ProductsService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,20 +25,13 @@ public class InterestedProductsService {
         this.productsService = productsService;
     }
 
-    public ResponseEntity<List<InterestedProducts>> findByBuyer(Company company) {
-        List<InterestedProducts> interestedProductsList = this.interestedProductsRepository.findByBuyer(company);
-
-        return ResponseEntity.status(HttpStatus.OK).body(interestedProductsList);
-    }
+    public List<InterestedProducts> findByBuyer(Company company) {return this.interestedProductsRepository.findByBuyer(company);}
 
     public Optional<InterestedProducts> findByBuyerAndProduct(Company company, Product product) {
         return this.interestedProductsRepository.findByBuyerAndProduct(company, product);
     }
 
-    public InterestedProducts findById(Long id) {
-
-        return this.interestedProductsRepository.findById(id).orElseThrow(InterestedProductsNotFoundException::new);
-    }
+    public InterestedProducts findById(Long id) {return this.interestedProductsRepository.findById(id).orElseThrow(InterestedProductsNotFoundException::new);}
 
     public List<InterestedProducts> findByProductId(Long productId) {
         Product product = this.productsService.findById(productId);
@@ -59,11 +50,14 @@ public class InterestedProductsService {
         return this.interestedProductsRepository.save(interestedProducts);
     }
 
-    public InterestedProducts updateInterestedStatus(InterestedProducts interestedProducts, UpdateInterestDto dto) {
-        interestedProducts.setStatus(dto.status());
-        this.interestedProductsRepository.save(interestedProducts);
+    public InterestedProducts update(InterestedProducts interestedProducts, UpdateInterestDto dto) {
+        applyUpdate(interestedProducts, dto);
+        return this.interestedProductsRepository.save(interestedProducts);
+    }
 
-        return interestedProducts;
+    private void applyUpdate(InterestedProducts prod, UpdateInterestDto dto) {
+        if (dto.status() != null) prod.setStatus(dto.status());
+        if (dto.quantity() != null) prod.setQuantity(dto.quantity());
     }
 
     public void delete(InterestedProducts interestedProducts) {

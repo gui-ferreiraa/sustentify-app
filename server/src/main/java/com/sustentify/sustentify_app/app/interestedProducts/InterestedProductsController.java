@@ -32,37 +32,43 @@ public class InterestedProductsController {
     }
 
     @GetMapping
-    public ResponseEntity<List<InterestedProducts>> getInterestedProducts() {
+    public ResponseEntity<List<InterestedProducts>> findAllByCompany() {
         Company company = SecurityUtils.getCurrentCompany();
 
-        return this.interestedProductsService.findByBuyer(company);
+        List<InterestedProducts> res = this.interestedProductsService.findByBuyer(company);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(res);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<InterestedProductsDto> getInterestedById(
+    public ResponseEntity<InterestedProductsDto> findById(
             @PathVariable(value = "id") Long id
     ) {
         InterestedProducts list = this.interestedProductsService.findById(id);
 
         return ResponseEntity
-            .ok(new InterestedProductsDto(list));
+                .status(HttpStatus.OK)
+                .body(new InterestedProductsDto(list));
     }
 
     @GetMapping("/product/{id}")
-    public ResponseEntity<List<InterestedProducts>> getInterestedByProductId(
+    public ResponseEntity<List<InterestedProducts>> findByProductId(
             @PathVariable(value = "id") Long id
     ) {
         List<InterestedProducts> list = this.interestedProductsService.findByProductId(id);
 
         return ResponseEntity
-                .ok(list);
+                .status(HttpStatus.OK)
+                .body(list);
     }
 
     @PostMapping("{id}")
     public ResponseEntity<InterestedProducts> create(
             @PathVariable(value = "id") Long productId,
             @RequestBody RegisterInterestProductDto registerInterestProductDto
-            ) {
+        ) {
         Company company = SecurityUtils.getCurrentCompany();
         Product product = this.productsService.findById(productId);
 
@@ -83,12 +89,13 @@ public class InterestedProductsController {
             @RequestBody UpdateInterestDto dto
     ) {
         InterestedProducts interestedProducts = this.interestedProductsService.findById(interestedId);
-        InterestedProducts interested = this.interestedProductsService.updateInterestedStatus(interestedProducts, dto);
+
+        this.interestedProductsService.update(interestedProducts, dto);
 
         return ResponseEntity
-                .status(HttpStatus.ACCEPTED)
+                .status(HttpStatus.OK)
                 .body(new ResponseDto(
-                        HttpStatus.ACCEPTED,
+                        HttpStatus.OK,
                         "Updated with successfully",
                         true,
                         Optional.empty()
@@ -102,7 +109,7 @@ public class InterestedProductsController {
         this.interestedProductsService.delete(interestedProducts);
 
         return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(new ResponseDto(HttpStatus.OK, "Interested Product Deleted", true, Optional.empty()));
+                .status(HttpStatus.ACCEPTED)
+                .body(new ResponseDto(HttpStatus.ACCEPTED, "Interested Product Deleted", true, Optional.empty()));
     }
 }

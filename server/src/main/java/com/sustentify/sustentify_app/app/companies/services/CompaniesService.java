@@ -5,16 +5,11 @@ import com.sustentify.sustentify_app.app.companies.dtos.UpdateCompanyDto;
 import com.sustentify.sustentify_app.app.companies.entities.Company;
 import com.sustentify.sustentify_app.app.companies.entities.CompanyDeleted;
 import com.sustentify.sustentify_app.app.companies.exceptions.CompanyAlreadyExistsException;
-import com.sustentify.sustentify_app.app.companies.exceptions.CompanyNotFoundException;
 import com.sustentify.sustentify_app.app.companies.repositories.CompaniesDeletedRepository;
 import com.sustentify.sustentify_app.app.companies.repositories.CompaniesRepository;
-import com.sustentify.sustentify_app.dtos.ResponseDto;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Field;
 import java.util.Optional;
 
 @Service
@@ -35,7 +30,7 @@ public class CompaniesService {
 
     public Optional<Company> findById(Long companyId) { return this.companiesRepository.findById(companyId); }
 
-    public ResponseEntity<ResponseDto> create(RegisterCompanyDto registerCompanyDto) {
+    public Company create(RegisterCompanyDto registerCompanyDto) {
         this.findByEmail(registerCompanyDto.email()).ifPresent(existingCompany -> {
             throw new CompanyAlreadyExistsException();
         });
@@ -49,60 +44,34 @@ public class CompaniesService {
         newCompany.setCnpj(registerCompanyDto.cnpj());
         newCompany.setPhone(registerCompanyDto.phone());
 
-        this.companiesRepository.save(newCompany);
-
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(new ResponseDto(HttpStatus.CREATED, "Company Created", true, Optional.ofNullable(newCompany.getName())));
+        return this.companiesRepository.save(newCompany);
     }
 
-    public ResponseEntity<ResponseDto> update(Long id, UpdateCompanyDto updateCompanyDto) {
-        Company company = this.companiesRepository.findById(id).orElseThrow(CompanyNotFoundException::new);
+    public Company update(Company company, UpdateCompanyDto updateCompanyDto) {
 
-        updateFields(company, updateCompanyDto);
+        applyUpdates(company, updateCompanyDto);
+
+        return this.companiesRepository.save(company);
+    }
+
+    public void updatePassword(Company company, String password) {
+        String hashedPassword = this.passwordEncoder.encode(password);
+
+        company.setPassword(hashedPassword);
 
         this.companiesRepository.save(company);
-
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(new ResponseDto(HttpStatus.OK, "Company Updated", true, Optional.ofNullable(company.getName())));
     }
 
-    public ResponseEntity<ResponseDto> update(Company company) {
-
-        this.companiesRepository.save(company);
-
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(new ResponseDto(HttpStatus.OK, "Company Updated", true, Optional.ofNullable(company.getName())));
-    }
-
-    public ResponseEntity<ResponseDto> delete(Company company) {
+    public void delete(Company company) {
         CompanyDeleted companyDeleted = new CompanyDeleted(company);
         this.companiesDeletedRepository.save(companyDeleted);
 
         this.companiesRepository.delete(company);
-
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(new ResponseDto(HttpStatus.OK, "Company Deleted", true, Optional.ofNullable(company.getName())));
     }
 
-    private void updateFields(Company company, UpdateCompanyDto updateCompanyDto) {
-        Field[] fields = updateCompanyDto.getClass().getDeclaredFields();
-
-        for (Field field : fields) {
-            try {
-                field.setAccessible(true);
-                Object value = field.get(updateCompanyDto);
-                if (value != null) {
-                    Field companyField = company.getClass().getDeclaredField(field.getName());
-                    companyField.setAccessible(true);
-                    companyField.set(company, value);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+    private void applyUpdates(Company company, UpdateCompanyDto dto) {
+        if (dto.name() != null) company.setName(dto.name());
+        if (dto.address() != null) company.setAddress(dto.address());
+        if (dto.companyDepartment() != null) company.setCompanyDepartment(dto.companyDepartment());
     }
 }
