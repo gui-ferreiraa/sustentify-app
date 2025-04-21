@@ -7,6 +7,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideToastr } from 'ngx-toastr';
 import { provideNgxMask } from 'ngx-mask';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { provideCloudinaryLoader } from '@angular/common';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -25,5 +26,6 @@ export const appConfig: ApplicationConfig = {
       withFetch(),
       withInterceptors([authInterceptor])
     ),
+    provideCloudinaryLoader("https://res.cloudinary.com/di2rpmtzc/")
   ]
 };

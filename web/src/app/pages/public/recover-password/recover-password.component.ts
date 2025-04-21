@@ -55,7 +55,7 @@ export class RecoverPasswordComponent implements OnInit{
   }
 
   hasRecentPasswordResetAttempt(): boolean {
-    const cooldownMinutes = 5;
+    const cooldownMinutes = 3;
     const lastAttemptKey = 'lastPasswordResetAttempt';
     const now = Date.now();
     const lastAttemptStr = localStorage.getItem(lastAttemptKey);

@@ -20,7 +20,7 @@ export class AutoLoginGuard implements CanActivate {
       filter(loaded => loaded),
       switchMap(() => this.authService.isAuthenticated$),
       map(isAuth => {
-        return isAuth ? this.router.createUrlTree(['/profile']) : true;
+        return isAuth ? this.router.createUrlTree(['/dashboard']) : true;
       })
     );
   }

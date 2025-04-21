@@ -28,7 +28,7 @@ export class InterestedFormComponent {
   conditionOptions = getEnumOptions(Condition, EnumTranslations.Condition);
   materialOptions = getEnumOptions(Material, EnumTranslations.Material);
   buttonDisabled = signal(false);
-  productId = input.required<number>();
+  productId = input.required<string>();
   @Output() onSubmit = new EventEmitter<void>();
 
   constructor(

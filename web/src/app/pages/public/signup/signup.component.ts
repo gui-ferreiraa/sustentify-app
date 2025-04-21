@@ -109,7 +109,7 @@ export class SignupComponent implements OnInit {
         }
         if (err.error.status == 'CONFLICT') this.toastService.error("Email ja cadastrado!");
         else if (err.error.status == 'BAD_REQUEST') this.toastService.error("CNPJ inválido!");
-        else if (err.error.status == 'FORBIDDEN') this.toastService.error("CNPJ já cadastrado!");
+        else if (err.error.status == 'FORBIDDEN') this.toastService.error("Usuário á cadastrado!");
         else this.toastService.error("Erro ao cadastrar empresa! Tente novamente mais tarde.");
 
         this.btnDisabled.set(false);

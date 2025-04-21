@@ -82,12 +82,11 @@ export class AuthService {
   logout() {
     this.setCompany(null);
 
-    this.cookieService.removeAccessToken();
-
     this.http.get<IResponseDto>(`${this.apiUrl}/logout`, {
       context: new HttpContext().set(REQUIRE_AUTH, true),
     }).subscribe();
 
+    this.cookieService.removeAccessToken();
   }
 
   recoverPassword(email: string) {
@@ -95,6 +94,6 @@ export class AuthService {
   }
 
   updatePassword(token: string, password: string) {
-    return this.http.post(`${this.apiUrl}/update-password/${token}`, { password });
+    return this.http.patch(`${this.apiUrl}/update-password/${token}`, { password });
   }
 }

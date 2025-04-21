@@ -63,8 +63,7 @@ export class ContactComponent implements OnInit {
       this.toastService.error('Preencha os campos obrigatórios corretamente.');
       return;
     }
-
-    console.log(this.contactForm.getRawValue());
+    
     this.toastService.success('Email Enviado!');
   }
 }

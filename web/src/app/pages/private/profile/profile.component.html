@@ -67,19 +67,19 @@
                   class="flex flex-col gap-6 justify-center p-5 text-gray-500 font-semibold"
                 >
                 <button
-                    class="bg-emerald-100 text-gray-700 rounded-lg px-4 py-1 cursor-pointer hover:bg-emerald-200 transition-colors duration-400 ease-in-out"
-                    (click)="profileEditModalIsOpen.set(true)"
+                  class="inline-flex w-full justify-center rounded-md bg-emerald-300 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-emerald-400 sm:ml-3 sm:w-auto hover:scale-105 cursor-pointer transition duration-300 ease-in-out"
+                    (click)="this.modalManager.open('profile')"
                   >
                     Editar
                   </button>
                   <button
-                    class="bg-emerald-300 text-gray-700 rounded-lg px-4 py-1 cursor-pointer hover:bg-emerald-400 transition-colors duration-400 ease-in-out"
-                    (click)="onClickRecoverPassword()"
+                    class="inline-flex w-full justify-center rounded-md bg-emerald-500 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-emerald-600 sm:ml-3 sm:w-auto hover:scale-105 cursor-pointer transition duration-300 ease-in-out"
+                    (click)="this.modalManager.open('editPassword')"
                   >
                     Editar Senha
                   </button>
                   <button
-                    class="bg-red-400 text-gray-700 rounded-lg px-4 py-1 cursor-pointer hover:bg-red-500 transition-colors duration-400 ease-in-out"
+                    class="inline-flex w-full justify-center rounded-md bg-red-400 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:ml-3 sm:w-auto hover:scale-105 cursor-pointer transition duration-300 ease-in-out"
                     (click)="logout()"
                   >
                     Logout
@@ -93,7 +93,7 @@
       class="flex flex-col gap-5 w-full lg:w-[calc(100%-387px)]"
     >
       <app-table
-        (buttonClicked)="productCreateModalIsOpen.set(true)"
+        (buttonClicked)="this.modalManager.open('createProduct')"
         buttonTitle="Novo Produto"
         subtitle="Registrados"
         title="Produtos"
@@ -125,22 +125,22 @@
                 class="flex flex-col gap-2 font-semibold"
               >
                 <button
-                  class="bg-emerald-100 text-gray-700 rounded-lg px-4 py-1 cursor-pointer hover:bg-emerald-200 transition-colors duration-400 ease-in-out"
+                  class="inline-flex w-full justify-center rounded-md bg-emerald-200 px-3 py-1 text-sm font-semibold text-white shadow-xs hover:bg-emerald-300 sm:ml-3 sm:w-auto hover:scale-105 cursor-pointer transition duration-300 ease-in-out"
                   (click)="openOverview(prod.id)"
                 >
                   Overview
                 </button>
                 <button
-                  class="bg-emerald-300 text-gray-700 rounded-lg px-4 py-1 cursor-pointer hover:bg-emerald-400 transition-colors duration-400 ease-in-out"
-                  (click)="openEditProductModal(prod.id)"
+                  class="inline-flex w-full justify-center rounded-md bg-emerald-400 px-3 py-1 text-sm font-semibold text-white shadow-xs hover:bg-emerald-500 sm:ml-3 sm:w-auto hover:scale-105 cursor-pointer transition duration-300 ease-in-out"
+                  (click)="searchProduct(prod.id); modalManager.open('editProduct')"
                 >
                   Editar
                 </button>
                 <button
-                  class="bg-red-400 text-gray-700 rounded-lg px-4 py-1 cursor-pointer hover:bg-red-500 transition-colors duration-400 ease-in-out"
-                  (click)="this.productDeleteModalIsOpen.set(true); this.idSelected.set(prod.id)"
+                  class="inline-flex w-full justify-center rounded-md bg-red-400 px-3 py-1 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:ml-3 sm:w-auto hover:scale-105 cursor-pointer transition duration-300 ease-in-out"
+                  (click)="this.idSelected.set(prod.id); this.modalManager.open('deleteProduct')"
                 >
-                  Delete
+                  Deletar
                 </button>
               </div>
             </td>
@@ -180,13 +180,13 @@
             >
               <a
                 [href]="'/products/' + (interested.productId)"
-                class="bg-emerald-300 text-gray-700 rounded-lg px-4 py-1 text-center cursor-pointer hover:bg-emerald-400 transition-colors duration-400 ease-in-out"
+                class="inline-flex w-full justify-center rounded-md bg-emerald-400 px-3 py-1 text-sm font-semibold text-white shadow-xs hover:bg-emerald-500 sm:ml-3 sm:w-auto hover:scale-105 cursor-pointer transition duration-300 ease-in-out"
               >
                 Produto
               </a>
               <button
-                class="bg-red-400 text-gray-700 rounded-lg px-4 py-1 cursor-pointer hover:bg-red-500 transition-colors duration-400 ease-in-out"
-                (click)="this.modalDeleteInterestedIsOpen.set(true); this.idSelected.set(interested.id)"
+                class="inline-flex w-full justify-center rounded-md bg-red-400 px-3 py-1 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:ml-3 sm:w-auto hover:scale-105 cursor-pointer transition duration-300 ease-in-out"
+                (click)="this.idSelected.set(interested.id); this.modalManager.open('deleteInterested')"
               >
                 Deletar
               </button>
@@ -200,40 +200,52 @@
 </main>
 
 <app-profile-update-form
-  (successfully)="this.profileEditModalIsOpen.set(false)"
-  [isOpen]="profileEditModalIsOpen()"
-  (clickedOutside)="this.profileEditModalIsOpen.set(false)"
+  (successfully)="this.modalManager.close('profile')"
+  [isOpen]="this.modalManager.isOpen('profile')()"
+  (clickedOutside)="this.modalManager.close('profile')"
 />
 
 <app-product-form
-  (successfully)="this.productCreateModalIsOpen.set(false); updateProductsList()"
-  [isOpen]="productCreateModalIsOpen()"
-  (clickedOutside)="this.productCreateModalIsOpen.set(false)"
+  (successfully)="modalManager.close('createProduct'); updateProductsList()"
+  [isOpen]="modalManager.isOpen('createProduct')()"
+  (clickedOutside)="modalManager.close('createProduct')"
 />
 
 @if (this.productUpdated()) {
   <app-product-update-form
-    [isOpen]="productEditModalIsOpen()"
-    (clickedOutside)="this.productEditModalIsOpen.set(false)"
+    [isOpen]="modalManager.isOpen('editProduct')()"
+    (clickedOutside)="modalManager.close('editProduct')"
     [product]="productUpdated()"
-    (successfully)="this.productEditModalIsOpen.set(false); updateProductsList()"
+    (successfully)="modalManager.close('editProduct'); updateProductsList()"
   />
 }
 
 <app-modal-delete
   title="Deletar Produto"
   message="Você tem certeza que deseja deletar esse Produto?"
-  [isOpen]="productDeleteModalIsOpen()"
-  (clickedOutside)="this.productDeleteModalIsOpen.set(false)"
-  (confirm)="deleteProductModal(idSelected()); this.productDeleteModalIsOpen.set(false)"
-  (cancel)="this.productDeleteModalIsOpen.set(false)"
+  [isOpen]="modalManager.isOpen('deleteProduct')()"
+  (clickedOutside)="modalManager.close('deleteProduct')"
+  (confirm)="deleteProduct(idSelected()); modalManager.close('deleteProduct')"
+  (cancel)="modalManager.close('deleteProduct')"
+  [isLoading]="this.isSubmitting()"
 />
 
 <app-modal-delete
   title="Deletar Solicitação"
   message="Você tem certeza que deseja deletar essa Solicitação?"
-  [isOpen]="modalDeleteInterestedIsOpen()"
-  (clickedOutside)="this.modalDeleteInterestedIsOpen.set(false)"
-  (confirm)="deleteInterestedProduct(idSelected()); this.modalDeleteInterestedIsOpen.set(false)"
-  (cancel)="this.modalDeleteInterestedIsOpen.set(false)"
+  [isOpen]="modalManager.isOpen('deleteInterested')()"
+  (clickedOutside)="modalManager.close('deleteInterested')"
+  (confirm)="deleteInterestedProduct(idSelected()); modalManager.close('deleteInterested')"
+  (cancel)="modalManager.close('deleteInterested')"
+  [isLoading]="this.isSubmitting()"
+/>
+
+<app-modal-delete
+  title="Editar Senha"
+  message="Para editar a senha, é preciso fazer o logout!"
+  confirmTitle="Continuar"
+  [isOpen]="modalManager.isOpen('editPassword')()"
+  (clickedOutside)="modalManager.close('editPassword')"
+  (confirm)="recoverPassword(); modalManager.close('editPassword')"
+  (cancel)="modalManager.close('editPassword')"
 />

@@ -13,9 +13,9 @@ import { Router } from "@angular/router";
       class="relative"
     >
       <img
-        [ngSrc]="'/assets/images/background-black.jpg'"
+        ngSrc="/sustentify/public/background-black_1_dharvv.jpg"
         width="640"
-        height="556"
+        height="426"
         class="w-full rounded-xl object-cover relative top-0 left-0 brightness-75 h-96 min-[320px]:h-80 sm:h-72"
       />
 

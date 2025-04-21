@@ -1,6 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { ProductsService } from '../../../services/product/products.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { map, Observable, switchMap, take, tap } from 'rxjs';
 import { IProduct, IProductSummary } from '../../../core/types/product';
 import { AsyncPipe, CommonModule, NgOptimizedImage } from '@angular/common';
@@ -16,6 +16,7 @@ import { Meta, Title } from '@angular/platform-browser';
 import { FormatDatePipe } from '../../../pipes/formats/format-date.pipe';
 import { FormatPricePipe } from '../../../pipes/formats/format-price.pipe';
 import { TranslateEnumPipe } from '../../../pipes/translate-enum.pipe';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-product-details',
@@ -38,7 +39,7 @@ export class ProductDetailsComponent implements OnInit{
   product$!: Observable<IProduct>;
   productsRelated$!: Observable<IProductSummary[]>;
   company$!: Observable<ICompany | null>;
-  productId = signal(0);
+  productId = signal('');
   protected productCompanyId = signal('');
   protected showRequestButton = signal(false);
   protected companyId = signal('');
@@ -55,7 +56,9 @@ export class ProductDetailsComponent implements OnInit{
   protected readonly StickyNoteIcon = StickyNote;
 
   constructor(
-    private route: ActivatedRoute,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly toastService: ToastrService,
     private readonly authService: AuthService,
     private readonly productsService: ProductsService,
     private readonly titleService: Title,
@@ -70,7 +73,7 @@ export class ProductDetailsComponent implements OnInit{
 
     this.product$ = this.route.params.pipe(
       switchMap(params => {
-        this.productId.set(Number(params['productId']));
+        this.productId.set(params['productId']);
         return this.productsService.fetchProductDetails(params['productId'])
       }),
       tap(product => this.productCompanyId.set(product.company_id)),
@@ -120,7 +123,15 @@ export class ProductDetailsComponent implements OnInit{
   }
 
   onClick() {
-    this.toggleModal(true);
+    this.company$.subscribe(vl => {
+      if (vl) {
+        this.toggleModal(true);
+        return;
+      }
+
+      this.router.navigate(['/signin']);
+      this.toastService.warning('Faça o login para continuar!')
+    });
   }
 
   onSubmitInterested() {

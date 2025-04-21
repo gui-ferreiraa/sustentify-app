@@ -22,6 +22,7 @@ import { ModalDeleteComponent } from "../../../core/components/modal-delete/moda
 import { TranslateEnumPipe } from '../../../pipes/translate-enum.pipe';
 import { FormatPricePipe } from '../../../pipes/formats/format-price.pipe';
 import { FormatDatePipe } from '../../../pipes/formats/format-date.pipe';
+import { ModalManagerService } from '../../../services/modal-manager/modal-manager.service';
 
 @Component({
   selector: 'app-profile',
@@ -52,17 +53,13 @@ export class ProfileComponent implements OnInit {
   protected interestedProducts$!: Observable<IInterestedProductSummary[]>;
 
   protected idSelected = signal('');
-
   protected productUpdated = signal<IProduct | null>(null);
-  protected profileEditModalIsOpen = signal(false);
-  protected productCreateModalIsOpen = signal(false);
-  protected productDeleteModalIsOpen = signal(false);
-  protected productEditModalIsOpen = signal(false);
-  protected modalDeleteInterestedIsOpen = signal(false);
+  protected isSubmitting = signal(false);
 
   constructor(
     private readonly authService: AuthService,
     private readonly productsService: ProductsService,
+    protected readonly modalManager: ModalManagerService,
     private readonly interestedService: InterestedProductsService,
     private readonly router: Router,
     private readonly toastService: ToastrService,
@@ -96,26 +93,28 @@ export class ProfileComponent implements OnInit {
     this.interestedProducts$ = this.interestedService.fetchInterestedByCompany();
   }
 
-  openEditProductModal(id: string) {
+  searchProduct(id: string) {
     this.productUpdated.set(null);
     this.productsService.fetchProductDetails(id).subscribe({
       next: (res) => {
         this.productUpdated.set(res);
-        this.productEditModalIsOpen.set(true);
       }
     })
   }
 
-  deleteProductModal(productId: string) {
+  deleteProduct(productId: string) {
+    this.isSubmitting.set(true);
     this.productsService.fetchProductDelete(productId).subscribe({
       next: (value) => {
         if (value.successfully) {
           this.toastService.success('Produto Deletado!');
           this.updateProductsList();
         }
+        this.isSubmitting.set(false);
       },
       error: (err) => {
         this.toastService.error('Erro ao deletar!');
+        this.isSubmitting.set(false);
       },
     })
   }
@@ -125,22 +124,24 @@ export class ProfileComponent implements OnInit {
   }
 
   deleteInterestedProduct(id: string) {
+    this.isSubmitting.set(true);
     this.interestedService.fetchInterestedDelete(id).subscribe({
       next: (value) => {
         if (value.successfully) {
           this.toastService.success('Solicitação Deletada!');
           this.updateProductsList();
         }
+        this.isSubmitting.set(false);
       },
       error: (err) => {
         this.toastService.error('Erro ao deletar!');
+        this.isSubmitting.set(false);
       },
     })
   }
 
-  onClickRecoverPassword() { return this.router.navigate(['/recover-password']) }
-
-  translateStatus(status: InterestStatus) {
-    return EnumTranslations.Status[status];
+  recoverPassword() {
+    this.authService.logout();
+    this.router.navigate(['/recover-password'])
   }
 }

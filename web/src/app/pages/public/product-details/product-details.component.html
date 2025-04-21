@@ -116,18 +116,20 @@
         <div class="flex flex-col gap-4">
           @if (product.thumbnail) {
             <img
-              [ngSrc]="product.thumbnail.url"
-              width="1220"
-              height="840"
+              [ngSrc]="'q_auto,w_890,h_640/' + (product.thumbnail.publicId)"
+              width="890"
+              height="640"
               class="object-cover relative rounded-2xl h-[640px] w-full"
+              priority
             />
           }
           @else {
             <img
-              [ngSrc]="'/assets/images/product-default.jpg'"
-              width="1220"
-              height="840"
+              ngSrc="/sustentify/public/product-default_1_hbbnj3.jpg"
+              width="890"
+              height="640"
               class="object-cover relative rounded-2xl h-[640px] w-full"
+              priority
             />
           }
 
@@ -137,10 +139,10 @@
             @if(product.images && product.images.length > 0) {
               @for (image of product.images; track $index) {
                 <img
-                  [ngSrc]="image.url"
+                  [ngSrc]="'w_300,h_300/' + image.publicId"
                   width="300"
                   height="300"
-                  class="object-cover relative rounded-2xl h-[640px] w-full"
+                  class="object-cover relative rounded-2xl w-full max-h-[380px]"
                 />
               }
             }

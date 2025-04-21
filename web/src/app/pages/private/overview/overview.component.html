@@ -27,7 +27,7 @@
       </div>
 
       <section
-      class="grid grid-cols-1 md:grid-cols-4"
+      class="grid grid-cols-1 md:grid-cols-2"
       >
         <app-overview-card
         [content]="product.interestCount.toString()"
@@ -36,14 +36,6 @@
         <app-overview-card
         [content]="product.quantity"
         title="Quantidade"
-        />
-        <app-overview-card
-        content="0"
-        title="Finalizadas"
-        />
-        <app-overview-card
-        content="0"
-        title="Cancelados"
         />
       </section>
       <section class="mt-3">

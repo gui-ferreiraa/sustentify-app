@@ -5,18 +5,18 @@
 <div class="relative">
     @if (product.thumbnail && product.thumbnail.url) {
       <img
-        [ngSrc]="product.thumbnail.url"
+        [ngSrc]="'w_400,h_446/' + product.thumbnail.publicId"
         width="420"
-        height="630"
-        class="object-cover relative rounded-2xl h-64"
+        height="585"
+        class="object-cover relative rounded-2xl max-h-[446px]"
       />
     }
     @else {
       <img
-        [ngSrc]="'/assets/images/product-default.jpg'"
-        width="420"
-        height="300"
-        class="object-cover relative rounded-2xl h-64"
+        ngSrc="w_400,h_446/sustentify/public/product-default_1_hbbnj3.jpg"
+        width="400"
+        height="446"
+        class="object-cover relative rounded-2xl max-h-[446px]"
       />
     }
 

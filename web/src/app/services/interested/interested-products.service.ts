@@ -7,7 +7,7 @@ import { IInterestedProduct, IInterestedProductSummary } from '../../core/types/
 import { InterestStatus } from '../../core/enums/InterestStatus';
 
 interface IInterestedProps {
-  productId: number;
+  productId: string;
   quantity: number;
   message: string;
 }

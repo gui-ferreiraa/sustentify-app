@@ -10,6 +10,7 @@ import { ICompany } from '../../../core/types/company';
 import { ToastrService } from 'ngx-toastr';
 import { confirmPasswordValidator } from '../../../core/validators/confirmPassword.validator';
 import { Meta, Title } from '@angular/platform-browser';
+import { CookieService } from '../../../services/cookies/cookie.service';
 
 interface UpdatePasswordForm {
   email: FormControl;
@@ -46,6 +47,7 @@ export class UpdatePasswordComponent implements OnInit{
     private readonly router: Router,
     private readonly toastService: ToastrService,
     private readonly authService: AuthService,
+    private readonly cookieService: CookieService,
     private readonly titleService: Title,
     private readonly metaService: Meta,
   ) { }
@@ -88,12 +90,13 @@ export class UpdatePasswordComponent implements OnInit{
     this.authService.updatePassword(this.token(), password).subscribe({
       next: () => {
         this.toastService.success('Senha atualizada com sucesso!');
-        this.router.navigate(['/login']);
+        this.router.navigate(['/signin']);
       },
       error: (error) => {
         this.toastService.error(error.error.message);
         this.btnDisabled.set(false);
-      }
+      },
+      complete: () => this.btnDisabled.set(false),
     });
   }
 }

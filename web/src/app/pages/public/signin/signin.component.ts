@@ -86,16 +86,13 @@ export class SigninComponent implements OnInit {
       error: (err) => {
         if (err.status == 500) {
           this.toastService.error("Erro ao fazer login, tente novamente mais tarde");
-          this.btnDisabled.set(false);
         }
         if (err.error.status == "NOT_FOUND") this.toastService.error("Email não encontrado");
         else if (err.error.status == "BAD_REQUEST") this.toastService.error("Email ou senha inválidos");
         else if (err.error.status == "UNAUTHORIZED") this.toastService.error("Email ou senha inválidos");
         else if (err.error.status == "FORBIDDEN") this.toastService.error("Email ou senha inválidos");
-        else {
-          this.toastService.error("Erro ao fazer login, tente novamente mais tarde");
-          this.btnDisabled.set(false);
-        }
+        else this.toastService.error("Erro ao fazer login, tente novamente mais tarde");
+        this.btnDisabled.set(false);
       },
       complete: () => this.btnDisabled.set(false),
     })

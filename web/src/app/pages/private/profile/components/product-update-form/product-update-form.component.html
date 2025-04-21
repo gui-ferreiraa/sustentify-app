@@ -139,7 +139,7 @@
     <div class="group w-max flex gap-2 mb-3">
       @if (product()?.thumbnail) {
         <img
-          [ngSrc]="product()?.thumbnail?.url ?? ''"
+          [ngSrc]="'q_auto,w_60,h_60/' + (product()?.thumbnail?.publicId)"
           alt="Thumbnail"
           width="60"
           height="60"
@@ -163,7 +163,7 @@
       @if (product()?.images) {
           @for (image of product()?.images; track $index) {
             <img
-              [ngSrc]="image.url"
+              [ngSrc]="'q_auto,w_60,h_60/' + (image.publicId)"
               alt="Thumbnail"
               width="60"
               height="60"
@@ -176,7 +176,7 @@
 
     <app-button-green
       title="Editar"
-      [disabled]="buttonDisabled()"
+      [disabled]="isSubmitting()"
       [type]="'submit'"
     />
 
@@ -184,10 +184,11 @@
 
 </app-modal>
 <app-modal-delete
-  (clickedOutside)="this.modalIsOpen.set(false)"
-  [isOpen]="modalIsOpen()"
+  (clickedOutside)="this.modalManager.close('deleteImage')"
+  [isOpen]="modalManager.isOpen('deleteImage')()"
   (confirm)="deleteThumbnail()"
-  (cancel)="this.modalIsOpen.set(false)"
+  (cancel)="this.modalManager.close('deleteImage')"
   message="Você tem certeza que deseja excluir esta imagem?"
   title="Excluir Imagem"
+  [isLoading]="isSubmitting()"
 />

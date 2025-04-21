@@ -11,10 +11,10 @@ import { Router } from '@angular/router';
       (click)="onClick()"
     >
       <img
-        ngSrc="/assets/images/logo.png"
+        ngSrc="/sustentify/public/logo_zfouyw.png"
         alt="Sustentify Logo"
-        width="300"
-        height="263"
+        width="112"
+        height="98"
         class="max-w-14 max-h-14 object-contain"
         priority
       />

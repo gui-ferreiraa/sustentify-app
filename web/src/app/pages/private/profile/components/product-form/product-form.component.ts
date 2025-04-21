@@ -108,8 +108,12 @@ export class ProductFormComponent {
       next: (createdProduct) => {
         this.toastService.success('Produto criado com sucesso!');
         this.successfully.emit(createdProduct);
+        this.form.reset();
       },
-      error: () => this.toastService.error('Erro ao criar produto ou enviar imagens.'),
+      error: (err) => {
+        this.toastService.error('Erro ao criar produto ou enviar imagens.');
+        this.buttonDisabled.set(false);
+      },
       complete: () => this.buttonDisabled.set(false),
     });
   }
