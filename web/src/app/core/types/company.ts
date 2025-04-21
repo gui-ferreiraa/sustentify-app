@@ -1,7 +1,7 @@
 import { Department } from "../enums/department.enum";
 
 export interface ICompany {
-  id: number;
+  id: string;
   name: string;
   email: string;
   password: string;
@@ -12,7 +12,7 @@ export interface ICompany {
 }
 
 export interface ICompanySummary {
-  id: number;
+  id: string;
   name: string;
   email: string;
   cnpj: string;

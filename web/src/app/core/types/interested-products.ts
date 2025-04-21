@@ -3,7 +3,7 @@ import { ICompanySummary } from "./company";
 import { IProductSummary } from "./product";
 
 export interface IInterestedProductSummary {
-  id: number;
+  id: string;
   productId: number;
   message: string;
   status: InterestStatus;

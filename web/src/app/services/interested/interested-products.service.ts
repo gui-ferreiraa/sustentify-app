@@ -32,7 +32,7 @@ export class InterestedProductsService {
   }
 
   fetchInterestedByProductId(
-    productId: number
+    productId: string
   ): Observable<IInterestedProductSummary[]> {
     return this.http.get<IInterestedProductSummary[]>(`${this.apiUrl}/product/${productId}`, {
       context: new HttpContext().set(REQUIRE_AUTH, true),
@@ -46,7 +46,7 @@ export class InterestedProductsService {
   }
 
   fetchInterestedDetails(
-    interestedId: number,
+    interestedId: string,
   ): Observable<IInterestedProduct> {
     return this.http.get<IInterestedProduct>(`${this.apiUrl}/${interestedId}`, {
       context: new HttpContext().set(REQUIRE_AUTH, true),
@@ -54,7 +54,7 @@ export class InterestedProductsService {
   }
 
   fetchInterestedDelete(
-    interestedId: number
+    interestedId: string
   ): Observable<IResponseDto> {
     return this.http.delete<IResponseDto>(`${this.apiUrl}/${interestedId}`, {
       context: new HttpContext().set(REQUIRE_AUTH, true),
@@ -62,7 +62,7 @@ export class InterestedProductsService {
   }
 
   fetchInterestedUpdate(
-    interestedId: number,
+    interestedId: string,
     status: InterestStatus,
   ): Observable<IResponseDto> {
     return this.http.patch<IResponseDto>(`${this.apiUrl}/${interestedId}`, {

@@ -3,13 +3,13 @@ import { Condition } from "../enums/condition.enum";
 import { Material } from "../enums/material.enum";
 
 export interface IProductImage {
-  id: string;
+  id: number;
   url: string;
   publicId: string;
 }
 
 export interface IProduct {
-    id: number;
+    id: string;
     name: string;
     category: Category;
     description: string;
@@ -23,7 +23,7 @@ export interface IProduct {
     thumbnail: IProductImage;
     images: IProductImage[];
     interestCount: number;
-    company_id: number;
+    company_id: string;
 }
 
 export type IProductSummary = Pick<IProduct, 'id' | 'name' | 'category' | 'condition' | 'quantity' | 'location' | 'interestCount' | 'thumbnail'>;

@@ -51,7 +51,7 @@ export class ProfileComponent implements OnInit {
   protected products$!: Observable<IProductSummary[]>;
   protected interestedProducts$!: Observable<IInterestedProductSummary[]>;
 
-  protected idSelected = signal<number>(0);
+  protected idSelected = signal('');
 
   protected productUpdated = signal<IProduct | null>(null);
   protected profileEditModalIsOpen = signal(false);
@@ -96,7 +96,7 @@ export class ProfileComponent implements OnInit {
     this.interestedProducts$ = this.interestedService.fetchInterestedByCompany();
   }
 
-  openEditProductModal(id: number) {
+  openEditProductModal(id: string) {
     this.productUpdated.set(null);
     this.productsService.fetchProductDetails(id).subscribe({
       next: (res) => {
@@ -106,7 +106,7 @@ export class ProfileComponent implements OnInit {
     })
   }
 
-  deleteProductModal(productId: number) {
+  deleteProductModal(productId: string) {
     this.productsService.fetchProductDelete(productId).subscribe({
       next: (value) => {
         if (value.successfully) {
@@ -120,11 +120,11 @@ export class ProfileComponent implements OnInit {
     })
   }
 
-  openOverview(productId: number) {
+  openOverview(productId: string) {
     this.router.navigate([`/dashboard/overview/${productId}`]);
   }
 
-  deleteInterestedProduct(id: number) {
+  deleteInterestedProduct(id: string) {
     this.interestedService.fetchInterestedDelete(id).subscribe({
       next: (value) => {
         if (value.successfully) {

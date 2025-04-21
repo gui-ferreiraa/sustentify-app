@@ -39,9 +39,9 @@ export class ProductDetailsComponent implements OnInit{
   productsRelated$!: Observable<IProductSummary[]>;
   company$!: Observable<ICompany | null>;
   productId = signal(0);
-  protected productCompanyId = signal(0);
+  protected productCompanyId = signal('');
   protected showRequestButton = signal(false);
-  protected companyId = signal(0);
+  protected companyId = signal('');
   protected isSubmitting = false;
   protected modalIsOpen = signal(false);
 
@@ -71,7 +71,7 @@ export class ProductDetailsComponent implements OnInit{
     this.product$ = this.route.params.pipe(
       switchMap(params => {
         this.productId.set(Number(params['productId']));
-        return this.productsService.fetchProductDetails(Number(params['productId']))
+        return this.productsService.fetchProductDetails(params['productId'])
       }),
       tap(product => this.productCompanyId.set(product.company_id)),
       tap(product => {

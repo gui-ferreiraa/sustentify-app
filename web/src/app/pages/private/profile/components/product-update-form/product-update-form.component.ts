@@ -58,6 +58,7 @@ export class ProductUpdateFormComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log(this.product());
     this.form = new FormGroup({
       category: new FormControl('', [Validators.required]),
       condition: new FormControl('', [Validators.required]),
@@ -69,7 +70,7 @@ export class ProductUpdateFormComponent implements OnInit {
       quantity: new FormControl('', [Validators.required]),
       description: new FormControl('', [Validators.required]),
       thumbnail: new FormControl<File | null>(null, []),
-      images: new FormControl<File[] | null>([], []),
+      images: new FormControl<File[] | null>(null, []),
     })
 
     if (this.product()) {
@@ -112,7 +113,7 @@ export class ProductUpdateFormComponent implements OnInit {
     const payload = this.prepareFormPayload();
 
     this.buttonDisabled.set(true);
-    this.productsService.fetchProductUpdate(payload)
+    this.productsService.fetchProductUpdate(payload, this.form.getRawValue().images, this.form.getRawValue().thumbnail)
       .subscribe({
       next: (response) => {
         this.toastService.success('Produto atualizado com sucesso!');
@@ -128,14 +129,14 @@ export class ProductUpdateFormComponent implements OnInit {
 
   openModal() { this.modalIsOpen.set(true) }
 
-  handleRemoveImage(image?: IProductImage, type: 'thumbnail' | 'image' = 'image') {
+  handleRemoveImage(type: 'thumbnail' | 'image', image?: IProductImage) {
     if (!image) return;
 
-    this.openModal();
     this.selectedImageDelete.set({
       type,
       ...image,
     })
+    this.openModal();
   }
 
   deleteThumbnail() {
@@ -155,6 +156,7 @@ export class ProductUpdateFormComponent implements OnInit {
           complete: () => {
             this.selectedImageDelete.set(null);
             this.modalIsOpen.set(false);
+            this.clickedOutside.emit();
           },
         })
       }
@@ -170,6 +172,7 @@ export class ProductUpdateFormComponent implements OnInit {
           complete: () => {
             this.selectedImageDelete.set(null);
             this.modalIsOpen.set(false);
+            this.clickedOutside.emit();
           },
         })
       }

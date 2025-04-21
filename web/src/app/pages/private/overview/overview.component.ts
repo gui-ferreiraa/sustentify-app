@@ -62,7 +62,7 @@ export class OverviewComponent implements OnInit {
     this.metaService.updateTag({ name: 'description', content: 'Acompanhe o desempenho da sua empresa na Sustentify com uma visão completa de métricas e atividades.' });
 
     const productId$ = this.route.params.pipe(
-      switchMap(params => this.productsService.fetchProductDetails(Number(params['productId'])))
+      switchMap(params => this.productsService.fetchProductDetails(params['productId']))
     );
 
     this.product$ = productId$;
@@ -72,7 +72,7 @@ export class OverviewComponent implements OnInit {
     );
   }
 
-  navigateToSolicitation(productId: number): void {
+  navigateToSolicitation(productId: string): void {
     this.router.navigate([`/products/${productId}`]);
   }
 
@@ -82,7 +82,7 @@ export class OverviewComponent implements OnInit {
     );
   }
 
-  deleteInterestedProduct(productId: number) {
+  deleteInterestedProduct(productId: string) {
     this.interestedService.fetchInterestedDelete(productId).subscribe({
       next: (value) => {
         if (value.successfully) {
@@ -96,7 +96,7 @@ export class OverviewComponent implements OnInit {
     })
   }
 
-  updateInterestedProduct(id: number, status: InterestStatus) {
+  updateInterestedProduct(id: string, status: InterestStatus) {
     this.interestedService.fetchInterestedUpdate(id, status).subscribe({
       next: (value) => {
         if (value.successfully) {
@@ -110,7 +110,7 @@ export class OverviewComponent implements OnInit {
     });
   }
 
-  openModal(id: number) {
+  openModal(id: string) {
     this.interestedService.fetchInterestedDetails(id).subscribe((solicitation) => {
       if (solicitation) {
         console.log(solicitation)

@@ -143,7 +143,7 @@
           alt="Thumbnail"
           width="60"
           height="60"
-          (click)="handleRemoveImage(product()?.thumbnail, 'thumbnail')"
+          (click)="handleRemoveImage('thumbnail', product()?.thumbnail)"
           class="w-20 h-20 object-cover rounded-xl cursor-pointer hover:opacity-70 transition z-10"
         />
       }
@@ -167,7 +167,7 @@
               alt="Thumbnail"
               width="60"
               height="60"
-              (click)="handleRemoveImage(image)"
+              (click)="handleRemoveImage('image', image)"
               class="w-20 h-20 object-cover rounded-xl cursor-pointer hover:opacity-70 transition z-10"
             />
           }
