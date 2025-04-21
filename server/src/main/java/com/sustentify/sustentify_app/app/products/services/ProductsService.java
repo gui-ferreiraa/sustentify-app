@@ -1,13 +1,11 @@
 package com.sustentify.sustentify_app.app.products.services;
 
 import com.sustentify.sustentify_app.app.companies.entities.Company;
-import com.sustentify.sustentify_app.app.products.dtos.ProductFilterDto;
-import com.sustentify.sustentify_app.app.products.dtos.ProductSummaryDto;
-import com.sustentify.sustentify_app.app.products.dtos.RegisterProductDto;
-import com.sustentify.sustentify_app.app.products.dtos.UpdateProductDto;
+import com.sustentify.sustentify_app.app.products.dtos.*;
 import com.sustentify.sustentify_app.app.products.entities.Product;
 import com.sustentify.sustentify_app.app.products.entities.ProductImage;
 import com.sustentify.sustentify_app.app.products.entities.ProductThumbnail;
+import com.sustentify.sustentify_app.app.products.exceptions.ProductInvalidException;
 import com.sustentify.sustentify_app.app.products.exceptions.ProductNotFoundException;
 import com.sustentify.sustentify_app.app.products.repositories.ProductsRepository;
 import com.sustentify.sustentify_app.app.upload.dtos.CloudinaryResponse;
@@ -24,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -98,11 +97,26 @@ public class ProductsService {
     }
 
     public void delete(Product product) {
+
+        UploadDeleteDto dto = new UploadDeleteDto(product.getThumbnail().getPublicId());
+        if (product.getThumbnail().getId() != null)  this.deleteThumbnail(product, dto);
+
+        if (!product.getImages().isEmpty()) {
+            List<ProductImage> list = new ArrayList<>(product.getImages());
+
+            for (ProductImage image : list) {
+                this.deleteImage(product, new UploadDeleteDto(image.getPublicId()));
+            }
+        }
+
         this.productsRepository.delete(product);
     }
 
-    public void uploadThumbnailImage(final String productId, final MultipartFile file) {
-        final Product product = findById(productId);
+    public void uploadThumbnail(Product product, final MultipartFile file) {
+        if (product.getThumbnail() != null) {
+            UploadDeleteDto dto = new UploadDeleteDto(product.getThumbnail().getPublicId());
+            this.deleteThumbnail(product, dto);
+        }
 
         String fileName = FileUploadUtil.getFileName(Objects.requireNonNull(file.getOriginalFilename()));
         FileUploadUtil.assertAllowed(file, FileUploadUtil.IMAGE_PATTERN);
@@ -117,12 +131,15 @@ public class ProductsService {
         this.productsRepository.save(product);
     }
 
-    public void uploadImages(final String productId, final MultipartFile[] files) {
-        final Product product = findById(productId);
+    public void uploadImages(Product product, final MultipartFile[] files) {
+
+        if (product.getImages().size() >= 3) throw new ProductInvalidException("Too many images");
+        if (files.length + product.getImages().size() > 3) throw new ProductInvalidException("More than three images");
 
         for (MultipartFile file: files) {
             String fileName = FileUploadUtil.getFileName(Objects.requireNonNull(file.getOriginalFilename()));
             FileUploadUtil.assertAllowed(file, FileUploadUtil.IMAGE_PATTERN);
+
             final CloudinaryResponse response = this.cloudinaryService.upload(file, fileName);
 
             ProductImage image = new ProductImage();
@@ -136,31 +153,21 @@ public class ProductsService {
         this.productsRepository.save(product);
     }
 
-    public void deleteProductImage(String productId, String publicId) {
-        Product product = findById(productId);
+    public void deleteImage(Product product, UploadDeleteDto dto) {
 
-        cloudinaryService.deleteImage(publicId);
+        cloudinaryService.deleteImage(dto.publicId());
 
-
-        List<ProductImage> images = product.getImages();
-        images.forEach(image -> {
-            if (image.getPublicId().equals(publicId)) {
-                product.getImages().remove(image);
-            }
-        });
-
-        System.out.println(product.getImages());
-
-        productsRepository.save(product);
+        product.getImages().removeIf(img -> img.getPublicId().equals(dto.publicId()));
     }
 
-    public void deleteThumbnail(String productId, String publicId) {
-        Product product = findById(productId);
+    public void deleteThumbnail(Product product, UploadDeleteDto dto) {
 
-        cloudinaryService.deleteImage(publicId);
+        cloudinaryService.deleteImage(dto.publicId());
 
         product.setThumbnail(null);
+    }
 
-        productsRepository.save(product);
+    public void save(Product product) {
+        this.productsRepository.save(product);
     }
 }

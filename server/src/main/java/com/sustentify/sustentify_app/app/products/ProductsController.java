@@ -1,14 +1,12 @@
 package com.sustentify.sustentify_app.app.products;
 
 import com.sustentify.sustentify_app.app.companies.entities.Company;
-import com.sustentify.sustentify_app.app.products.dtos.ProductFilterDto;
-import com.sustentify.sustentify_app.app.products.dtos.ProductSummaryDto;
-import com.sustentify.sustentify_app.app.products.dtos.RegisterProductDto;
-import com.sustentify.sustentify_app.app.products.dtos.UpdateProductDto;
+import com.sustentify.sustentify_app.app.products.dtos.*;
 import com.sustentify.sustentify_app.app.products.entities.Product;
 import com.sustentify.sustentify_app.app.products.enums.Category;
 import com.sustentify.sustentify_app.app.products.enums.Condition;
 import com.sustentify.sustentify_app.app.products.enums.Material;
+import com.sustentify.sustentify_app.app.products.exceptions.ProductInvalidException;
 import com.sustentify.sustentify_app.app.products.services.ProductsService;
 import com.sustentify.sustentify_app.config.security.SecurityUtils;
 import com.sustentify.sustentify_app.dtos.ResponseDto;
@@ -126,7 +124,8 @@ public class ProductsController {
             @PathVariable("id") String productId,
             @RequestParam("file") MultipartFile file
     ) {
-        productsService.uploadThumbnailImage(productId, file);
+        Product product = this.productsService.findByIdAndCompany(productId, SecurityUtils.getCurrentCompany());
+        productsService.uploadThumbnail(product, file);
 
         return ResponseEntity
                 .status(HttpStatus.ACCEPTED)
@@ -143,7 +142,10 @@ public class ProductsController {
             @PathVariable("id") String productId,
             @RequestParam("files") MultipartFile[] files
     ) {
-        productsService.uploadImages(productId, files);
+        if (files.length > 3) throw new ProductInvalidException("Files: Too many images");
+
+        Product product = this.productsService.findByIdAndCompany(productId, SecurityUtils.getCurrentCompany());
+        productsService.uploadImages(product, files);
 
         return ResponseEntity
                 .status(HttpStatus.ACCEPTED)
@@ -158,9 +160,11 @@ public class ProductsController {
     @DeleteMapping("/{id}/images")
     public ResponseEntity<ResponseDto> deleteImage(
             @PathVariable("id") String productId,
-            @RequestParam("publicId") String publicId
+            @RequestBody UploadDeleteDto dto
     ) {
-        productsService.deleteProductImage(productId, publicId);
+        Product product = this.productsService.findByIdAndCompany(productId, SecurityUtils.getCurrentCompany());
+        productsService.deleteImage(product, dto);
+        productsService.save(product);
 
         return ResponseEntity
                 .status(HttpStatus.ACCEPTED)
@@ -175,9 +179,11 @@ public class ProductsController {
     @DeleteMapping("/{id}/thumbnail")
     public ResponseEntity<ResponseDto> deleteThumbnail(
             @PathVariable("id") String productId,
-            @RequestParam("publicId") String publicId
+            @RequestBody UploadDeleteDto dto
     ) {
-        productsService.deleteThumbnail(productId, publicId);
+        Product product = this.productsService.findByIdAndCompany(productId, SecurityUtils.getCurrentCompany());
+        productsService.deleteThumbnail(product, dto);
+        productsService.save(product);
 
         return ResponseEntity
                 .status(HttpStatus.ACCEPTED)
