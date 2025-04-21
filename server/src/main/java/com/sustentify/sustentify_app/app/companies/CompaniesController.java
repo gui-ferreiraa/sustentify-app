@@ -25,7 +25,7 @@ public class CompaniesController {
     @PostMapping
     public ResponseEntity<ResponseDto> create(@RequestBody RegisterCompanyDto company) {
         Company companyCreated = this.companiesService.create(company);
-        ResponseDto res = new ResponseDto(HttpStatus.CREATED, "Company created", true, Optional.empty());
+        ResponseDto res = new ResponseDto(HttpStatus.CREATED, "Company created", true, Optional.ofNullable(companyCreated.getName()));
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -45,7 +45,7 @@ public class CompaniesController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Company> findById(@PathVariable Long id) {
+    public ResponseEntity<Company> findById(@PathVariable String id) {
         Company company = this.companiesService.findById(id).orElseThrow(CompanyNotFoundException::new);
 
         return ResponseEntity

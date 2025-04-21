@@ -12,7 +12,6 @@ import com.sustentify.sustentify_app.app.products.services.ProductsService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class InterestedProductsService {
@@ -27,13 +26,9 @@ public class InterestedProductsService {
 
     public List<InterestedProducts> findByBuyer(Company company) {return this.interestedProductsRepository.findByBuyer(company);}
 
-    public Optional<InterestedProducts> findByBuyerAndProduct(Company company, Product product) {
-        return this.interestedProductsRepository.findByBuyerAndProduct(company, product);
-    }
+    public InterestedProducts findById(String id) {return this.interestedProductsRepository.findById(id).orElseThrow(InterestedProductsNotFoundException::new);}
 
-    public InterestedProducts findById(Long id) {return this.interestedProductsRepository.findById(id).orElseThrow(InterestedProductsNotFoundException::new);}
-
-    public List<InterestedProducts> findByProductId(Long productId) {
+    public List<InterestedProducts> findByProductId(String productId) {
         Product product = this.productsService.findById(productId);
 
         return this.interestedProductsRepository.findByProduct(product);

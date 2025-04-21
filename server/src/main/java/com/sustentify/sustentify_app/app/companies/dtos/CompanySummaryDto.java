@@ -4,12 +4,12 @@ import com.sustentify.sustentify_app.app.companies.entities.Company;
 import com.sustentify.sustentify_app.app.companies.entities.CompanyDepartment;
 
 public class CompanySummaryDto{
-    private Long id;
-    private String name;
-    private String email;
-    private String address;
-    private String phone;
-    private CompanyDepartment companyDepartment;
+    private final String id;
+    private final String name;
+    private final String email;
+    private final String address;
+    private final String phone;
+    private final CompanyDepartment companyDepartment;
 
     public CompanySummaryDto(Company company) {
         this.id = company.getId();
@@ -20,7 +20,7 @@ public class CompanySummaryDto{
         this.companyDepartment = company.getCompanyDepartment();
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 

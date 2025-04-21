@@ -10,14 +10,14 @@ import com.sustentify.sustentify_app.app.products.entities.Product;
 import java.time.Instant;
 
 public class InterestedProductsDto {
-    private Long id;
-    private Company buyer;
-    private Product product;
-    private InterestStatus status;
-    private int quantity;
-    private String message;
-    private Instant updatedAt;
-    private Instant createdAt;
+    private final String id;
+    private final Company buyer;
+    private final Product product;
+    private final InterestStatus status;
+    private final int quantity;
+    private final String message;
+    private final Instant updatedAt;
+    private final Instant createdAt;
 
     public InterestedProductsDto(InterestedProducts interestedProducts) {
         this.id = interestedProducts.getId();
@@ -30,7 +30,7 @@ public class InterestedProductsDto {
         this.createdAt = interestedProducts.getCreatedAt();
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 

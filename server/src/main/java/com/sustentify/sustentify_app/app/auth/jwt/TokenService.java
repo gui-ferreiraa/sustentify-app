@@ -7,10 +7,11 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.sustentify.sustentify_app.app.auth.jwt.exceptions.TokenGenerationException;
 import com.sustentify.sustentify_app.app.auth.jwt.exceptions.TokenValidationException;
 import com.sustentify.sustentify_app.app.companies.entities.Company;
+import com.sustentify.sustentify_app.app.cache.CacheService;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -19,11 +20,15 @@ import java.time.ZoneOffset;
 public class TokenService {
     @Value("${api.security.token.secret}")
     private String secret;
-    private final String issuer = "login-auth-api";
-    private final CacheManager cacheManager;
 
-    public TokenService(CacheManager cacheManager) {
-        this.cacheManager = cacheManager;
+    private static final String REVOKED_TOKEN_PREFIX = "token:revoked:";
+    private static final Duration REVOKED_TOKEN_DURATION = Duration.ofHours(12);
+    private static final String issuer = "login-auth-api";
+
+    private final CacheService cacheService;
+
+    public TokenService(CacheService cacheService) {
+        this.cacheService = cacheService;
     }
 
     public String generateAccessToken(Company company) {
@@ -39,6 +44,16 @@ public class TokenService {
         } catch (JWTCreationException exception) {
             throw new TokenGenerationException("Token generation Error", exception);
         }
+    }
+
+    public void revokeToken(String token) {
+        String key = REVOKED_TOKEN_PREFIX + token;
+        cacheService.put(key, "revoked", REVOKED_TOKEN_DURATION);
+    }
+
+    public boolean isRevoked(String token) {
+        String key = REVOKED_TOKEN_PREFIX + token;
+        return cacheService.exists(key);
     }
 
     public String generateAccessToken(Company company, int plusHours, long minutes) {
@@ -72,7 +87,7 @@ public class TokenService {
 
     public String validateToken(String token) {
         try {
-            if (isTokenRevoked(token)) {
+            if (isRevoked(token)) {
                 throw new TokenValidationException("Token is revoked");
             }
 
@@ -85,18 +100,6 @@ public class TokenService {
 
         } catch (JWTVerificationException exception) {
             throw new TokenValidationException("Token expired", exception);
-        }
-    }
-
-    private boolean isTokenRevoked(String token) {
-        var cache = cacheManager.getCache("revokedTokens");
-        return cache.get(token) != null;
-    }
-
-    public void revokeToken(String token) {
-        var cache = cacheManager.getCache("revokedTokens");
-        if (cache != null) {
-            cache.put(token, "revoked");
         }
     }
 

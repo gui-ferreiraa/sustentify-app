@@ -9,6 +9,7 @@ import com.sustentify.sustentify_app.app.companies.repositories.CompaniesDeleted
 import com.sustentify.sustentify_app.app.companies.repositories.CompaniesRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -28,12 +29,18 @@ public class CompaniesService {
         return this.companiesRepository.findByEmail(email);
     }
 
-    public Optional<Company> findById(Long companyId) { return this.companiesRepository.findById(companyId); }
+    public boolean isEmailOrCnpjAlreadyRegistered(String email, String cnpj) {
+        return companiesRepository.findByEmail(email).isPresent()
+                || companiesRepository.findByCnpj(cnpj).isPresent();
+    }
 
+    public Optional<Company> findById(String companyId) { return this.companiesRepository.findById(companyId); }
+
+    @Transactional
     public Company create(RegisterCompanyDto registerCompanyDto) {
-        this.findByEmail(registerCompanyDto.email()).ifPresent(existingCompany -> {
-            throw new CompanyAlreadyExistsException();
-        });
+
+        boolean exists = isEmailOrCnpjAlreadyRegistered(registerCompanyDto.email(), registerCompanyDto.cnpj());
+        if (exists) throw new CompanyAlreadyExistsException();
 
         Company newCompany = new Company();
         newCompany.setPassword(passwordEncoder.encode(registerCompanyDto.password()));
@@ -47,6 +54,7 @@ public class CompaniesService {
         return this.companiesRepository.save(newCompany);
     }
 
+    @Transactional
     public Company update(Company company, UpdateCompanyDto updateCompanyDto) {
 
         applyUpdates(company, updateCompanyDto);
@@ -54,6 +62,7 @@ public class CompaniesService {
         return this.companiesRepository.save(company);
     }
 
+    @Transactional
     public void updatePassword(Company company, String password) {
         String hashedPassword = this.passwordEncoder.encode(password);
 
@@ -62,6 +71,7 @@ public class CompaniesService {
         this.companiesRepository.save(company);
     }
 
+    @Transactional
     public void delete(Company company) {
         CompanyDeleted companyDeleted = new CompanyDeleted(company);
         this.companiesDeletedRepository.save(companyDeleted);
@@ -73,5 +83,6 @@ public class CompaniesService {
         if (dto.name() != null) company.setName(dto.name());
         if (dto.address() != null) company.setAddress(dto.address());
         if (dto.companyDepartment() != null) company.setCompanyDepartment(dto.companyDepartment());
+        if (dto.phone() != null) company.setPhone(dto.phone());
     }
 }

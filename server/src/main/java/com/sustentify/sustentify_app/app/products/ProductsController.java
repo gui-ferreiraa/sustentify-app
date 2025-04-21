@@ -2,16 +2,16 @@ package com.sustentify.sustentify_app.app.products;
 
 import com.sustentify.sustentify_app.app.companies.entities.Company;
 import com.sustentify.sustentify_app.app.products.dtos.ProductFilterDto;
+import com.sustentify.sustentify_app.app.products.dtos.ProductSummaryDto;
+import com.sustentify.sustentify_app.app.products.dtos.RegisterProductDto;
+import com.sustentify.sustentify_app.app.products.dtos.UpdateProductDto;
+import com.sustentify.sustentify_app.app.products.entities.Product;
 import com.sustentify.sustentify_app.app.products.enums.Category;
 import com.sustentify.sustentify_app.app.products.enums.Condition;
 import com.sustentify.sustentify_app.app.products.enums.Material;
-import com.sustentify.sustentify_app.config.security.SecurityUtils;
-import com.sustentify.sustentify_app.app.products.dtos.ProductSummaryDto;
-import com.sustentify.sustentify_app.app.products.dtos.RegisterProductDto;
-import com.sustentify.sustentify_app.dtos.ResponseDto;
-import com.sustentify.sustentify_app.app.products.dtos.UpdateProductDto;
-import com.sustentify.sustentify_app.app.products.entities.Product;
 import com.sustentify.sustentify_app.app.products.services.ProductsService;
+import com.sustentify.sustentify_app.config.security.SecurityUtils;
+import com.sustentify.sustentify_app.dtos.ResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -74,20 +74,18 @@ public class ProductsController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDto> create(@Validated @RequestBody RegisterProductDto registerProductDto) {
+    public ResponseEntity<Product> create(@Validated @RequestBody RegisterProductDto registerProductDto) {
         Company company = SecurityUtils.getCurrentCompany();
 
         Product product = this.productsService.create(registerProductDto, company);
 
-        ResponseDto res = new ResponseDto(HttpStatus.CREATED, "Product Created", true, Optional.ofNullable(product.getName()));
-
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(res);
+                .body(product);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> productDetails(@PathVariable("id") Long productId) {
+    public ResponseEntity<Product> productDetails(@PathVariable("id") String productId) {
         Product product = this.productsService.findById(productId);
 
         return ResponseEntity
@@ -96,7 +94,7 @@ public class ProductsController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ResponseDto> update(@PathVariable("id") Long productId, @RequestBody UpdateProductDto updateProductDto) {
+    public ResponseEntity<ResponseDto> update(@PathVariable("id") String productId, @RequestBody UpdateProductDto updateProductDto) {
         Company company = SecurityUtils.getCurrentCompany();
 
         Product product = this.productsService.findByIdAndCompany(productId, company);
@@ -111,7 +109,7 @@ public class ProductsController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseDto> delete(@PathVariable("id") Long productId) {
+    public ResponseEntity<ResponseDto> delete(@PathVariable("id") String productId) {
         Company company = SecurityUtils.getCurrentCompany();
         Product product = this.productsService.findByIdAndCompany(productId, company);
 
@@ -125,8 +123,8 @@ public class ProductsController {
 
     @PostMapping("/{id}/thumbnail")
     public ResponseEntity<ResponseDto> thumbnail(
-            @PathVariable("id") Long productId,
-            @RequestParam("file")MultipartFile file
+            @PathVariable("id") String productId,
+            @RequestParam("file") MultipartFile file
     ) {
         productsService.uploadThumbnailImage(productId, file);
 
@@ -142,8 +140,8 @@ public class ProductsController {
 
     @PostMapping("/{id}/images")
     public ResponseEntity<ResponseDto> uploadImages(
-            @PathVariable("id") Long productId,
-            @RequestParam("files")MultipartFile[] files
+            @PathVariable("id") String productId,
+            @RequestParam("files") MultipartFile[] files
     ) {
         productsService.uploadImages(productId, files);
 
@@ -159,7 +157,7 @@ public class ProductsController {
 
     @DeleteMapping("/{id}/images")
     public ResponseEntity<ResponseDto> deleteImage(
-            @PathVariable("id") Long productId,
+            @PathVariable("id") String productId,
             @RequestParam("publicId") String publicId
     ) {
         productsService.deleteProductImage(productId, publicId);
@@ -176,7 +174,7 @@ public class ProductsController {
 
     @DeleteMapping("/{id}/thumbnail")
     public ResponseEntity<ResponseDto> deleteThumbnail(
-            @PathVariable("id") Long productId,
+            @PathVariable("id") String productId,
             @RequestParam("publicId") String publicId
     ) {
         productsService.deleteThumbnail(productId, publicId);

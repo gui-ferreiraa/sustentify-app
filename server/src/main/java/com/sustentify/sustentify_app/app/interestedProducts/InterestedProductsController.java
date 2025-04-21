@@ -44,7 +44,7 @@ public class InterestedProductsController {
 
     @GetMapping("{id}")
     public ResponseEntity<InterestedProductsDto> findById(
-            @PathVariable(value = "id") Long id
+            @PathVariable(value = "id") String id
     ) {
         InterestedProducts list = this.interestedProductsService.findById(id);
 
@@ -55,7 +55,7 @@ public class InterestedProductsController {
 
     @GetMapping("/product/{id}")
     public ResponseEntity<List<InterestedProducts>> findByProductId(
-            @PathVariable(value = "id") Long id
+            @PathVariable(value = "id") String id
     ) {
         List<InterestedProducts> list = this.interestedProductsService.findByProductId(id);
 
@@ -66,7 +66,7 @@ public class InterestedProductsController {
 
     @PostMapping("{id}")
     public ResponseEntity<InterestedProducts> create(
-            @PathVariable(value = "id") Long productId,
+            @PathVariable(value = "id") String productId,
             @RequestBody RegisterInterestProductDto registerInterestProductDto
         ) {
         Company company = SecurityUtils.getCurrentCompany();
@@ -85,7 +85,7 @@ public class InterestedProductsController {
 
     @PatchMapping("{id}")
     public ResponseEntity<ResponseDto> update(
-            @PathVariable("id") Long interestedId,
+            @PathVariable("id") String interestedId,
             @RequestBody UpdateInterestDto dto
     ) {
         InterestedProducts interestedProducts = this.interestedProductsService.findById(interestedId);
@@ -103,7 +103,7 @@ public class InterestedProductsController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<ResponseDto> delete(@PathVariable("id") Long interestedId) {
+    public ResponseEntity<ResponseDto> delete(@PathVariable("id") String interestedId) {
         InterestedProducts interestedProducts = this.interestedProductsService.findById(interestedId);
 
         this.interestedProductsService.delete(interestedProducts);

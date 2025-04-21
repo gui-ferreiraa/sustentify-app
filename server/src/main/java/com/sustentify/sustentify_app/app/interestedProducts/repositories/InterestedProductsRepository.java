@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface InterestedProductsRepository extends JpaRepository<InterestedProducts, Long> {
+public interface InterestedProductsRepository extends JpaRepository<InterestedProducts, String> {
     List<InterestedProducts> findByBuyer(Company buyer);
     Optional<InterestedProducts> findByBuyerAndProduct(Company buyer, Product product);
     List<InterestedProducts> findByProduct(Product product);

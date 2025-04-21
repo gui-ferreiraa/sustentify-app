@@ -1,4 +1,4 @@
-package com.sustentify.sustentify_app.app.redis;
+package com.sustentify.sustentify_app.app.cache;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -6,11 +6,11 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 
 @Service
-public class RedisService {
+public class CacheService {
 
     private final RedisTemplate<String, String> redisTemplate;
 
-    public RedisService(RedisTemplate<String, String> redisTemplate) {
+    public CacheService(RedisTemplate<String, String> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
@@ -18,7 +18,7 @@ public class RedisService {
         redisTemplate.opsForValue().set(key, value, duration);
     }
 
-    public <T> T get(String key) {
+    public <T> T get(String key, Class<T> clazz) {
         return (T) redisTemplate.opsForValue().get(key);
     }
 

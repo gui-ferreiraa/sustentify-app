@@ -6,7 +6,7 @@ import com.sustentify.sustentify_app.app.products.enums.Category;
 import com.sustentify.sustentify_app.app.products.enums.Condition;
 
 public class ProductSummaryDto {
-    private final Long id;
+    private final String id;
     private final String name;
     private final Category category;
     private final Condition condition;
@@ -26,7 +26,7 @@ public class ProductSummaryDto {
         this.condition = product.getCondition();
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 

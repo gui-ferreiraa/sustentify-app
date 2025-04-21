@@ -7,6 +7,7 @@ import com.sustentify.sustentify_app.app.companies.entities.CompanyDepartment;
 public record UpdateCompanyDto(
         String name,
         String address,
-        CompanyDepartment companyDepartment
+        CompanyDepartment companyDepartment,
+        String phone
 ) {
 }

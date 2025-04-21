@@ -12,9 +12,9 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface ProductsRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
+public interface ProductsRepository extends JpaRepository<Product, String>, JpaSpecificationExecutor<Product> {
     Page<Product> findByCompany(Company company, Pageable pageable);
-    Optional<Product> findByIdAndCompany(Long id, Company company);
+    Optional<Product> findByIdAndCompany(String id, Company company);
     @Query("SELECT p FROM Product p LEFT JOIN p.interestedProducts ip " +
             "GROUP BY p.id ORDER BY COUNT(ip.id) DESC")
     Page<Product> findTopByInterestCount(Pageable pageable);

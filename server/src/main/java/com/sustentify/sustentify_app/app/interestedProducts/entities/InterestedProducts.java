@@ -14,8 +14,8 @@ import java.time.Instant;
 @Table(name = "interested_products")
 public class InterestedProducts {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     @ManyToOne
     @JoinColumn(name = "companies_id", nullable = false)
@@ -52,11 +52,11 @@ public class InterestedProducts {
         this.message = message;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -66,7 +66,7 @@ public class InterestedProducts {
 
     public Company getBuyer() { return buyer; }
 
-    public Long getBuyerId() { return buyer.getId(); }
+    public String getBuyerId() { return buyer.getId(); }
 
     public void setProduct(Product product) {
         this.product = product;
@@ -92,7 +92,7 @@ public class InterestedProducts {
 
     public Double getUnitPrice() { return product != null ? product.getPrice() : 0.0; }
 
-    public Long getProductId() { return product.getId(); }
+    public String getProductId() { return product.getId(); }
 
     public Double getTotalPrice() { return quantity * getUnitPrice(); }
 

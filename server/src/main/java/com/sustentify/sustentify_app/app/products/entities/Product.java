@@ -21,8 +21,8 @@ import java.util.List;
 @Table(name = "products")
 public class Product {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     @NotNull(message = "Name cannot be null")
     @NotBlank(message = "Name cannot be empty")
@@ -81,8 +81,7 @@ public class Product {
     public Product() {
     }
 
-    public Product(Long id, String name, Category category, String description, Condition condition, Material material, Instant productionDate, Instant disposalDate, Double price, String location, int quantity, Company company) {
-        this.id = id;
+    public Product(String name, Category category, String description, Condition condition, Material material, Instant productionDate, Instant disposalDate, Double price, String location, int quantity, Company company) {
         this.name = name;
         this.category = category;
         this.description = description;
@@ -96,11 +95,11 @@ public class Product {
         this.company = company;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -193,7 +192,7 @@ public class Product {
     }
 
     @JsonProperty("company_id")
-    public Long getCompanyId() {
+    public String getCompanyId() {
         return company != null ? company.getId() : null;
     }
 

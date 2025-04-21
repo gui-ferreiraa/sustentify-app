@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
@@ -26,6 +27,7 @@ import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Objects;
 
+@Transactional
 @Service
 public class ProductsService {
     private final ProductsRepository productsRepository;
@@ -36,9 +38,11 @@ public class ProductsService {
         this.cloudinaryService = cloudinaryService;
     }
 
-    public Product findById(Long productId) { return this.productsRepository.findById(productId).orElseThrow(ProductNotFoundException::new); }
+    @Transactional(readOnly = true)
+    public Product findById(String productId) { return this.productsRepository.findById(productId).orElseThrow(ProductNotFoundException::new); }
 
-    public Product findByIdAndCompany(Long productId, Company company) { return this.productsRepository.findByIdAndCompany(productId, company).orElseThrow(ProductNotFoundException::new);}
+    @Transactional(readOnly = true)
+    public Product findByIdAndCompany(String productId, Company company) { return this.productsRepository.findByIdAndCompany(productId, company).orElseThrow(ProductNotFoundException::new);}
 
     public Product create(RegisterProductDto registerProductDto, Company company) {
         Product newProduct = new Product();
@@ -97,7 +101,7 @@ public class ProductsService {
         this.productsRepository.delete(product);
     }
 
-    public void uploadThumbnailImage(final Long productId, final MultipartFile file) {
+    public void uploadThumbnailImage(final String productId, final MultipartFile file) {
         final Product product = findById(productId);
 
         String fileName = FileUploadUtil.getFileName(Objects.requireNonNull(file.getOriginalFilename()));
@@ -113,7 +117,7 @@ public class ProductsService {
         this.productsRepository.save(product);
     }
 
-    public void uploadImages(final Long productId, final MultipartFile[] files) {
+    public void uploadImages(final String productId, final MultipartFile[] files) {
         final Product product = findById(productId);
 
         for (MultipartFile file: files) {
@@ -132,7 +136,7 @@ public class ProductsService {
         this.productsRepository.save(product);
     }
 
-    public void deleteProductImage(Long productId, String publicId) {
+    public void deleteProductImage(String productId, String publicId) {
         Product product = findById(productId);
 
         cloudinaryService.deleteImage(publicId);
@@ -150,7 +154,7 @@ public class ProductsService {
         productsRepository.save(product);
     }
 
-    public void deleteThumbnail(Long productId, String publicId) {
+    public void deleteThumbnail(String productId, String publicId) {
         Product product = findById(productId);
 
         cloudinaryService.deleteImage(publicId);
