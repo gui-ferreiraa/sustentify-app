@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #eaf1e6;
+            color: #2f4f4f;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #3b9b3e;
+            font-size: 24px;
+        }
+        .message {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
+        }
+        .label {
+            font-weight: bold;
+            color: #2f4f4f;
+        }
+        .footer {
+            text-align: center;
+            font-size: 14px;
+            color: #777;
+            margin-top: 40px;
+        }
+        .footer a {
+            color: #3b9b3e;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Nova Mensagem de Contato - Sustentify</h1>
+
+    <p class="message">
+        Você recebeu uma nova mensagem de contato através da plataforma Sustentify.
+    </p>
+
+    <p class="message">
+        <span class="label">Empresa:</span> <span th:text="${name}">Nome da Empresa</span><br />
+        <span class="label">Email:</span> <span th:text="${email}">email@empresa.com</span><br />
+        <span class="label">Telefone:</span> <span th:text="${phone}">11 0000 0000</span><br />
+        <span class="label">Assunto:</span> <span th:text="${subject}">Assunto da Mensagem</span>
+    </p>
+
+    <p class="message">
+        <span class="label">Mensagem:</span><br />
+        <span th:text="${message}">Conteúdo da mensagem enviada pela empresa.</span>
+    </p>
+
+    <div class="footer">
+        <p th:text="#{regards}">Atenciosamente</p>
+        <p><em th:text="#{signature}">Sustentify</em></p>
+        <p><a th:href="${domain}">sustentify.com.br</a></p>
+    </div>
+</div>
+</body>
+</html>

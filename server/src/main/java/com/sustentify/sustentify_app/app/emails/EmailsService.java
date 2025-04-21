@@ -1,5 +1,7 @@
 package com.sustentify.sustentify_app.app.emails;
 
+import com.sustentify.sustentify_app.app.emails.dtos.EmailDto;
+import com.sustentify.sustentify_app.app.emails.dtos.EmailRecoverDto;
 import com.sustentify.sustentify_app.app.emails.exceptions.EmailSendingException;
 import com.sustentify.sustentify_app.app.cache.CacheService;
 import jakarta.mail.internet.MimeMessage;
@@ -53,7 +55,40 @@ public class EmailsService {
     }
 
     @Transactional
-    public void sendEmail(EmailDto dto) {
+    public void sendEmailContact(EmailDto dto) {
+        if (isEmailCooldownActive(dto.email())) {
+            throw new EmailSendingException("Please wait a few minutes before requesting another email.");
+        }
+
+        try {
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+
+            helper.setFrom(sender);
+            helper.setSubject(dto.subject());
+            helper.setTo(sender);
+
+            Context context = new Context();
+            context.setVariable("subject", dto.subject());
+            context.setVariable("name", dto.name());
+            context.setVariable("message", dto.message());
+            context.setVariable("email", dto.email());
+            context.setVariable("phone", dto.phone());
+            context.setVariable("domain", webDomain);
+            String htmlBody = templateEngine.process("contact-message.html", context);
+
+            helper.setText(htmlBody, true);
+
+            mailSender.send(mimeMessage);
+
+            setEmailCooldown(dto.email());
+        } catch (Exception e) {
+            throw new EmailSendingException("An unexpected error occurred while trying to send the email. Please try again later.");
+        }
+    }
+
+    @Transactional
+    public void sendEmailRecoverPassword(EmailRecoverDto dto) {
         String receiver = dto.company().getEmail();
         String subject = dto.subject() + " | Sustentify App";
 

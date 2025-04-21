@@ -98,8 +98,10 @@ public class ProductsService {
 
     public void delete(Product product) {
 
-        UploadDeleteDto dto = new UploadDeleteDto(product.getThumbnail().getPublicId());
-        if (product.getThumbnail().getId() != null)  this.deleteThumbnail(product, dto);
+        if (product.getThumbnail() != null) {
+            UploadDeleteDto dto = new UploadDeleteDto(product.getThumbnail().getPublicId());
+            this.deleteThumbnail(product, dto);
+        }
 
         if (!product.getImages().isEmpty()) {
             List<ProductImage> list = new ArrayList<>(product.getImages());

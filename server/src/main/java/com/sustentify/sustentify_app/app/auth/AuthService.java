@@ -10,7 +10,7 @@ import com.sustentify.sustentify_app.app.companies.entities.Company;
 import com.sustentify.sustentify_app.app.companies.exceptions.CompanyNotFoundException;
 import com.sustentify.sustentify_app.app.companies.exceptions.CompanyPasswordInvalidException;
 import com.sustentify.sustentify_app.app.companies.services.CompaniesService;
-import com.sustentify.sustentify_app.app.emails.EmailDto;
+import com.sustentify.sustentify_app.app.emails.dtos.EmailRecoverDto;
 import com.sustentify.sustentify_app.app.emails.EmailsService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -118,8 +118,8 @@ public class AuthService {
 
         String token = this.tokenService.generateAccessToken(company, 0, 1);
 
-        EmailDto email = new EmailDto(company, "Recuperação de senha", token);
-        this.emailsService.sendEmail(email);
+        EmailRecoverDto email = new EmailRecoverDto(company, "Recuperação de senha", token);
+        this.emailsService.sendEmailRecoverPassword(email);
     }
 
     public void updatePassword(RecoverPasswordDto dto, String token) {
