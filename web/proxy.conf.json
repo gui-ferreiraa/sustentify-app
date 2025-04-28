@@ -4,5 +4,11 @@
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
+  },
+  "/chat": {
+    "target": "http://localhost:3100/v1",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
   }
 }

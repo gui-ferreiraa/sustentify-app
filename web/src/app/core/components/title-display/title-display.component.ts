@@ -1,4 +1,4 @@
-import { booleanAttribute, Component, input, InputSignal } from '@angular/core';
+import { AfterViewInit, booleanAttribute, Component, ElementRef, input, InputSignal, OnInit, ViewChild } from '@angular/core';
 import { SubtitleComponent } from '../subtitle/subtitle.component';
 import { TextColor } from '../../types/enums';
 import { classMerge } from '../../utils/classMerge';

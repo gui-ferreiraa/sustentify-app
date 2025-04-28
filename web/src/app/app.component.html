@@ -2,4 +2,8 @@
 
 <router-outlet></router-outlet>
 
+@if (this.chatIsWorking()) {
+  <app-chat-box />
+}
+
 <app-footer></app-footer>

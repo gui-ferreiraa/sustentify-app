@@ -1,5 +1,5 @@
 import { NgOptimizedImage } from "@angular/common";
-import { Component } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, ViewChild } from "@angular/core";
 import { TextColor } from "../../../../../core/types/enums";
 import { SubtitleComponent } from "../../../../../core/components/subtitle/subtitle.component";
 import { ButtonGreenComponent } from "../../../../../core/components/button-green/button-green.component";
@@ -11,6 +11,7 @@ import { Router } from "@angular/router";
   template: `
     <div
       class="relative"
+      #appContact
     >
       <img
         ngSrc="/sustentify/public/background-black_1_dharvv.jpg"
@@ -50,7 +51,7 @@ import { Router } from "@angular/router";
     </div>
   `
 })
-export class ContactComponent {
+export class ContactComponent implements AfterViewInit{
   contact = {
     subtitleColor: TextColor.gray,
     subtitle: 'Não está convencido ?',
@@ -59,8 +60,11 @@ export class ContactComponent {
   }
 
   constructor(
-    private router: Router
+    private readonly router: Router,
   ) {}
+
+  ngAfterViewInit(): void {
+  }
 
   onClickExploreButton() {
     this.router.navigate(['/products']);

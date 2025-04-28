@@ -1,5 +1,5 @@
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { SubtitleComponent } from '../../../core/components/subtitle/subtitle.component';
 import { TextColor } from '../../../core/types/enums';
 import { ParagraphSupportComponent } from '../../../core/components/paragraph-support/paragraph-support.component';
@@ -32,7 +32,7 @@ import { Meta, Title } from '@angular/platform-browser';
 ],
   templateUrl: './home.component.html',
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, AfterViewInit {
   public readonly mainSection = {
     title: 'Transforme o descarte de produtos em ação sustentável',
     image: '/assets/images/main-sustainable.jpg',
@@ -85,7 +85,7 @@ export class HomeComponent implements OnInit {
     private readonly router: Router,
     private readonly productsService: ProductsService,
     private readonly titleService: Title,
-    private readonly metaService: Meta,
+    private readonly metaService: Meta
   ) {}
 
   ngOnInit() {
@@ -96,8 +96,12 @@ export class HomeComponent implements OnInit {
     this.products$ = this.productsService.products$;
   }
 
+  ngAfterViewInit(): void {
+  }
+
   exploreButtonClicked() {
     this.router.navigate(['/products'])
   }
+
 
 }

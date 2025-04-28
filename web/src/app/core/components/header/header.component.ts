@@ -3,7 +3,6 @@ import { LucideAngularModule, Menu, X, ChevronDown  } from 'lucide-angular';
 import { SustentifyLogoComponent } from "../sustentify-logo/sustentify-logo.component";
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { Category } from '../../enums/category.enum';
-import { Material } from '../../enums/material.enum';
 import { AuthService } from '../../../services/auth/auth.service';
 import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -27,7 +26,7 @@ export class HeaderComponent implements OnInit {
 
   constructor(
     private readonly router: Router,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
   ) {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
