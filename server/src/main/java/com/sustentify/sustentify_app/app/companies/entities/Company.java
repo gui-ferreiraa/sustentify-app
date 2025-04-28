@@ -39,6 +39,7 @@ public class Company {
     private Set<Product> products;
 
     @Enumerated(EnumType.STRING)
+    @JsonIgnore
     private Validation validation;
 
     @OneToOne(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)

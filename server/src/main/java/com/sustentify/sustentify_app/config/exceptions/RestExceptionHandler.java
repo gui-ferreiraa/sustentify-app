@@ -148,7 +148,7 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(CompanyValidationException.class)
     public ResponseEntity<ResponseError> companyValidationHandler(CompanyValidationException exception) {
-        ResponseError responseError = new ResponseError(HttpStatus.UNAUTHORIZED, exception.getMessage());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseError);
+        ResponseError responseError = new ResponseError(exception.getStatus(), exception.getMessage());
+        return ResponseEntity.status(exception.getStatus()).body(responseError);
     }
 }

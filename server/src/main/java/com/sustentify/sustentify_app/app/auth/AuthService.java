@@ -52,7 +52,8 @@ public class AuthService {
         Company company = this.companiesService.findByEmail(loginCompanyDto.email()).orElseThrow(CompanyNotFoundException::new);
 
         if (!passwordEncoder.matches(loginCompanyDto.password(), company.getPassword())) throw new CompanyPasswordInvalidException();
-        if (company.getValidation() != Validation.ACCEPTED) throw new CompanyValidationException("Unauthorized validation", company.getValidation());
+        if (company.getValidation() == Validation.PROGRESS) throw new CompanyValidationException("Forbidden validation", company.getValidation(), HttpStatus.FORBIDDEN);
+        if (company.getValidation() == Validation.CANCELLED) throw new CompanyValidationException("Unauthorized validation", company.getValidation(), HttpStatus.UNAUTHORIZED);
 
         String accessToken = this.tokenService.generateAccessToken(company);
         String refreshToken = this.tokenService.generateRefreshToken(company);
