@@ -137,6 +137,21 @@
           "
         />
 
+        <app-image-upload-input
+          formControlName="file"
+          inputName="file"
+          label="Documentação"
+          [multiple]="false"
+          accept="image/pdf"
+          placeholder="Documentação"
+          [error]="form.controls.file.invalid && (form.controls['file'].touched || form.controls.file.dirty)"
+          [errorMessage]="
+            form.controls.file.errors?.['required'] && 'Documentação é obrigatória' ||
+            form.controls.file.errors?.['invalidFileType'] && 'Apenas png, jpg e pdf são aceitos!'
+          "
+        />
+        <p class="default-paragraph text-justify">A documentação será usada para consolidar os dados da empresa. Certifique de ser um documento valido, para não ocorrer fraudes! Max: 15 MB.</p>
+
         <!-- terms -->
         <label class="flex flex-col items-start gap-2 text-sm text-gray-600 mt-2 mb-4">
           <div>

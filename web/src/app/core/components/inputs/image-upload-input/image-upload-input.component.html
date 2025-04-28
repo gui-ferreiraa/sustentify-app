@@ -9,7 +9,7 @@
     <input
       [id]="inputName()"
       type="file"
-      accept="image/png, image/jpeg, image/jpg"
+      accept="image/png, image/jpeg, image/jpg, application/pdf"
       [placeholder]="placeholder()"
       (input)="onInput($event)"
       [class]="'shadow appearance-none rounded bg-[#f4f2f2] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:shadow-gray-300 transition-all placeholder:opacity-50  default-paragraph ' + (error() ? 'shadow-red-300' : '')"

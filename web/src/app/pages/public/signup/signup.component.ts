@@ -14,6 +14,10 @@ import { confirmPasswordValidator } from '../../../core/validators/confirmPasswo
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
+import { ImageUploadInputComponent } from "../../../core/components/inputs/image-upload-input/image-upload-input.component";
+import { fileTypeValidator } from '../../../core/validators/filteType.validator';
+import { finalize, forkJoin, of, switchMap } from 'rxjs';
+import { IHttpError } from '../../../core/types/http-error';
 
 interface SignupForm {
   cnpj: FormControl;
@@ -24,6 +28,7 @@ interface SignupForm {
   phone: FormControl;
   password: FormControl;
   confirmPassword: FormControl;
+  file: FormControl;
   terms: FormControl;
 }
 
@@ -36,6 +41,7 @@ interface SignupForm {
     ButtonGreenComponent,
     PrimaryInputComponent,
     SelectInputComponent,
+    ImageUploadInputComponent
 ],
   templateUrl: './signup.component.html',
 })
@@ -69,6 +75,7 @@ export class SignupComponent implements OnInit {
       location: new FormControl('', [Validators.required]),
       phone: new FormControl('', [Validators.required, Validators.pattern(/^\+55\s?\(\d{2}\)\s?\d{5}-\d{4}$/
 )]),
+      file: new FormControl<File | null>(null, [Validators.required, fileTypeValidator(['image/png', 'image/jpeg', 'image/jpg', 'application/pdf'])]),
       terms: new FormControl(false, [Validators.requiredTrue])
     }, { validators: confirmPasswordValidator() })
   }
@@ -87,6 +94,7 @@ export class SignupComponent implements OnInit {
     const fields = this.form.getRawValue();
 
     this.btnDisabled.set(true);
+
     this.companiesService.create({
       address: fields.location,
       cnpj: fields.cnpj,
@@ -95,26 +103,26 @@ export class SignupComponent implements OnInit {
       name: fields.name,
       phone: fields.phone,
       password: fields.password
-    }).subscribe({
-      next: (vl) => {
-        if (vl.successfully) {
-          this.toastService.success("Cadastro realizado com sucesso!");
-          this.router.navigate(['/signin'])
-        }
+    }, fields.file).pipe(
+      finalize(() => this.btnDisabled.set(false))
+    ).subscribe({
+      next: () => {
+        this.toastService.success("Cadastro concluído! Validaremos suas informações e em breve você poderá acessar a plataforma.");
+        this.router.navigate(['/signin']);
       },
-      error: (err) => {
-        if (err.status == 500) {
-          this.toastService.error("Erro ao fazer login, tente novamente mais tarde");
-          this.btnDisabled.set(false);
-        }
-        if (err.error.status == 'CONFLICT') this.toastService.error("Email ja cadastrado!");
-        else if (err.error.status == 'BAD_REQUEST') this.toastService.error("CNPJ inválido!");
-        else if (err.error.status == 'FORBIDDEN') this.toastService.error("Usuário á cadastrado!");
-        else this.toastService.error("Erro ao cadastrar empresa! Tente novamente mais tarde.");
+      error: (err) => this.handleError(err)
+    });
+  }
 
-        this.btnDisabled.set(false);
-      },
-      complete: () => this.btnDisabled.set(false),
-    })
+  private handleError(err: IHttpError): void {
+    const errorMessages: Record<string, string> = {
+      409: 'Compania já cadastrada!',
+      403: 'Compania Já cadastrada!'
+    };
+
+    const key = err.status;
+    const message = errorMessages[key] || 'Erro interno no servidor. Tente novamente mais tarde.'
+
+    this.toastService.error(message);
   }
 }

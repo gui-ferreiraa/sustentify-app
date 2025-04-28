@@ -1,6 +1,6 @@
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
+import { BehaviorSubject, catchError, combineLatest, map, Observable, of } from 'rxjs';
 import { ICompany } from '../../core/types/company';
 import { CookieService } from '../cookies/cookie.service';
 import { REQUIRE_AUTH } from '../../core/interceptors/contexts/authRequire.context';
@@ -56,27 +56,30 @@ export class AuthService {
      });
   }
 
-  getCompanyLogged() {
+  getCompanyLogged(): Observable<ICompany | null> {
     const token = this.cookieService.getAccessToken();
 
     if (!token) {
       this.setCompany(null);
       this.loadedSubject.next(true);
-      return;
-    };
+      return new Observable<ICompany | null>(observer => observer.next(null));
+    }
 
-    this.http.get<ICompany>(`${this.apiUrl}`, {
+    return this.http.get<ICompany>(`${this.apiUrl}`, {
       context: new HttpContext().set(REQUIRE_AUTH, true),
-    }).subscribe({
-      next: (company) => {
+    }).pipe(
+      map(company => {
         this.setCompany(company);
         this.loadedSubject.next(true);
-      },
-      error: (err) => {
+        return company;
+      }),
+      catchError(() => {
+        this.setCompany(null);
         this.loadedSubject.next(true);
         this.logout();
-      }
-    });
+        return of(null);
+      })
+    );
   }
 
   logout() {

@@ -9,8 +9,9 @@ import { AuthService } from '../../../services/auth/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { CookieService } from '../../../services/cookies/cookie.service';
 import { Router } from '@angular/router';
-import { filter, take } from 'rxjs';
+import { filter, finalize, switchMap, take } from 'rxjs';
 import { Meta, Title } from '@angular/platform-browser';
+import { IHttpError } from '../../../core/types/http-error';
 
 interface SigninForm {
   email: FormControl;
@@ -70,31 +71,33 @@ export class SigninComponent implements OnInit {
     this.authService.login({
       email: fields.email,
       password: fields.password
-    }).subscribe({
-      next: (vl) => {
+    }).pipe(
+      switchMap(vl => {
         this.cookieService.setAccessToken(vl.accessToken);
-        this.authService.getCompanyLogged();
-        this.authService.isAuthenticated$
-          .pipe(
-            filter(Boolean),
-            take(1)
-          )
-          .subscribe(() => {
-            this.router.navigate(['/dashboard'])
-          })
-      },
-      error: (err) => {
-        if (err.status == 500) {
-          this.toastService.error("Erro ao fazer login, tente novamente mais tarde");
-        }
-        if (err.error.status == "NOT_FOUND") this.toastService.error("Email não encontrado");
-        else if (err.error.status == "BAD_REQUEST") this.toastService.error("Email ou senha inválidos");
-        else if (err.error.status == "UNAUTHORIZED") this.toastService.error("Email ou senha inválidos");
-        else if (err.error.status == "FORBIDDEN") this.toastService.error("Email ou senha inválidos");
-        else this.toastService.error("Erro ao fazer login, tente novamente mais tarde");
-        this.btnDisabled.set(false);
-      },
-      complete: () => this.btnDisabled.set(false),
-    })
+        
+        return this.authService.getCompanyLogged();
+      }),
+      switchMap(() => this.authService.isAuthenticated$),
+      filter(Boolean),
+      take(1),
+      finalize(() => this.btnDisabled.set(false))
+    ).subscribe({
+      next: () => this.router.navigate(['/dashboard']),
+      error: (err) => this.handleError(err)
+    });
+  }
+
+  private handleError(err: IHttpError): void {
+    const errorMessages: Record<string, string> = {
+      404: "Email não encontrado",
+      401: "Dados invalidados, cadastra-se com dados reais!",
+      403: "Estamos validando seus dados, volte mais tarde!",
+    }
+    console.log(err);
+
+    const key = String(err.status);
+    const message = errorMessages[key] || "Erro tente novamente mais tarde!";
+
+    this.toastService.error(message);
   }
 }

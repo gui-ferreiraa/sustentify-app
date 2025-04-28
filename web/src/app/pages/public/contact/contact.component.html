@@ -59,33 +59,46 @@
           "
         />
         <app-primary-input
-          formControlName="location"
-          inputName="location"
-          label="Location"
-          placeholder="Rua Monteiro, Vila Soares, n°02 - SP"
+          formControlName="phone"
+          inputName="phone"
+          label="Telefone"
+          placeholder="+55 (11) 00000-0000"
           type="text"
-          [error]="contactForm.controls.location.invalid && (contactForm.controls.location.touched || contactForm.controls.location.dirty)"
+          mask="+00 (00) 00000-0000"
+          [error]="contactForm.controls.phone.invalid && (contactForm.controls.phone.touched || contactForm.controls.phone.dirty)"
           [errorMessage]="
-            contactForm.controls.location.errors?.['required'] && 'Localização é obrigatória' ||
-            contactForm.controls.location.errors?.['minlength'] && 'A localização deve ter no mínimo 10 caracteres'
+            contactForm.controls.phone.errors?.['required'] && 'Telefone é obrigatória' ||
+            contactForm.controls.phone.errors?.['pattern'] && 'Formato inválido. Use: +55 (11) 91234-5678'
           "
         />
+        <app-select-input
+          formControlName="subject"
+          inputName="subject"
+          [options]="this.subjectOptions"
+          label="Assunto"
+          [error]="contactForm.controls.subject.invalid && (contactForm.controls.subject.touched || contactForm.controls.subject.dirty)"
+          [errorMessage]="
+              contactForm.controls.subject.errors?.['required'] && 'Assunto é obrigatório'
+          "
+        />
+
+        <span class="mt-4"></span>
         <app-textarea-input
+          formControlName="message"
           inputName="message"
           label="Mensagem"
-          placeholder=""
-          formControlName="message"
+          placeholder="mensagem"
           [error]="contactForm.controls.message.invalid && (contactForm.controls.message.touched || contactForm.controls.message.dirty)"
           [errorMessage]="
-            contactForm.controls.message.errors?.['required'] && 'Mensagem é obrigatória'||
-            contactForm.controls.message.errors?.['minlength'] && 'A localização deve ter no mínimo 15 caracteres'
+            contactForm.controls.message.errors?.['required'] && 'Mensagem é obrigatória' ||
+            contactForm.controls.message.errors?.['minlength'] && 'Mensagem deve ter no mínimo 15 caracteres'
           "
         />
 
         <app-button-green
           title="Enviar"
           type="submit"
-          [disabled]="false"
+          [disabled]="this.isSubmitting()"
         />
       </form>
     </section>
