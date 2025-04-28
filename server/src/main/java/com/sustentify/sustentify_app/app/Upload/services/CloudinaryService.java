@@ -18,10 +18,10 @@ public class CloudinaryService {
         this.cloudinary = cloudinary;
     }
 
-    public CloudinaryResponse upload(MultipartFile file, String fileName) {
+    public CloudinaryResponse upload(MultipartFile file, String fileName, String folder) {
         try {
             final Map result = cloudinary.uploader().upload(file.getBytes(), Map.of(
-                    "public_id", "sustentify/images/" + fileName
+                    "public_id", "sustentify/" + folder + "/" + fileName
             ));
             final String url = (String) result.get("url");
             final String publicId = (String) result.get("public_id");

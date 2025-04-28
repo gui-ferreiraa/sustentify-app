@@ -5,8 +5,8 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #eaf1e6; /* Cor suave e ecológica */
-            color: #2f4f4f; /* Verde escuro */
+            background-color: #eaf1e6;
+            color: #2f4f4f;
             margin: 0;
             padding: 0;
         }
@@ -20,7 +20,7 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
         h1 {
-            color: #3b9b3e; /* Verde relacionado à sustentabilidade */
+            color: #3b9b3e;
             font-size: 24px;
         }
         .message {
@@ -28,13 +28,9 @@
             line-height: 1.6;
             color: #333;
         }
-        .button {
-            background-color: #3b9b3e;
-            padding: 10px 20px;
+        .label {
             font-weight: bold;
-            border-radius: 5px;
-            display: inline-block;
-            margin-top: 20px;
+            color: #2f4f4f;
         }
         .footer {
             text-align: center;
@@ -50,20 +46,22 @@
 </head>
 <body>
 <div class="container">
-    <h1>Recuperação de Senha - Sustentify</h1>
+    <h1 th:text="${subject}">Sustentify</h1>
+
     <p class="message">
-        Olá <span th:text="${name}"></span>,<br><br>
-        Recebemos uma solicitação para a recuperação de sua senha. Para prosseguir, clique no link abaixo:
+        Você recebeu um novo cadastro na Sustentify.
     </p>
 
-    <a th:href="${domain + '/update-password/' + token}" class="button" style="color: white; text-decoration: none">
-        Recuperar Senha
-    </a>
     <p class="message">
-        O link expira em 30 minutos, após o envio.
+        <span class="label">Identificação:</span> <span th:text="${company.id}">Serial</span><br />
+        <span class="label">Empresa:</span> <span th:text="${company.name}">Nome da Empresa</span><br />
+        <span class="label">Email:</span> <span th:text="${company.email}">email@empresa.com</span><br />
+        <span class="label">Telefone:</span> <span th:text="${company.phone}">11 0000 0000</span><br />
     </p>
+
     <p class="message">
-        Caso não tenha solicitado, ignore este e-mail.
+        <span class="label">Documentação:</span><br />
+        <span>Documentação da empresa.</span>
     </p>
 
     <div class="footer">

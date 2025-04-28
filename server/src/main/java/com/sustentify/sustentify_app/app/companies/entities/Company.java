@@ -1,6 +1,8 @@
 package com.sustentify.sustentify_app.app.companies.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sustentify.sustentify_app.app.companies.enums.CompanyDepartment;
+import com.sustentify.sustentify_app.app.companies.enums.Validation;
 import com.sustentify.sustentify_app.app.products.entities.Product;
 import jakarta.persistence.*;
 
@@ -35,6 +37,12 @@ public class Company {
     @OneToMany(mappedBy = "company")
     @JsonIgnore
     private Set<Product> products;
+
+    @Enumerated(EnumType.STRING)
+    private Validation validation;
+
+    @OneToOne(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    private CompanyDocumentImage document;
 
     public Company() {
     }
@@ -115,6 +123,22 @@ public class Company {
 
     public void setProducts(Set<Product> products) {
         this.products = products;
+    }
+
+    public Validation getValidation() {
+        return validation;
+    }
+
+    public void setValidation(Validation validation) {
+        this.validation = validation;
+    }
+
+    public CompanyDocumentImage getDocument() {
+        return document;
+    }
+
+    public void setDocument(CompanyDocumentImage document) {
+        this.document = document;
     }
 
     @Override

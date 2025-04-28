@@ -122,7 +122,7 @@ public class ProductsService {
 
         String fileName = FileUploadUtil.getFileName(Objects.requireNonNull(file.getOriginalFilename()));
         FileUploadUtil.assertAllowed(file, FileUploadUtil.IMAGE_PATTERN);
-        final CloudinaryResponse response = this.cloudinaryService.upload(file, fileName);
+        final CloudinaryResponse response = this.cloudinaryService.upload(file, fileName, "images");
 
         ProductThumbnail image = new ProductThumbnail();
         image.setProduct(product);
@@ -142,7 +142,7 @@ public class ProductsService {
             String fileName = FileUploadUtil.getFileName(Objects.requireNonNull(file.getOriginalFilename()));
             FileUploadUtil.assertAllowed(file, FileUploadUtil.IMAGE_PATTERN);
 
-            final CloudinaryResponse response = this.cloudinaryService.upload(file, fileName);
+            final CloudinaryResponse response = this.cloudinaryService.upload(file, fileName, "images");
 
             ProductImage image = new ProductImage();
             image.setUrl(response.url());

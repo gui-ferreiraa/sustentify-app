@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS companies (
        cnpj VARCHAR(20) UNIQUE NOT NULL,
        address VARCHAR(255) NOT NULL,
        phone VARCHAR(20) NOT NULL,
+       validation VARCHAR(30) NOT NULL,
        company_department ENUM('ADMINISTRATIVE', 'SALES', 'FINANCE', 'HR', 'MARKETING', 'IT', 'PRODUCTION', 'LEGAL', 'SUPPORT', 'LOGISTICS', 'SUSTAINABILITY') NOT NULL
 );
 
@@ -50,6 +51,14 @@ CREATE TABLE IF NOT EXISTS products_thumbnail (
     url VARCHAR(255),
     product_id VARCHAR(36) NOT NULL,
     FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+CREATE TABLE IF NOT EXISTS company_document_images (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    public_id VARCHAR(255),
+    url VARCHAR(255),
+    company_id VARCHAR(36) NOT NULL,
+    FOREIGN KEY (company_id) REFERENCES companies(id)
 );
 
 CREATE TABLE IF NOT EXISTS interested_products (

@@ -2,7 +2,7 @@ package com.sustentify.sustentify_app.app.companies.dtos;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.sustentify.sustentify_app.app.companies.entities.CompanyDepartment;
+import com.sustentify.sustentify_app.app.companies.enums.CompanyDepartment;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonIgnoreProperties(ignoreUnknown = true)

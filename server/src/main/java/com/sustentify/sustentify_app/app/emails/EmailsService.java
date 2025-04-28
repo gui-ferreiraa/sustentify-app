@@ -1,19 +1,23 @@
 package com.sustentify.sustentify_app.app.emails;
 
-import com.sustentify.sustentify_app.app.emails.dtos.EmailDto;
-import com.sustentify.sustentify_app.app.emails.dtos.EmailRecoverDto;
-import com.sustentify.sustentify_app.app.emails.exceptions.EmailSendingException;
 import com.sustentify.sustentify_app.app.cache.CacheService;
+import com.sustentify.sustentify_app.app.emails.exceptions.EmailSendingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
+import java.util.Optional;
 
 @Service
 public class EmailsService {
@@ -55,44 +59,8 @@ public class EmailsService {
     }
 
     @Transactional
-    public void sendEmailContact(EmailDto dto) {
-        if (isEmailCooldownActive(dto.email())) {
-            throw new EmailSendingException("Please wait a few minutes before requesting another email.");
-        }
-
-        try {
-            MimeMessage mimeMessage = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-
-            helper.setFrom(sender);
-            helper.setSubject(dto.subject());
-            helper.setTo(sender);
-
-            Context context = new Context();
-            context.setVariable("subject", dto.subject());
-            context.setVariable("name", dto.name());
-            context.setVariable("message", dto.message());
-            context.setVariable("email", dto.email());
-            context.setVariable("phone", dto.phone());
-            context.setVariable("domain", webDomain);
-            String htmlBody = templateEngine.process("contact-message.html", context);
-
-            helper.setText(htmlBody, true);
-
-            mailSender.send(mimeMessage);
-
-            setEmailCooldown(dto.email());
-        } catch (Exception e) {
-            throw new EmailSendingException("An unexpected error occurred while trying to send the email. Please try again later.");
-        }
-    }
-
-    @Transactional
-    public void sendEmailRecoverPassword(EmailRecoverDto dto) {
-        String receiver = dto.company().getEmail();
-        String subject = dto.subject() + " | Sustentify App";
-
-        if (isEmailCooldownActive(dto.company().getEmail())) {
+    public void sendEmail(String subject, String receiver, EmailTemplate template, Context context, Optional<MultipartFile> file) {
+        if (isEmailCooldownActive(receiver)) {
             throw new EmailSendingException("Please wait a few minutes before requesting another email.");
         }
 
@@ -104,14 +72,21 @@ public class EmailsService {
             helper.setSubject(subject);
             helper.setTo(receiver);
 
-            Context context = new Context();
+            context.setVariable("receiver", receiver);
             context.setVariable("subject", subject);
-            context.setVariable("company", dto.company());
-            context.setVariable("token", dto.token());
             context.setVariable("domain", webDomain);
-            String htmlBody = templateEngine.process("recover-password.html", context);
-
+            String htmlBody = templateEngine.process(template.getName(), context);
             helper.setText(htmlBody, true);
+
+            if (file.isPresent()) {
+                MultipartFile attachment = file.get();
+                String fileName = attachment.getOriginalFilename();
+                File tempFile = convertMultipartFileToFile(attachment);
+
+                assert fileName != null;
+                helper.addAttachment(fileName, tempFile);
+                tempFile.deleteOnExit();
+            }
 
             mailSender.send(mimeMessage);
 
@@ -119,5 +94,12 @@ public class EmailsService {
         } catch (Exception e) {
             throw new EmailSendingException("An unexpected error occurred while trying to send the email. Please try again later.");
         }
+    }
+
+    private File convertMultipartFileToFile(MultipartFile file) throws IOException {
+        Path tempFilePath = Files.createTempFile("attachment_", ".tmp");
+        File tempFile = tempFilePath.toFile();
+        file.transferTo(tempFile);
+        return tempFile;
     }
 }

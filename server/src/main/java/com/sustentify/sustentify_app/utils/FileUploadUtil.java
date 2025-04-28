@@ -17,7 +17,7 @@ public final class FileUploadUtil {
     public static final long MAX_FILE_SIZE = 1024 * 1024 * 15; // 15 MB
     public static final long MIN_FILE_SIZE = 1024 * 1024;      // 1 MB
 
-    public static final String IMAGE_PATTERN = "([^\\s]+(\\.(?i)(jpg|png))$)";
+    public static final String IMAGE_PATTERN = "([^\\s]+(\\.(?i)(jpg|png|pdf))$)";
     public static final String DATE_PATTERN = "dd-MM-yyyy";
     public static final String FILE_NAME_FORMAT = "%s_%s_%s"; // data_nome_UUID
 

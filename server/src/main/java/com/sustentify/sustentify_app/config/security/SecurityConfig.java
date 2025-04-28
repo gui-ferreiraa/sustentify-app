@@ -44,6 +44,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/v1/auth/recover").permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/v1/auth/update-password/{token}").permitAll()
                         .requestMatchers(HttpMethod.POST, "/v1/emails").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/v1/companies/{id}/document").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/v1/companies/{id}/validate").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

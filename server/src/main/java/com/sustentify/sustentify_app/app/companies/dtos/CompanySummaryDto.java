@@ -1,7 +1,7 @@
 package com.sustentify.sustentify_app.app.companies.dtos;
 
 import com.sustentify.sustentify_app.app.companies.entities.Company;
-import com.sustentify.sustentify_app.app.companies.entities.CompanyDepartment;
+import com.sustentify.sustentify_app.app.companies.enums.CompanyDepartment;
 
 public class CompanySummaryDto{
     private final String id;

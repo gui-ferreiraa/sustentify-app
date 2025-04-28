@@ -1,7 +1,7 @@
 package com.sustentify.sustentify_app.app.companies.dtos;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.sustentify.sustentify_app.app.companies.entities.CompanyDepartment;
+import com.sustentify.sustentify_app.app.companies.enums.CompanyDepartment;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record UpdateCompanyDto(

@@ -1,16 +1,15 @@
 package com.sustentify.sustentify_app.app.companies.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sustentify.sustentify_app.app.companies.enums.CompanyDepartment;
 import jakarta.persistence.*;
-
-import java.util.UUID;
 
 @Entity
 @Table(name = "companies_deleted")
 public class CompanyDeleted {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     private String name;
 
@@ -33,7 +32,6 @@ public class CompanyDeleted {
     }
 
     public CompanyDeleted(Company company) {
-        this.id = UUID.randomUUID();
         this.name = company.getName();
         this.email = company.getEmail();
         this.password = company.getPassword();
@@ -43,11 +41,11 @@ public class CompanyDeleted {
         this.phone = company.getPhone();
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 

@@ -7,10 +7,12 @@ import com.sustentify.sustentify_app.app.auth.dtos.RecoverPasswordDto;
 import com.sustentify.sustentify_app.app.auth.jwt.TokenService;
 import com.sustentify.sustentify_app.app.auth.jwt.exceptions.TokenValidationException;
 import com.sustentify.sustentify_app.app.companies.entities.Company;
+import com.sustentify.sustentify_app.app.companies.enums.Validation;
 import com.sustentify.sustentify_app.app.companies.exceptions.CompanyNotFoundException;
 import com.sustentify.sustentify_app.app.companies.exceptions.CompanyPasswordInvalidException;
+import com.sustentify.sustentify_app.app.companies.exceptions.CompanyValidationException;
 import com.sustentify.sustentify_app.app.companies.services.CompaniesService;
-import com.sustentify.sustentify_app.app.emails.dtos.EmailRecoverDto;
+import com.sustentify.sustentify_app.app.emails.EmailTemplate;
 import com.sustentify.sustentify_app.app.emails.EmailsService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,8 +21,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class AuthService {
@@ -44,10 +48,11 @@ public class AuthService {
         return ResponseEntity.ok(company);
     }
 
-    public ResponseEntity<AuthResponseDto> signin(LoginCompanyDto loginCompanyDto, HttpServletResponse response) {
+    public ResponseEntity<AuthResponseDto> login(LoginCompanyDto loginCompanyDto, HttpServletResponse response) {
         Company company = this.companiesService.findByEmail(loginCompanyDto.email()).orElseThrow(CompanyNotFoundException::new);
 
         if (!passwordEncoder.matches(loginCompanyDto.password(), company.getPassword())) throw new CompanyPasswordInvalidException();
+        if (company.getValidation() != Validation.ACCEPTED) throw new CompanyValidationException("Unauthorized validation", company.getValidation());
 
         String accessToken = this.tokenService.generateAccessToken(company);
         String refreshToken = this.tokenService.generateRefreshToken(company);
@@ -118,8 +123,10 @@ public class AuthService {
 
         String token = this.tokenService.generateAccessToken(company, 0, 1);
 
-        EmailRecoverDto email = new EmailRecoverDto(company, "Recuperação de senha", token);
-        this.emailsService.sendEmailRecoverPassword(email);
+        Context context = new Context();
+        context.setVariable("name", company.getName());
+        context.setVariable("token", token);
+        this.emailsService.sendEmail("Recuperação de senha", company.getEmail(), EmailTemplate.RECOVER_PASSWORD, context, Optional.empty());
     }
 
     public void updatePassword(RecoverPasswordDto dto, String token) {

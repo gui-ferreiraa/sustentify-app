@@ -1,7 +1,7 @@
 SET @uuid := UUID();
 
-INSERT INTO companies (id, name, email, password, cnpj, address, phone, company_department)
-VALUES (@uuid, 'MataSelva Solutions', 'contato@mataselva.com', '123', '12.345.678/0001-99', 'Rua Verde, 123, São Paulo, SP', '123456', 'SALES');
+INSERT INTO companies (id, name, email, password, cnpj, address, phone, company_department, validation)
+VALUES (@uuid, 'MataSelva Solutions', 'contato@mataselva.com', '123', '12.345.678/0001-99', 'Rua Verde, 123, São Paulo, SP', '123456', 'SALES', 'accepted');
 
 INSERT INTO products (id, name, category, description, product_condition, material, production_date, disposal_date, price, location, quantity, companies_id)
 VALUES

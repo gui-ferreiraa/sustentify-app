@@ -1,6 +1,7 @@
 package com.sustentify.sustentify_app.config.exceptions;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.sustentify.sustentify_app.app.companies.exceptions.CompanyValidationException;
 import com.sustentify.sustentify_app.app.emails.exceptions.EmailSendingException;
 import com.sustentify.sustentify_app.app.upload.exceptions.UploadInvalidException;
 import com.sustentify.sustentify_app.app.auth.jwt.exceptions.TokenValidationException;
@@ -143,5 +144,11 @@ public class RestExceptionHandler {
     public ResponseEntity<ResponseError> emailSendingHandler(EmailSendingException exception) {
         ResponseError responseError = new ResponseError(HttpStatus.BAD_REQUEST, exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseError);
+    }
+
+    @ExceptionHandler(CompanyValidationException.class)
+    public ResponseEntity<ResponseError> companyValidationHandler(CompanyValidationException exception) {
+        ResponseError responseError = new ResponseError(HttpStatus.UNAUTHORIZED, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseError);
     }
 }

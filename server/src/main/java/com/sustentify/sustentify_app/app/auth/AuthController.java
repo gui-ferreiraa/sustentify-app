@@ -40,7 +40,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDto> login(@RequestBody LoginCompanyDto loginCompanyDto, HttpServletResponse response) {
-        return this.authService.signin(loginCompanyDto, response);
+        return this.authService.login(loginCompanyDto, response);
     }
 
     @GetMapping("/refresh")
