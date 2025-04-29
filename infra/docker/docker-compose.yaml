@@ -41,7 +41,7 @@ services:
     ports:
       - 3000:3000
     environment:
-      - SPRING.PROFILES.ACTIVE=development
+      - SPRING_PROFILES_ACTIVE=dev
       - API_CORS_ORIGIN=http://localhost
       - WEB_DOMAIN=http://localhost
     env_file:

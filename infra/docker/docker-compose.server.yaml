@@ -52,9 +52,6 @@ services:
     container_name: sustentify-server
     ports:
       - 3000:3000
-    environment:
-      - API_CORS_ORIGIN=http://localhost
-      - WEB_DOMAIN=http://localhost
     env_file:
       - '../.env.development.local'
     depends_on:
