@@ -10,6 +10,7 @@ import { TextareaInputComponent } from "../../../core/components/inputs/textarea
 import { Meta, Title } from '@angular/platform-browser';
 import { SelectInputComponent } from "../../../core/components/inputs/select-input/select-input.component";
 import { EmailService } from '../../../services/email/email.service';
+import { EmailAttemptService } from '../../../services/email-attempt/email-attempt.service';
 
 interface ContactForm {
   phone: FormControl;
@@ -53,6 +54,7 @@ export class ContactComponent implements OnInit {
     private readonly titleService: Title,
     private readonly metaService: Meta,
     private readonly mail: EmailService,
+    private readonly mailAttempt: EmailAttemptService,
   ) {
     this.contactForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email]),
@@ -77,8 +79,9 @@ export class ContactComponent implements OnInit {
 
     const fields = this.contactForm.getRawValue();
 
-    this.isSubmitting.set(true);
+    if (this.mailAttempt.hasRecentAttempt()) return;
 
+    this.isSubmitting.set(true);
     this.mail.send(fields).subscribe({
       next: (vl) => {
         this.toastService.success('Email Enviado!');

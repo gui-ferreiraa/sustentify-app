@@ -29,7 +29,7 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.authService.getCompanyLogged();
+    this.authService.getCompanyLogged().subscribe();
     this.chat.verify().subscribe(vl => {
       if (vl.successfully) {
         this.chatIsWorking.set(vl.successfully)

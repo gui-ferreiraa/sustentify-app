@@ -113,7 +113,6 @@ export class OverviewComponent implements OnInit {
   openModal(id: string) {
     this.interestedService.fetchInterestedDetails(id).subscribe((solicitation) => {
       if (solicitation) {
-        console.log(solicitation)
         this.modalInterested.set(solicitation);
         this.modalIsOpen.set(true);
       }

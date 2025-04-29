@@ -4,6 +4,7 @@ import { BehaviorSubject, catchError, combineLatest, map, Observable, of } from 
 import { ICompany } from '../../core/types/company';
 import { CookieService } from '../cookies/cookie.service';
 import { REQUIRE_AUTH } from '../../core/interceptors/contexts/authRequire.context';
+import { environment } from '../../../environments/environment';
 
 interface IResponseDto {
   name: string;
@@ -20,7 +21,7 @@ interface ILoginDto {
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly apiUrl = `/v1/auth`
+  private readonly url = environment.API_BASE_URL + '/auth';
 
   private companySubject = new BehaviorSubject<ICompany | null>(null);
   public company$ = this.companySubject.asObservable();
@@ -45,11 +46,11 @@ export class AuthService {
   }
 
   login(loginDto: ILoginDto) {
-    return this.http.post<IResponseDto>(`${this.apiUrl}/login`, loginDto);
+    return this.http.post<IResponseDto>(`${this.url}/login`, loginDto);
   }
 
   verifyEmail(token: string): Observable<ICompany> {
-    return this.http.get<ICompany>(`${this.apiUrl}`, {
+    return this.http.get<ICompany>(`${this.url}`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -65,7 +66,7 @@ export class AuthService {
       return new Observable<ICompany | null>(observer => observer.next(null));
     }
 
-    return this.http.get<ICompany>(`${this.apiUrl}`, {
+    return this.http.get<ICompany>(`${this.url}`, {
       context: new HttpContext().set(REQUIRE_AUTH, true),
     }).pipe(
       map(company => {
@@ -85,7 +86,7 @@ export class AuthService {
   logout() {
     this.setCompany(null);
 
-    this.http.get<IResponseDto>(`${this.apiUrl}/logout`, {
+    this.http.get<IResponseDto>(`${this.url}/logout`, {
       context: new HttpContext().set(REQUIRE_AUTH, true),
     }).subscribe();
 
@@ -93,10 +94,10 @@ export class AuthService {
   }
 
   recoverPassword(email: string) {
-    return this.http.post(`${this.apiUrl}/recover`, { email });
+    return this.http.post(`${this.url}/recover`, { email });
   }
 
   updatePassword(token: string, password: string) {
-    return this.http.patch(`${this.apiUrl}/update-password/${token}`, { password });
+    return this.http.patch(`${this.url}/update-password/${token}`, { password });
   }
 }

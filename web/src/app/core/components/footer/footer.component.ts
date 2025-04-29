@@ -3,10 +3,11 @@ import { ParagraphSupportComponent } from '../paragraph-support/paragraph-suppor
 import { TextColor } from '../../types/enums';
 import { SustentifyLogoComponent } from "../sustentify-logo/sustentify-logo.component";
 import { Category } from '../../enums/category.enum';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-footer',
-  imports: [ParagraphSupportComponent, SustentifyLogoComponent],
+  imports: [ParagraphSupportComponent, SustentifyLogoComponent, RouterModule],
   templateUrl: './footer.component.html',
 })
 export class FooterComponent {

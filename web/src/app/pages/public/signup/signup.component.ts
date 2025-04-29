@@ -12,7 +12,7 @@ import { EnumTranslations } from '../../../translations/enum-translations';
 import { CompaniesService } from '../../../services/companies/companies.service';
 import { confirmPasswordValidator } from '../../../core/validators/confirmPassword.validator';
 import { ToastrService } from 'ngx-toastr';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
 import { ImageUploadInputComponent } from "../../../core/components/inputs/image-upload-input/image-upload-input.component";
 import { fileTypeValidator } from '../../../core/validators/filteType.validator';
@@ -35,6 +35,7 @@ interface SignupForm {
 @Component({
   selector: 'app-signup',
   imports: [
+    RouterModule,
     NgOptimizedImage,
     ReactiveFormsModule,
     TitleDisplayComponent,

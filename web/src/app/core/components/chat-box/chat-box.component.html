@@ -5,10 +5,16 @@
       'bg-[#166b50bb]': !isOpen()
     }"
   >
+    @if (this.isSubmitting()) {
+      <div class="mr-2">
+        <app-loading-spinner />
+      </div>
+    } @else {
       <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
       </svg>
-      Sustentify Assistente
+    }
+    Sustentify Assistente
   </button>
 </div>
 <div class="fixed bottom-16 right-4 w-2/3 md:w-96"

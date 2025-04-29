@@ -11,10 +11,10 @@
           content="Paginas"
         />
         <ul class="flex flex-col gap-2 text-white font-semibold default-paragraph mt-3">
-          <li><a href="/">Home</a></li>
-          <li><a href="/about">Sobre</a></li>
-          <li><a href="/contact">Contato</a></li>
-          <li><a href="/signin">Login</a></li>
+          <li><a routerLink="/">Home</a></li>
+          <li><a routerLink="/about">Sobre</a></li>
+          <li><a routerLink="/contact">Contato</a></li>
+          <li><a routerLink="/signin">Login</a></li>
         </ul>
       </div>
       <div>
@@ -23,10 +23,10 @@
           content="Categorias"
         />
         <ul class="flex flex-col gap-2 text-white font-semibold default-paragraph mt-3">
-          <li><a [href]="'/products/trending'">Em Alta</a></li>
-          <li><a [href]="'/products?category=' + (this.metalSlug)">Metal</a></li>
-          <li><a [href]="'/products?category=' + (this.plasticSlug)">Plastico</a></li>
-          <li><a [href]="'/products'">Todos</a></li>
+          <li><a routerLink="/products/trending">Em Alta</a></li>
+          <li><a routerLink="/products" [queryParams]="{ category: this.metalSlug}">Metal</a></li>
+          <li><a routerLink="/products" [queryParams]="{ category: this.plasticSlug}">Plastico</a></li>
+          <li><a routerLink="/products">Todos</a></li>
         </ul>
       </div>
       <div>
@@ -35,7 +35,7 @@
           content="Contato"
         />
         <ul class="flex flex-col gap-2 text-white font-semibold default-paragraph mt-3">
-          <li><a href="#">sustentify&#64;gmail.com</a></li>
+          <li><a href="mailto:sustentify.app@gmail.com?subject=Suporte Sustentify" class="text-white" target="_blank" rel="noopener noreferrer">sustentify.app&#64;gmail.com</a></li>
         </ul>
       </div>
     </section>

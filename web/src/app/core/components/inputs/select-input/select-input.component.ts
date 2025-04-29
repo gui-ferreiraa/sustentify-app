@@ -2,6 +2,7 @@ import { Component, forwardRef, input } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
+  standalone: true,
   selector: 'app-select-input',
   imports: [ReactiveFormsModule, FormsModule],
   templateUrl: './select-input.component.html',

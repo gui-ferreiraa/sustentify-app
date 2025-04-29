@@ -2,6 +2,7 @@ import { Component, forwardRef, input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
+  standalone: true,
   selector: 'app-image-upload-input',
   imports: [],
   templateUrl: './image-upload-input.component.html',

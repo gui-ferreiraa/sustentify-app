@@ -7,6 +7,7 @@ import { PrimaryInputComponent } from "../../../core/components/inputs/primary-i
 import { AuthService } from '../../../services/auth/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { Meta, provideProtractorTestingSupport, Title } from '@angular/platform-browser';
+import { EmailAttemptService } from '../../../services/email-attempt/email-attempt.service';
 
 interface RecoverForm {
   email: FormControl;
@@ -38,6 +39,7 @@ export class RecoverPasswordComponent implements OnInit{
   constructor(
     private readonly authService: AuthService,
     private readonly toastService: ToastrService,
+    private readonly emailAttempt: EmailAttemptService,
     private readonly titleService: Title,
     private readonly metaService: Meta,
   ) {}
@@ -54,39 +56,19 @@ export class RecoverPasswordComponent implements OnInit{
     });
   }
 
-  hasRecentPasswordResetAttempt(): boolean {
-    const cooldownMinutes = 3;
-    const lastAttemptKey = 'lastPasswordResetAttempt';
-    const now = Date.now();
-    const lastAttemptStr = localStorage.getItem(lastAttemptKey);
-
-    if (lastAttemptStr) {
-      const lastAttemptTime = parseInt(lastAttemptStr, 10);
-      const diffInMinutes = (now - lastAttemptTime) / 1000 / 60;
-
-      if (diffInMinutes < cooldownMinutes) {
-        this.toastService.warning(`Aguarde ${Math.ceil(cooldownMinutes - diffInMinutes)} minuto(s) para tentar novamente.`);
-        this.isSuccess.set(true);
-        return true;
-      }
-    }
-    return false;
-  }
-
   submit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
 
-    if (this.hasRecentPasswordResetAttempt()) return;
+    if (this.emailAttempt.hasRecentAttempt()) return;
 
     const fields = this.form.getRawValue();
     const { email } = fields;
     this.btnDisabled.set(true);
     this.authService.recoverPassword(email).subscribe({
       next: (res) => {
-        localStorage.setItem('lastPasswordResetAttempt', Date.now().toString());
         this.form.reset();
         this.toastService.success('E-mail enviado!');
         this.isSuccess.set(true);

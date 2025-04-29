@@ -8,7 +8,7 @@ import { NgOptimizedImage } from '@angular/common';
 import { AuthService } from '../../../services/auth/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { CookieService } from '../../../services/cookies/cookie.service';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { filter, finalize, switchMap, take } from 'rxjs';
 import { Meta, Title } from '@angular/platform-browser';
 import { IHttpError } from '../../../core/types/http-error';
@@ -21,6 +21,7 @@ interface SigninForm {
 @Component({
   selector: 'app-signin',
   imports: [
+    RouterModule,
     TitleDisplayComponent,
     PrimaryInputComponent,
     ButtonGreenComponent,
@@ -74,7 +75,7 @@ export class SigninComponent implements OnInit {
     }).pipe(
       switchMap(vl => {
         this.cookieService.setAccessToken(vl.accessToken);
-        
+
         return this.authService.getCompanyLogged();
       }),
       switchMap(() => this.authService.isAuthenticated$),
@@ -90,10 +91,9 @@ export class SigninComponent implements OnInit {
   private handleError(err: IHttpError): void {
     const errorMessages: Record<string, string> = {
       404: "Email não encontrado",
-      401: "Dados invalidados, cadastra-se com dados reais!",
+      401: "Estamos validando seus dados, confira seu email!",
       403: "Estamos validando seus dados, volte mais tarde!",
     }
-    console.log(err);
 
     const key = String(err.status);
     const message = errorMessages[key] || "Erro tente novamente mais tarde!";

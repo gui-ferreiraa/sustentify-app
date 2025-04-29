@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { IResponseDto } from '../../core/types/response.dto';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 interface IMailDto {
   name: string;
@@ -15,7 +16,7 @@ interface IMailDto {
   providedIn: 'root'
 })
 export class EmailService {
-  private readonly url = '/v1/emails'
+  private readonly url = environment.API_BASE_URL + '/emails'
 
   constructor(
     private readonly http: HttpClient

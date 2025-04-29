@@ -85,7 +85,6 @@ export class ProfileUpdateFormComponent implements OnInit {
           this.successfully.emit();
         },
         error: (err) => {
-          console.log(err)
           this.toastService.error('Erro ao atualizar perfil!'),
           this.btnDisabled.set(false);
         },

@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
 import { IProduct, IProductImage, IProductPagination, IProductResponse, IProductSummary } from '../../core/types/product';
-import { HttpClient, HttpContext, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { REQUIRE_AUTH } from '../../core/interceptors/contexts/authRequire.context';
 import { IResponseDto } from '../../core/types/response.dto';
+import { environment } from '../../../environments/environment';
 
 interface IProductServiceParams {
   size: number;
@@ -17,7 +18,7 @@ interface IProductServiceParams {
   providedIn: 'root'
 })
 export class ProductsService {
-  private readonly apiUrl = `/v1/products`;
+  private readonly url = environment.API_BASE_URL + `/products`;
 
   private productsSubject = new BehaviorSubject<IProductSummary[]>([]);
   public products$ = this.productsSubject.asObservable();
@@ -50,7 +51,7 @@ export class ProductsService {
         params = params.set('material', material);
       }
 
-    return this.http.get<IProductResponse>(this.apiUrl, {
+    return this.http.get<IProductResponse>(this.url, {
       params,
     }).pipe(
       tap(response => {
@@ -71,7 +72,7 @@ export class ProductsService {
       .set('size', size)
       .set('page', page)
 
-      return this.http.get<IProductResponse>(`${this.apiUrl}/trending`, {
+      return this.http.get<IProductResponse>(`${this.url}/trending`, {
         params,
       }).pipe(
         tap(response => {
@@ -98,7 +99,7 @@ export class ProductsService {
         params = params.set('material', props.material);
       }
 
-    return this.http.get<IProductResponse>(this.apiUrl, {
+    return this.http.get<IProductResponse>(this.url, {
       params,
     }).pipe(
       tap(response => {
@@ -109,24 +110,24 @@ export class ProductsService {
   }
 
   fetchProductDetails(productId: string): Observable<IProduct> {
-    return this.http.get<IProduct>(`${this.apiUrl}/${productId}`);
+    return this.http.get<IProduct>(`${this.url}/${productId}`);
   }
 
   fetchProductCreate(product: Omit<IProduct, 'id' | 'disposalDate'>) {
-    return this.http.post<IProduct>(this.apiUrl, product, {
+    return this.http.post<IProduct>(this.url, product, {
       context: new HttpContext().set(REQUIRE_AUTH, true),
     })
   }
 
   fetchProductsByCompany(): Observable<IProductResponse> {
-    return this.http.get<IProductResponse>(`${this.apiUrl}/my`, {
+    return this.http.get<IProductResponse>(`${this.url}/my`, {
       context: new HttpContext().set(REQUIRE_AUTH, true),
     })
   }
 
   fetchProductUpdate(product: Omit<IProduct, 'disposalDate' | 'thumbnail' | 'images'>): Observable<IResponseDto> {
 
-    return this.http.patch<IResponseDto>(`${this.apiUrl}/${product.id}`, {
+    return this.http.patch<IResponseDto>(`${this.url}/${product.id}`, {
       ...product,
     }, {
       context: new HttpContext().set(REQUIRE_AUTH, true),
@@ -134,7 +135,7 @@ export class ProductsService {
   }
 
   fetchProductDelete(productId: string): Observable<IResponseDto> {
-    return this.http.delete<IResponseDto>(`${this.apiUrl}/${productId}`, {
+    return this.http.delete<IResponseDto>(`${this.url}/${productId}`, {
       context: new HttpContext().set(REQUIRE_AUTH, true),
     })
   }
@@ -143,7 +144,7 @@ export class ProductsService {
     const formData = new FormData();
     formData.append('file', file);
 
-    return this.http.post<IResponseDto>(`${this.apiUrl}/${productId}/thumbnail`, formData, {
+    return this.http.post<IResponseDto>(`${this.url}/${productId}/thumbnail`, formData, {
       context: new HttpContext().set(REQUIRE_AUTH, true),
     })
   }
@@ -153,13 +154,13 @@ export class ProductsService {
 
     files.forEach(file => formData.append('files', file));
 
-    return this.http.post<IResponseDto>(`${this.apiUrl}/${productId}/images`, formData, {
+    return this.http.post<IResponseDto>(`${this.url}/${productId}/images`, formData, {
       context: new HttpContext().set(REQUIRE_AUTH, true),
     })
   }
 
   fetchUploadDeleteImage(productId: string, image: IProductImage): Observable<IResponseDto> {
-    return this.http.delete<IResponseDto>(`${this.apiUrl}/${productId}/images`, {
+    return this.http.delete<IResponseDto>(`${this.url}/${productId}/images`, {
       body: {
         publicId: image.publicId
       },
@@ -168,7 +169,7 @@ export class ProductsService {
   }
 
   fetchUploadDeleteThumbnail(productId: string, image: IProductImage): Observable<IResponseDto> {
-    return this.http.delete<IResponseDto>(`${this.apiUrl}/${productId}/thumbnail`, {
+    return this.http.delete<IResponseDto>(`${this.url}/${productId}/thumbnail`, {
       body: {
         publicId: image.publicId
       },

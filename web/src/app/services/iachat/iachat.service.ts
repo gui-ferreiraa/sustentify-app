@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, shareReplay, throwError } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 interface IAChatResponse {
   success: boolean;
@@ -14,7 +15,7 @@ interface IAChatResponse {
 })
 export class IAChatService {
   private status$?: Observable<{ successfully: boolean }>;
-  private readonly url = '/chat';
+  private readonly url = environment.ASSISTANT_BASE_URL + '/chat';
 
   constructor(
     private readonly http: HttpClient

@@ -1,10 +1,11 @@
 import { Component, forwardRef, input, Input } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
-import { NgxMaskDirective } from 'ngx-mask';
+import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 
 type InputTypes = "text" | "email" | "password" | "date" | "number"
 
 @Component({
+  standalone: true,
   selector: 'app-primary-input',
   imports: [
     ReactiveFormsModule,
@@ -13,6 +14,7 @@ type InputTypes = "text" | "email" | "password" | "date" | "number"
   ],
   templateUrl: './primary-input.component.html',
   providers: [
+    provideNgxMask(),
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => PrimaryInputComponent),
