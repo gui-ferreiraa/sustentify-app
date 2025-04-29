@@ -1,6 +1,13 @@
 import chatFactory from '../factories/chat.factory.js'
+import { createLRU } from 'lru.min';
 
 const chatService = chatFactory();
+const lru = createLRU({
+    max: 150_000,
+    onEviction: (key, value) => {
+        console.log('evicted', key, value);
+    }
+})
 
 export const ChatController = {
     '/v1/chat/verify:get': async (req, res, params) => {
@@ -22,10 +29,23 @@ export const ChatController = {
         }
 
         let decodedMessage = params.message;
+
         try {
             decodedMessage = decodeURIComponent(params.message);
         } catch (err) {
             decodedMessage = params.message.replaceAll('%', ' ');
+        }
+    
+        const cached = lru.get(decodedMessage)
+        if (cached) {
+            res.write(JSON.stringify({
+                success: true,
+                question: decodedMessage + ' ?',
+                content: cached,
+                duration: '0'
+            }))
+            res.end()
+            return;
         }
         
         req.once('close', () => {
@@ -41,7 +61,10 @@ export const ChatController = {
                 content: data.message.content,
                 duration: data.load_duration
             }
-    
+
+
+            lru.set(decodedMessage, data.message.content);
+            
             res.write(JSON.stringify(body));
             res.end();
         } catch (err) {

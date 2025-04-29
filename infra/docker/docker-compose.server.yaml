@@ -18,7 +18,7 @@ services:
     command:
       - "--character-set-server=utf8mb4"
       - "--collation-server=utf8mb4_unicode_ci"
-
+      
   phpmyadmin:
     image: phpmyadmin
     container_name: phpmyadmin-container
@@ -47,22 +47,24 @@ services:
 
   server:
     build:
-      context: ../server
+      context: ../../server
       dockerfile: Dockerfile
     container_name: sustentify-server
     ports:
       - 3000:3000
     environment:
-      - NODE_ENV=development
+      - API_CORS_ORIGIN=http://localhost
+      - WEB_DOMAIN=http://localhost
     env_file:
-      - '.env.development.local'
+      - '../.env.development.local'
     depends_on:
       database:
         condition: service_healthy
-        restart: true
       redis:
         condition: service_healthy
-        restart: true
+    networks:
+      - server-network
 
-volumes:
-  dbbase:
+networks:
+  server-network:
+    external: true

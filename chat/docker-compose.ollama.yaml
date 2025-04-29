@@ -1,0 +1,43 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    expose:
+      - "11434"
+    ports:
+      - "11434:11434"
+    healthcheck:
+      test: ollama --version || exit 1
+    command: serve
+    volumes:
+      - ollama:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['all']
+              capabilities: [gpu]
+
+  ollama-model-loader:
+    image: docker:latest  # 🔥 Uses Docker CLI instead of Ollama
+    container_name: ollama-model-loader
+    depends_on:
+      - ollama
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock  # 🔥 Allows running commands inside containers
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        echo "⏳ Waiting for Ollama to be ready..."
+        until docker exec ollama ollama list >/dev/null 2>&1; do
+            sleep 2
+        done
+        echo "📥 Pulling models inside Ollama container..."
+        docker exec ollama ollama pull mistral:7b-instruct
+
+        echo "✅ Models downloaded. Exiting..."
+    restart: "no"
+
+volumes:
+  ollama:

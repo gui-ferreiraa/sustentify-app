@@ -1,0 +1,21 @@
+services:
+  web: 
+    build:
+      context: ../../web
+      dockerfile: Dockerfile
+    container_name: sustentify-web
+    ports:
+      - 80:80
+    networks:
+      - assistant-network
+      - server-network
+    environment:
+      - APP_VERSION=v1.0
+      - API_BASE_URL=sustentify-server
+      - ASSISTANT_BASE_URL=sustentify-assistant
+
+networks:
+  assistant-network:
+    external: true
+  server-network:
+    external: true

@@ -1,0 +1,130 @@
+services:
+  database:
+    image: mysql:lts-oraclelinux9
+    container_name: mysqldb
+    ports:
+      - 3307:3306
+#    volumes:
+#      - /mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 5s
+      retries: 5
+      start_period: 10s
+      timeout: 5s
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: sustentify_db
+    command:
+      - "--character-set-server=utf8mb4"
+      - "--collation-server=utf8mb4_unicode_ci"
+
+  redis:
+    image: redis:latest
+    container_name: redisdb
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 1s
+      timeout: 3s
+      retries: 5
+    environment:
+      - REDIS_PASSWORD=yourpassword
+    restart: always
+
+  server:
+    build:
+      context: ../../server
+      dockerfile: Dockerfile
+    container_name: sustentify-server
+    ports:
+      - 3000:3000
+    environment:
+      - SPRING.PROFILES.ACTIVE=development
+      - API_CORS_ORIGIN=http://localhost
+      - WEB_DOMAIN=http://localhost
+    env_file:
+      - '../.env.development.local'
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    expose:
+      - "11434/tcp"
+    ports:
+      - "11434:11434/tcp"
+    healthcheck:
+      test: ollama --version || exit 1
+    command: serve
+    volumes:
+      - ollama:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['all']
+              capabilities: [gpu]
+
+  ollama-model-loader:
+    image: docker:latest  # 🔥 Uses Docker CLI instead of Ollama
+    container_name: ollama-model-loader
+    depends_on:
+      - ollama
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock  # 🔥 Allows running commands inside containers
+    entrypoint: ["/bin/sh", "-c"]
+    healthcheck:
+      test: ["CMD", "docker", "ps"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    command:
+      - |
+        echo "⏳ Waiting for Ollama to be ready..."
+        until docker exec ollama ollama list >/dev/null 2>&1; do
+            sleep 2
+        done
+        echo "📥 Pulling models inside Ollama container..."
+        docker exec ollama ollama pull mistral:7b-instruct
+
+        echo "✅ Models downloaded. Exiting..."
+    restart: "no"
+
+  chat:
+    build:
+      context: ../../chat
+      dockerfile: Dockerfile
+    container_name: sustentify-assistant
+    ports:
+      - 3100:3100
+    environment:
+      - PORT=3100
+      - OLLAMA_URL=http://ollama:11434
+      - OLLAMA_MODEL=mistral:7b-instruct
+      - CHAT_CORS_ORIGIN=http://localhost
+    depends_on:
+      - ollama-model-loader
+  
+  web: 
+    build:
+      context: ../../web
+      dockerfile: Dockerfile
+    container_name: sustentify-web
+    ports:
+      - 80:80
+    environment:
+      - APP_VERSION=v1.0
+      - API_BASE_URL=sustentify-server
+      - ASSISTANT_BASE_URL=sustentify-assistant
+
+volumes:
+  ollama:
+  dbbase:

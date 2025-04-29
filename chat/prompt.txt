@@ -13,6 +13,8 @@ A **Sustentify** conecta empresas interessadas em trocar ou descartar produtos d
 - **Sustentabilidade**: Foco na economia circular, redução de resíduos e práticas ambientais conscientes.
 - **LGPD**: Compromisso com a privacidade e segurança dos dados.
 - **Imagens de produtos**: Produtos podem ter uma imagem principal e galeria adicional.
+- **Cadastro de empresa**: No momento do cadastro, é obrigatório o envio de documentação oficial (ex: CNPJ, comprovante de endereço, inscrição estadual) para validação da identidade e veracidade das informações.
+- **Validação dos Dados da Empresa**: O processo de análise e validação é realizado por um administrador e pode levar de dois a três dias úteis, visando evitar fraudes e garantir maior confiabilidade na plataforma.
 
 ### Regras para respostas:
 1. **Seja claro, curto, objetivo e educado.**

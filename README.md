@@ -42,13 +42,9 @@ Entre no diretório de Infra
   cd infra
 ```
 
-
-
 ## Variáveis de Ambiente
 
-Crie o arquivo .env.development.local.
-
-Para rodar esse projeto, você vai precisar adicionar as seguintes variáveis de ambiente no seu .env.development.local.
+Para rodar esse projeto, você vai precisar adicionar as seguintes variáveis de ambiente.
 
 Adicionei um exemplo também, com .env.example
 
@@ -124,31 +120,32 @@ Adicionei um exemplo também, com .env.example
 
 Confira o arquivo docker-compose, se a parte de `environment`, em cada serviço do docker estão de acordo com as passadas no env., e rode:
 
+Entre no diretório de Docker
+
+```bash
+  cd ./docker
+```
+
+Crie as duas redes
+
+```bash
+  docker network create assistant-network
+  docker network create server-network
+```
+
+Escolha qual serviço você quer.
+
+services:
+`server`
+`assistant`
+`web`
+
+E rode
+```bash
+  docker-compose -f docker-compose.{service}.yaml up --build
+```
+
+Ou Rodando tudo
 ```bash
   docker-compose up --build
-```
-
-Para rodar a pagina web entre na pasta `web`, baixe as dependencias e inicie.
-
-```bash
-  npm install
-```
-
-```bash
-  npm install @angular/cli
-```
-
-```bash
-  ng serve
-```
-## Rodando sem docker
-
-Entre em cada pasta e acompanhe o readme.md para rodar o `server` e `web`.
-
-```bash
-  cd ./web
-```
-
-```bash
-  cd ./server
 ```
