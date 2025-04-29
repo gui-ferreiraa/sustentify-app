@@ -1,9 +1,9 @@
 package com.sustentify.sustentify_app.app.companies.enums;
 
 public enum Validation {
-    PROGRESS("progress"),
-    CANCELLED("cancelled"),
-    ACCEPTED("accepted");
+    PROGRESS("Progress"),
+    CANCELLED("Cancelled"),
+    ACCEPTED("Accepted");
 
     private final String name;
 

@@ -121,7 +121,7 @@ public class ProductsService {
         }
 
         String fileName = FileUploadUtil.getFileName(Objects.requireNonNull(file.getOriginalFilename()));
-        FileUploadUtil.assertAllowed(file, FileUploadUtil.IMAGE_PATTERN);
+        FileUploadUtil.assertAllowed(file);
         final CloudinaryResponse response = this.cloudinaryService.upload(file, fileName, "images");
 
         ProductThumbnail image = new ProductThumbnail();
@@ -140,7 +140,7 @@ public class ProductsService {
 
         for (MultipartFile file: files) {
             String fileName = FileUploadUtil.getFileName(Objects.requireNonNull(file.getOriginalFilename()));
-            FileUploadUtil.assertAllowed(file, FileUploadUtil.IMAGE_PATTERN);
+            FileUploadUtil.assertAllowed(file);
 
             final CloudinaryResponse response = this.cloudinaryService.upload(file, fileName, "images");
 

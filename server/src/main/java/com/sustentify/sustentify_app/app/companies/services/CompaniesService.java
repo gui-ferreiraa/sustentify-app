@@ -55,7 +55,7 @@ public class CompaniesService {
     public Optional<Company> findById(String companyId) { return this.companiesRepository.findById(companyId); }
 
     @Transactional
-    public Company create(RegisterCompanyDto registerCompanyDto) {
+    public Company create(RegisterCompanyDto registerCompanyDto, MultipartFile file) {
 
         boolean exists = isEmailOrCnpjAlreadyRegistered(registerCompanyDto.email(), registerCompanyDto.cnpj());
         if (exists) throw new CompanyAlreadyExistsException();
@@ -70,27 +70,31 @@ public class CompaniesService {
         newCompany.setPhone(registerCompanyDto.phone());
         newCompany.setValidation(Validation.PROGRESS);
 
-        return this.companiesRepository.save(newCompany);
+        this.companiesRepository.save(newCompany);
+
+        CompanyDocumentImage document = uploadDocumentImage(file);
+
+        newCompany.setDocument(document);
+        document.setCompany(newCompany);
+
+        Company savedCompany = this.companiesRepository.save(newCompany);
+
+        sendEmailValidation(savedCompany, file);
+
+        return savedCompany;
     }
 
-    public void uploadDocumentImage(Company company, MultipartFile file) {
-        if (company.getDocument() != null) {
-            deleteDocumentImage(company, company.getDocument().getPublicId());
-        }
+    public CompanyDocumentImage uploadDocumentImage(MultipartFile file) {
+        FileUploadUtil.assertAllowed(file);
 
         String fileName = FileUploadUtil.getFileName(Objects.requireNonNull(file.getOriginalFilename()));
-        FileUploadUtil.assertAllowed(file, FileUploadUtil.IMAGE_PATTERN);
         final CloudinaryResponse response = this.cloudinaryService.upload(file, fileName, "docs");
 
         CompanyDocumentImage documentImage = new CompanyDocumentImage();
-        documentImage.setCompany(company);
         documentImage.setUrl(response.url());
         documentImage.setPublicId(response.publicId());
 
-        company.setDocument(documentImage);
-        this.save(company);
-
-        sendEmailValidation(company, file);
+        return documentImage;
     }
 
     public void sendEmailValidation(Company company, MultipartFile file) {

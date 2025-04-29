@@ -9,6 +9,7 @@ import com.sustentify.sustentify_app.app.companies.services.CompaniesService;
 import com.sustentify.sustentify_app.config.security.SecurityUtils;
 import com.sustentify.sustentify_app.dtos.ResponseDto;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,28 +25,16 @@ public class CompaniesController {
         this.companiesService = companiesService;
     }
 
-    @PostMapping
-    public ResponseEntity<Company> create(@RequestBody RegisterCompanyDto company) {
-        Company companyCreated = this.companiesService.create(company);
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Company> create(
+            @RequestPart("company") RegisterCompanyDto company,
+            @RequestPart("file") MultipartFile file
+    ) {
+        Company companyCreated = this.companiesService.create(company, file);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(companyCreated);
-    }
-
-    @PostMapping("/{id}/document")
-    public ResponseEntity<ResponseDto> uploadDocument(
-            @RequestParam("file") MultipartFile file,
-            @PathVariable String id
-    ) {
-        Company company = this.companiesService.findById(id).orElseThrow(CompanyNotFoundException::new);
-
-        this.companiesService.uploadDocumentImage(company, file);
-
-        ResponseDto res = new ResponseDto(HttpStatus.CREATED, "Document Insert", true, Optional.empty());
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(res);
     }
 
     @PatchMapping()

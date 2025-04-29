@@ -6,7 +6,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.UUID;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class FileUploadUtil {
@@ -17,16 +16,15 @@ public final class FileUploadUtil {
     public static final long MAX_FILE_SIZE = 1024 * 1024 * 15; // 15 MB
     public static final long MIN_FILE_SIZE = 1024 * 1024;      // 1 MB
 
-    public static final String IMAGE_PATTERN = "([^\\s]+(\\.(?i)(jpg|png|pdf))$)";
     public static final String DATE_PATTERN = "dd-MM-yyyy";
-    public static final String FILE_NAME_FORMAT = "%s_%s_%s"; // data_nome_UUID
+    public static final String FILE_NAME_FORMAT = "%s_%s_%s";
+    private static final Pattern ALLOWED_FILE_PATTERN = Pattern.compile(".*\\.(jpg|png|pdf)$", Pattern.CASE_INSENSITIVE);
 
-    public static boolean isAllowedExtension(final String filename, final String pattern) {
-        final Matcher matcher = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE).matcher(filename);
-        return matcher.matches();
+    public static boolean isAllowedExtension(final String filename) {
+        return ALLOWED_FILE_PATTERN.matcher(filename).matches();
     }
 
-    public static void assertAllowed(MultipartFile file, final String pattern) {
+    public static void assertAllowed(MultipartFile file) {
         if (file == null || file.isEmpty()) {
             throw new UploadInvalidException("File is empty");
         }
@@ -38,7 +36,7 @@ public final class FileUploadUtil {
         }
 
         final String fileName = file.getOriginalFilename();
-        if (fileName == null || !isAllowedExtension(fileName, pattern)) {
+        if (fileName == null || !isAllowedExtension(fileName)) {
             throw new UploadInvalidException("File extension not supported");
         }
     }
