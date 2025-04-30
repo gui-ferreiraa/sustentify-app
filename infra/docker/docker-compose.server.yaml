@@ -13,8 +13,10 @@ services:
       start_period: 10s
       timeout: 5s
     environment:
-      MYSQL_ROOT_PASSWORD: secret
-      MYSQL_DATABASE: sustentify_db
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     command:
       - "--character-set-server=utf8mb4"
       - "--collation-server=utf8mb4_unicode_ci"
@@ -42,7 +44,7 @@ services:
       timeout: 3s
       retries: 5
     environment:
-      - REDIS_PASSWORD=yourpassword
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
     restart: always
 
   server:
@@ -52,16 +54,33 @@ services:
     container_name: sustentify-server
     ports:
       - 3000:3000
-    env_file:
-      - '../.env.development.local'
+    environment:
+      - PORT=${SERVER_PORT}
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+      - API_CORS_ORIGIN=${API_CORS_ORIGIN}
+      - WEB_DOMAIN=${WEB_DOMAIN}
+      - DB_HOST=${MYSQL_HOST}
+      - DB_PORT=${MYSQL_PORT}
+      - DB_NAME=${MYSQL_DATABASE}
+      - DB_USERNAME=${MYSQL_USER}
+      - DB_PASSWORD=${MYSQL_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_TIMEOUT=${REDIS_TIMEOUT}
+      - CLOUDINARY_NAME=${CLOUDINARY_NAME}
+      - CLOUDINARY_KEY=${CLOUDINARY_KEY}
+      - CLOUDINARY_SECRET=${CLOUDINARY_SECRET}
+      - MAIL_HOST=${MAIL_HOST}
+      - MAIL_PORT=${MAIL_PORT}
+      - MAIL_USERNAME=${MAIL_USERNAME}
+      - MAIL_PASSWORD=${MAIL_PASSWORD}
+      # DEFAULT 
+      # - MAIL_TEMPLATES_PATH=/usr/src/server/templates/mail-templates/
+      - MAIL_TEMPLATES_PATH=${MAIL_TEMPLATES_PATH}
     depends_on:
       database:
         condition: service_healthy
       redis:
         condition: service_healthy
-    networks:
-      - server-network
-
-networks:
-  server-network:
-    external: true

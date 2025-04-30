@@ -13,11 +13,25 @@ services:
       start_period: 10s
       timeout: 5s
     environment:
-      MYSQL_ROOT_PASSWORD: secret
-      MYSQL_DATABASE: sustentify_db
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     command:
       - "--character-set-server=utf8mb4"
       - "--collation-server=utf8mb4_unicode_ci"
+      
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: phpmyadmin-container
+    restart: always
+    ports:
+      - 8000:80
+    environment:
+      - PMA_HOST=${MYSQL_HOST}
+      - PMA_PORT=${MYSQL_PORT}
+    depends_on:
+      - database
 
   redis:
     image: redis:latest
@@ -30,7 +44,7 @@ services:
       timeout: 3s
       retries: 5
     environment:
-      - REDIS_PASSWORD=yourpassword
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
     restart: always
 
   server:
@@ -41,11 +55,30 @@ services:
     ports:
       - 3000:3000
     environment:
-      - SPRING_PROFILES_ACTIVE=dev
-      - API_CORS_ORIGIN=http://localhost
-      - WEB_DOMAIN=http://localhost
-    env_file:
-      - '../.env.development.local'
+      - PORT=${SERVER_PORT}
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+      - API_CORS_ORIGIN=${API_CORS_ORIGIN}
+      - WEB_DOMAIN=${WEB_DOMAIN}
+      - DB_HOST=${MYSQL_HOST}
+      - DB_PORT=${MYSQL_PORT}
+      - DB_NAME=${MYSQL_DATABASE}
+      - DB_USERNAME=${MYSQL_USER}
+      - DB_PASSWORD=${MYSQL_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_TIMEOUT=${REDIS_TIMEOUT}
+      - CLOUDINARY_NAME=${CLOUDINARY_NAME}
+      - CLOUDINARY_KEY=${CLOUDINARY_KEY}
+      - CLOUDINARY_SECRET=${CLOUDINARY_SECRET}
+      - MAIL_HOST=${MAIL_HOST}
+      - MAIL_PORT=${MAIL_PORT}
+      - MAIL_USERNAME=${MAIL_USERNAME}
+      - MAIL_PASSWORD=${MAIL_PASSWORD}
+      # DEFAULT 
+      # - MAIL_TEMPLATES_PATH=/usr/src/server/templates/mail-templates/
+      - MAIL_TEMPLATES_PATH=${MAIL_TEMPLATES_PATH}
     depends_on:
       database:
         condition: service_healthy
@@ -124,7 +157,23 @@ services:
       - APP_VERSION=v1.0
       - API_BASE_URL=sustentify-server
       - ASSISTANT_BASE_URL=sustentify-assistant
+  
+  rancher:
+    image: rancher/rancher:latest
+    container_name: rancher
+    restart: unless-stopped
+    ports:
+      - "8080:80"  
+      - "8443:443"  
+    environment:
+      - CATTLE_DB_CLEANUP_INTERVAL=3600
+      - CATTLE_DB_CLEANUP_MAX_AGE=24h
+      - CATTLE_BOOTSTRAP_PASSWORD=${CATTLE_BOOTSTRAP_PASSWORD}
+    volumes:
+      - rancher-data:/var/lib/rancher
+    privileged: true
 
 volumes:
   ollama:
   dbbase:
+  rancher-data:
