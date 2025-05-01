@@ -35,5 +35,54 @@ services:
       - REDIS_PASSWORD=yourpassword
     restart: always
 
+  collector:
+    image: otel/opentelemetry-collector-contrib:0.109.0
+    volumes:
+      - ./config/collector-spring-native-config.yaml:/collector-spring-native-config.yaml
+    command: [ '--config=/collector-spring-native-config.yaml' ]
+    ports:
+      - '4317:4317'
+      - '4318:4318'
+      - '8889:8889'
+    depends_on:
+      - jaeger
+    links:
+      - jaeger
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"  # Porta da UI do Prometheus
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    volumes:
+      - ./config/jaeger-ui.json:/etc/jaeger/jaeger-ui.json
+    command: --query.ui-config /etc/jaeger/jaeger-ui.json
+    environment:
+      - METRICS_STORAGE_TYPE=prometheus
+      - PROMETHEUS_SERVER_URL=http://prometheus:9090
+      - PROMETHEUS_QUERY_NAMESPACE=${PROMETHEUS_QUERY_NAMESPACE:-}
+      - PROMETHEUS_QUERY_DURATION_UNIT=${PROMETHEUS_QUERY_DURATION_UNIT:-}
+      - PROMETHEUS_QUERY_NORMALIZE_CALLS=true
+      - PROMETHEUS_QUERY_NORMALIZE_DURATION=true
+    ports:
+#      - '4317:4317'
+      - "8081:16686"
+
+  server:
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - PORT=3000
+    ports:
+      - 3000:3000
+    depends_on:
+      - database
+
 volumes:
   dbbase:
