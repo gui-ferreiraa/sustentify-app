@@ -15,9 +15,11 @@ jobs:
       - name: Get code
         uses: actions/checkout@v4
 
-      - name: Install dependencies
+      - name: Install dependencies and Angular CLI
         working-directory: ./web
-        run: npm install
+        run: | 
+          npm install
+          npm install @angular/cli
 
       - name: Build Project
         working-directory: ./web
