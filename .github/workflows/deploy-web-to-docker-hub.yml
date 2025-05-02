@@ -6,9 +6,9 @@ on:
       - 'web/**'
     branches:
       - main
-  release:
-    types: [created]
-    
+    tags:
+      - 'v*'
+      
 jobs:
   build-main:
     if: github.ref == 'refs/heads/main'
