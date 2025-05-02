@@ -12,23 +12,25 @@ jobs:
   build-application:
     runs-on: ubuntu-latest
     steps:
-      - name: Get code
-        uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18.x' # Use Node.js 18.x, which is compatible with Angular 17 and 18
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
 
-      - name: Install dependencies and Angular CLI
-        working-directory: ./web
-        run: | 
-          npm install
-          npm install -g @angular/cli
+    - name: Install dependencies
+      run: npm install
+      working-directory: ./web
 
-      # - name: Build Project
-      #   working-directory: ./web
-      #   run: npm run build:prod
+    - name: Install Angular CLI
+      run: npm install -g @angular/cli
+      working-directory: ./web
+
+    - name: Build app (production)
+      run: npm run build:prod
+      working-directory: ./web
 
   deploy-docker-hub:
     environment: docker-hub-web
