@@ -35,15 +35,33 @@ jobs:
         run: npm run build:prod
         working-directory: ./web
 
-      - name: Docker login and push as latest
-        env:
-          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-          DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
-          DOCKER_HUB_PROJECT_NAME: ${{ secrets.DOCKER_HUB_PROJECT_NAME }}
+  deploy-docker-hub-latest:
+    environment: docker-hub-web
+    env:
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+      DOCKER_HUB_PROJECT_NAME: ${{ secrets.DOCKER_HUB_PROJECT_NAME }}
+    needs: build-main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v4 
+
+      - name: Login Docker Hub
         run: |
-          echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
-          docker build -t $DOCKER_HUB_USERNAME/$DOCKER_HUB_PROJECT_NAME:latest ./web
-          docker push $DOCKER_HUB_USERNAME/$DOCKER_HUB_PROJECT_NAME:latest
+          echo ${{ env.DOCKER_HUB_PASSWORD }} | docker login -u ${{ env.DOCKER_HUB_USERNAME }} --password-stdin
+
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:latest ./web
+
+      - name: Push Docker image to Docker Hub
+        run: |
+
+          docker push ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:latest
+
+      - name: Logout Docker Hub
+        run: |
           docker logout
 
   build-release-tag:
@@ -71,14 +89,44 @@ jobs:
         run: npm run build:prod
         working-directory: ./web
 
-      - name: Docker login and push with tag
-        env:
-          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-          DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
-          DOCKER_HUB_PROJECT_NAME: ${{ secrets.DOCKER_HUB_PROJECT_NAME }}
+  deploy-docker-hub-with-tag:
+    environment: docker-hub-web
+    env:
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+      DOCKER_HUB_PROJECT_NAME: ${{ secrets.DOCKER_HUB_PROJECT_NAME }}
+    needs: build-release-tag
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v4 
+
+      - name: Login Docker Hub
         run: |
-          TAG_NAME=${GITHUB_REF#refs/tags/v}
-          echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
-          docker build -t $DOCKER_HUB_USERNAME/$DOCKER_HUB_PROJECT_NAME:$TAG_NAME ./web
-          docker push $DOCKER_HUB_USERNAME/$DOCKER_HUB_PROJECT_NAME:$TAG_NAME
+          echo ${{ env.DOCKER_HUB_PASSWORD }} | docker login -u ${{ env.DOCKER_HUB_USERNAME }} --password-stdin
+
+      - name: Extract Tag
+        id: tag
+        uses: aaronbarnaby/get-tag@v1.2.0
+        with:
+          without_prefix_v: true # Remove prefix `v` from tag
+        
+      - name: Set Git Tag Name
+        run: echo "GIT_TAG_NAME=${{ steps.tag.outputs.tag }}" >> $GITHUB_ENV
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            -t ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:latest \
+            -t ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:$GIT_TAG_NAME \
+            ./web
+
+      - name: Push Docker image to Docker Hub
+        run: |
+          docker push ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:latest
+
+          docker push ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:$GIT_TAG_NAME
+
+      - name: Logout Docker Hub
+        run: |
           docker logout

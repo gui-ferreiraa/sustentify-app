@@ -4,7 +4,6 @@ on:
   push: 
     paths: 
       - 'server/**'
-      - 'infra/docker-compose.yaml'
     branches:
       - main
     tags:
@@ -41,11 +40,10 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:latest
+          docker build -t ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:latest ./server
 
       - name: Push Docker image to Docker Hub
         run: |
-
           docker push ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:latest
 
       - name: Logout Docker Hub
@@ -92,10 +90,14 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:$GIT_TAG_NAME ./server
+          docker build \
+            -t ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:latest \
+            -t ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:$GIT_TAG_NAME \
+            ./server
 
       - name: Push Docker image to Docker Hub
         run: |
+          docker push ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:latest
 
           docker push ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:$GIT_TAG_NAME
 
