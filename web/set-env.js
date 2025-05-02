@@ -13,7 +13,6 @@ const environmentFileContent = `
     API_BASE_URL: '${process.env.API_BASE_URL}',
     ASSISTANT_BASE_URL: '${process.env.ASSISTANT_BASE_URL}',
     appVersion: '${process.env.APP_VERSION}',
-    CLOUDINARY_NAME: '${process.env.CLOUDINARY_NAME}',
   };
 `;
 

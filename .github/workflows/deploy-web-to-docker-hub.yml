@@ -21,9 +21,9 @@ jobs:
           npm install
           npm install @angular/cli
 
-      - name: Build Project
-        working-directory: ./web
-        run: npm run build:prod
+      # - name: Build Project
+      #   working-directory: ./web
+      #   run: npm run build:prod
 
   deploy-docker-hub:
     environment: docker-hub-web
