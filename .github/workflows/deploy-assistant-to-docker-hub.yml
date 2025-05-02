@@ -1,0 +1,68 @@
+name: Deploy Assistant to Docker Hub
+
+on: 
+  push: 
+    paths: 
+      - 'chat/**'
+    branches:
+      - main
+    tags:
+      - 'v*'
+
+jobs:
+  build-main:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: docker-hub-assistant
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./chat
+
+      - name: Docker login and push as latest
+        env:
+          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+          DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+          DOCKER_HUB_PROJECT_NAME: ${{ secrets.DOCKER_HUB_PROJECT_NAME }}
+        run: |
+          echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
+          docker build -t $DOCKER_HUB_USERNAME/$DOCKER_HUB_PROJECT_NAME:latest ./chat
+          docker push $DOCKER_HUB_USERNAME/$DOCKER_HUB_PROJECT_NAME:latest
+          docker logout
+
+  build-release-tag:
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    environment: docker-hub-assistant
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./chat
+
+      - name: Docker login and push with tag
+        env:
+          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+          DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+          DOCKER_HUB_PROJECT_NAME: ${{ secrets.DOCKER_HUB_PROJECT_NAME }}
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/v}
+          echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
+          docker build -t $DOCKER_HUB_USERNAME/$DOCKER_HUB_PROJECT_NAME:$TAG_NAME ./chat
+          docker push $DOCKER_HUB_USERNAME/$DOCKER_HUB_PROJECT_NAME:$TAG_NAME
+          docker logout
