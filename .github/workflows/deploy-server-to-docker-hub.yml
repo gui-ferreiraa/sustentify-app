@@ -20,7 +20,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '21'
-          distribution: 'adoptopenjdk'
+          distribution: 'temurin'
         
   deploy-docker-hub:
     environment: docker-hub-server
@@ -44,12 +44,13 @@ jobs:
         with:
           without_prefix_v: true # Remove prefix `v` from tag
         
-      - name: Use Tag
-        run: echo ${{ steps.tag.outputs.tag }}
+      - name: Set Git Tag Name
+        run: echo "GIT_TAG_NAME=${{ steps.tag.outputs.tag }}" >> $GITHUB_ENV
 
       - name: Build Docker image
         run: |
-            docker build -t ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:$GIT_TAG_NAME ./server
+          docker build -t ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:latest \
+          -t ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:$GIT_TAG_NAME ./server
 
       - name: Push Docker image to Docker Hub
         run: |
