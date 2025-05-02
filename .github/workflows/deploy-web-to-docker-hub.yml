@@ -6,68 +6,77 @@ on:
       - 'web/**'
     branches:
       - main
-    tags:
-      - 'v*'
-jobs: 
-  build-application:
+  release:
+    types: [created]
+    
+jobs:
+  build-main:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18.x'
-
-    - name: Install dependencies
-      run: npm install
-      working-directory: ./web
-
-    - name: Install Angular CLI
-      run: npm install -g @angular/cli
-      working-directory: ./web
-
-    - name: Build app (production)
-      run: npm run build:prod
-      working-directory: ./web
-
-  deploy-docker-hub:
-    environment: docker-hub-web
-    env:
-      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-      DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
-      DOCKER_HUB_PROJECT_NAME: ${{ secrets.DOCKER_HUB_PROJECT_NAME }}
-    needs: build-application
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get code
-        uses: actions/checkout@v4 
-
-      - name: Login Docker Hub
-        run: |
-          echo ${{ env.DOCKER_HUB_PASSWORD }} | docker login -u ${{ env.DOCKER_HUB_USERNAME }} --password-stdin
-
-      - name: Extract Tag
-        id: tag
-        uses: aaronbarnaby/get-tag@v1.2.0
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          without_prefix_v: true # Remove prefix `v` from tag
-        
-      - name: Set Git Tag Name
-        run: echo "GIT_TAG_NAME=${{ steps.tag.outputs.tag }}" >> $GITHUB_ENV
+          node-version: '18.x'
 
-      - name: Build Docker image
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./web
+
+      - name: Install Angular CLI
+        run: npm install -g @angular/cli
+        working-directory: ./web
+
+      - name: Build app (production)
+        run: npm run build:prod
+        working-directory: ./web
+
+      - name: Docker login and push as latest
+        env:
+          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+          DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+          DOCKER_HUB_PROJECT_NAME: ${{ secrets.DOCKER_HUB_PROJECT_NAME }}
         run: |
-            docker build -t ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:$GIT_TAG_NAME ./web
+          echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
+          docker build -t $DOCKER_HUB_USERNAME/$DOCKER_HUB_PROJECT_NAME:latest ./web
+          docker push $DOCKER_HUB_USERNAME/$DOCKER_HUB_PROJECT_NAME:latest
+          docker logout
 
-      - name: Push Docker image to Docker Hub
+  build-release-tag:
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./web
+
+      - name: Install Angular CLI
+        run: npm install -g @angular/cli
+        working-directory: ./web
+
+      - name: Build app (production)
+        run: npm run build:prod
+        working-directory: ./web
+
+      - name: Docker login and push with tag
+        env:
+          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+          DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+          DOCKER_HUB_PROJECT_NAME: ${{ secrets.DOCKER_HUB_PROJECT_NAME }}
         run: |
-
-          docker push ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:latest
-
-          docker push ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:$GIT_TAG_NAME
-
-      - name: Logout Docker Hub
-        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/v}
+          echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
+          docker build -t $DOCKER_HUB_USERNAME/$DOCKER_HUB_PROJECT_NAME:$TAG_NAME ./web
+          docker push $DOCKER_HUB_USERNAME/$DOCKER_HUB_PROJECT_NAME:$TAG_NAME
           docker logout
