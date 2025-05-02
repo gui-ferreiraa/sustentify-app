@@ -1,10 +1,9 @@
-name: Deploy Server to Docker Hub
+name: Deploy Web to Docker Hub
 
 on: 
   push: 
     paths: 
-      - 'server/**'
-      - 'infra/docker-compose.yaml'
+      - 'web/**'
     branches:
       - main
     tags:
@@ -14,16 +13,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get code
-        uses: actions/checkout@v4    
-       
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          java-version: '21'
-          distribution: 'adoptopenjdk'
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Project
+        run: npm run build
         
   deploy-docker-hub:
-    environment: docker-hub-server
+    environment: docker-hub-web
     env:
       DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
       DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
