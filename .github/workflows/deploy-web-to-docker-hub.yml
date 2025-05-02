@@ -15,15 +15,14 @@ jobs:
       - name: Get code
         uses: actions/checkout@v4
 
-      - name: Entry path
-        run: cd ./web
-
       - name: Install dependencies
         run: npm install
+        working-directory: ./web
 
       - name: Build Project
         run: npm run build
-        
+        working-directory: ./web
+         
   deploy-docker-hub:
     environment: docker-hub-web
     env:
@@ -51,7 +50,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-            docker build -t ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:$GIT_TAG_NAME ./server
+            docker build -t ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:$GIT_TAG_NAME ./web
 
       - name: Push Docker image to Docker Hub
         run: |
