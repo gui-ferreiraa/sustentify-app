@@ -1,18 +1,22 @@
 import * as fs from 'fs';
-import * as dotenv from 'dotenv';
 
-dotenv.config({
-  path: '.env.production.local'
-})
+const API_BASE_URL = process.env.API_BASE_URL;
+const ASSISTANT_BASE_URL = process.env.ASSISTANT_BASE_URL;
+const APP_VERSION = process.env.APP_VERSION;
+
+if (!API_BASE_URL || !ASSISTANT_BASE_URL || !APP_VERSION) {
+  console.error('❌ Environments undefineds!');
+  process.exit(1);
+}
 
 const targetPath = './src/environments/environment.prod.ts';
 
 const environmentFileContent = `
   export const environment = {
     production: true,
-    API_BASE_URL: '${process.env.API_BASE_URL}',
-    ASSISTANT_BASE_URL: '${process.env.ASSISTANT_BASE_URL}',
-    appVersion: '${process.env.APP_VERSION}',
+    API_BASE_URL: '${API_BASE_URL}',
+    ASSISTANT_BASE_URL: '${ASSISTANT_BASE_URL}',
+    appVersion: '${APP_VERSION}',
   };
 `;
 
