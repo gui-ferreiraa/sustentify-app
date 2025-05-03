@@ -10,9 +10,9 @@ services:
       - assistant-network
       - server-network
     environment:
-      - APP_VERSION=v1.0
-      - API_BASE_URL=sustentify-server
-      - ASSISTANT_BASE_URL=sustentify-assistant
+      - NG_SUS_APP_VERSION=v1.0
+      - NG_SUS_API_BASE_URL=sustentify-server:3100/v1
+      - NG_SUS_ASSISTANT_BASE_URL=sustentify-assistant:3200/v1
 
 networks:
   assistant-network:
