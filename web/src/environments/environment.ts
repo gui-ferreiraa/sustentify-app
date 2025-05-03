@@ -1,5 +1,6 @@
 export const environment = {
-  production: false,
-  API_BASE_URL: import.meta.env.NG_SUS_API_BASE_URL,
-  ASSISTANT_BASE_URL: import.meta.env.NG_SUS_ASSISTANT_BASE_URL,
+  production: true,
+  API_BASE_URL: 'http://sustentify-server:3100',
+  ASSISTANT_BASE_URL: 'http://sustentify-assistant:3200',
+  appVersion: 'v1.0.0'
 };
