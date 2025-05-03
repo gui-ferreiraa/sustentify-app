@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { APP_INITIALIZER, Component, OnInit, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './core/components/header/header.component';
 import { LucideAngularModule, FileIcon } from 'lucide-angular';
@@ -15,7 +15,7 @@ import { ChatBoxComponent } from './core/components/chat-box/chat-box.component'
     ChatBoxComponent,
     LucideAngularModule,
     FooterComponent
-],
+  ],
   templateUrl: './app.component.html'
 })
 export class AppComponent implements OnInit {
