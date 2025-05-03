@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, Observable, of, tap, throwError } from 'rxjs';
 import { IProduct, IProductImage, IProductPagination, IProductResponse, IProductSummary } from '../../core/types/product';
 import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { REQUIRE_AUTH } from '../../core/interceptors/contexts/authRequire.context';
@@ -59,7 +59,7 @@ export class ProductsService {
         this.productsPaginationSubject.next(response);
       }),
       catchError(error => {
-        return throwError(() => new Error('Falha na comunicação com o servidor!'))
+        return throwError(() => new Error('Communication with the server failed!'))
       })
     )
   }

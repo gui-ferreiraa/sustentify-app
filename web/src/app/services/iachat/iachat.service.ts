@@ -26,7 +26,7 @@ export class IAChatService {
       this.status$ = this.http.get<{ successfully: boolean }>(`${this.url}/verify`).pipe(
         shareReplay(1),
         catchError(error => {
-          return throwError(() => new Error('Falha na comunicação com o servidor!'))
+          return throwError(() => new Error('Communication with the server failed!'))
         })
       );
     }

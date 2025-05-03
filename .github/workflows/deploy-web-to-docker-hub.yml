@@ -41,6 +41,9 @@ jobs:
       DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
       DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
       DOCKER_HUB_PROJECT_NAME: ${{ secrets.DOCKER_HUB_PROJECT_NAME }}
+      API_BASE_URL: ${{ secrets.API_BASE_URL }}
+      ASSISTANT_BASE_URL: ${{ secrets.ASSISTANT_BASE_URL }}
+      MAKE_REQUEST: ${{ secrets.MAKE_REQUEST }}
     needs: build-main
     runs-on: ubuntu-latest
     steps:
@@ -53,7 +56,12 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:latest ./web
+          docker build \
+          --build-arg NG_SUS_API_BASE_URL=${{ env.API_BASE_URL }} \
+          --build-arg NG_SUS_ASSISTANT_BASE_URL=${{ env.ASSISTANT_BASE_URL }} \
+          --build-arg NG_SUS_APP_VERSION=v1.0.0 \
+          --build-arg NG_SUS_MAKE_REQUEST=${{ env.MAKE_REQUEST }} \
+          -t ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:latest ./web
 
       - name: Push Docker image to Docker Hub
         run: |
@@ -95,6 +103,9 @@ jobs:
       DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
       DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
       DOCKER_HUB_PROJECT_NAME: ${{ secrets.DOCKER_HUB_PROJECT_NAME }}
+      API_BASE_URL: ${{ secrets.API_BASE_URL }}
+      ASSISTANT_BASE_URL: ${{ secrets.ASSISTANT_BASE_URL }}
+      MAKE_REQUEST: ${{ secrets.MAKE_REQUEST }}
     needs: build-release-tag
     runs-on: ubuntu-latest
     steps:
@@ -117,6 +128,10 @@ jobs:
       - name: Build Docker image
         run: |
           docker build \
+            --build-arg NG_SUS_API_BASE_URL=${{ env.API_BASE_URL }} \
+            --build-arg NG_SUS_ASSISTANT_BASE_URL=${{ env.ASSISTANT_BASE_URL }} \
+            --build-arg NG_SUS_APP_VERSION=v1.0.0 \
+            --build-arg NG_SUS_MAKE_REQUEST=${{ env.MAKE_REQUEST }} \
             -t ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:latest \
             -t ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:$GIT_TAG_NAME \
             ./web

@@ -6,7 +6,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build:dev": "ng build --watch --configuration development",
-    "build:prod": "ng build --configuration production",
+    "build:prod": "node set-env.js && ng build --configuration production",
     "test": "ng test"
   },
   "private": true,
@@ -20,7 +20,6 @@
     "@angular/platform-browser-dynamic": "^19.2.0",
     "@angular/router": "^19.2.0",
     "@types/gsap": "^1.20.2",
-    "@types/node": "^22.15.3",
     "clsx": "^2.1.1",
     "gsap": "^3.12.7",
     "jwt-decode": "^4.0.0",
@@ -31,6 +30,7 @@
     "rxjs": "~7.8.0",
     "tailwind-merge": "^3.1.0",
     "tslib": "^2.3.0",
+    "webpack": "^5.99.7",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
@@ -41,6 +41,7 @@
     "@ngx-env/builder": "^19.0.4",
     "@tailwindcss/postcss": "^4.1.5",
     "@types/jasmine": "~5.1.0",
+    "@types/node": "^22.15.3",
     "autoprefixer": "^10.4.21",
     "dotenv": "^16.4.7",
     "dotenv-webpack": "^8.1.0",

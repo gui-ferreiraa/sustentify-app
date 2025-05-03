@@ -4,9 +4,6 @@ declare interface Env {
   // Replace the following with your own environment variables.
   // Example: NGX_VERSION: string;
   [key: string]: any;
-  readonly NG_SUS_API_BASE_URL: string;
-  readonly NG_SUS_ASSISTANT_BASE_URL: string;
-  readonly NG_SUS_APP_VERSION: string;
 }
 
 // Choose how to access the environment variables.
@@ -15,6 +12,9 @@ declare interface Env {
 // 1. Use import.meta.env.YOUR_ENV_VAR in your code. (conventional)
 declare interface ImportMeta {
   readonly env: Env;
+  readonly NG_SUS_API_BASE_URL: string;
+  readonly NG_SUS_ASSISTANT_BASE_URL: string;
+  readonly NG_SUS_APP_VERSION: string;
 }
 
 // 2. Use _NGX_ENV_.YOUR_ENV_VAR in your code. (customizable)
