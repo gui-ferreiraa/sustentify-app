@@ -13,6 +13,7 @@ ARG NG_SUS_ASSISTANT_BASE_URL
 ARG NG_SUS_APP_VERSION
 ARG NG_SUS_MAKE_REQUEST
 
+
 RUN test -n "$NG_SUS_API_BASE_URL" || (echo "Erro: NG_SUS_API_BASE_URL undefined!" && exit 1)
 RUN test -n "$NG_SUS_ASSISTANT_BASE_URL" || (echo "Erro: NG_SUS_ASSISTANT_BASE_URL undefined!" && exit 1)
 RUN test -n "$NG_SUS_APP_VERSION" || (echo "Erro: NG_SUS_APP_VERSION undefined!" && exit 1)
