@@ -7,7 +7,8 @@ services:
         - NG_SUS_API_BASE_URL=${NG_SUS_API_BASE_URL}
         - NG_SUS_ASSISTANT_BASE_URL=${NG_SUS_ASSISTANT_BASE_URL}
         - NG_SUS_APP_VERSION=${NG_SUS_APP_VERSION}
-        - NG_SUS_MAKE_REQUEST=true
+        - NG_SUS_MAKE_REQUEST=false
+    # image: guiferreiraa/sustentify-web:latest
     container_name: sustentify-web
     ports:
       - 80:80
