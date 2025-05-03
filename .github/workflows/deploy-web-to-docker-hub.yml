@@ -54,6 +54,13 @@ jobs:
         run: |
           echo ${{ env.DOCKER_HUB_PASSWORD }} | docker login -u ${{ env.DOCKER_HUB_USERNAME }} --password-stdin
 
+      - name: Set environment variables from secrets
+        run: |
+          echo "NG_SUS_API_BASE_URL=${{ env.API_BASE_URL }}" >> $GITHUB_ENV
+          echo "NG_SUS_ASSISTANT_BASE_URL=${{ env.ASSISTANT_BASE_URL }}" >> $GITHUB_ENV
+          echo "NG_SUS_APP_VERSION=v1.0.0" >> $GITHUB_ENV
+          echo "NG_SUS_MAKE_REQUEST=${{ env.MAKE_REQUEST }}" >> $GITHUB_ENV
+
       - name: Build Docker image
         run: |
           docker build \
