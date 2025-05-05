@@ -62,7 +62,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     titleColor: TextColor.yellow,
     subtitle: 'Soluções sustentáveis',
     subtitleColor: TextColor.gray,
-    paragraph: 'Facilitamos a compra, venda e reaproveitamento de produtos descartados, além de oferecer soluções para compensação de carbono, ajudando sua empresa a ser mais sustentável.',
+    paragraph: 'Conectamos empresas a oportunidades de compra, venda e reaproveitamento de produtos descartados, transformando resíduos em valor. Com a nossa plataforma, sua organização adota práticas sustentáveis de forma simples, reduz custos operacionais e ainda fortalece seu compromisso com o meio ambiente e a economia circular.',
     paragraphSupportColor: TextColor.white,
     displayTitleColor: TextColor.yellow,
     displayDescriptionColor: TextColor.white,
