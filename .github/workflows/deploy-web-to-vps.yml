@@ -1,0 +1,46 @@
+name: Deploy Web to VPS
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to deploy'
+        required: true
+        default: 'latest'
+
+jobs:
+  update-vps:
+    environment: web-vps
+    env:
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_PROJECT_NAME: ${{ secrets.DOCKER_HUB_PROJECT_NAME }}
+      DOMAIN: ${{ secrets.DOMAIN }}
+      USER: ${{ secrets.USER }}
+      TAG: ${{ github.event.inputs.version }}
+      APP_PATH: ${{ secrets.APP_PATH }}
+      APP_NAME: ${{ secrets.APP_NAME }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+    
+      - name: Set up SSH key
+        run: |
+          env
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SECRET_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -p 22 ${{ env.DOMAIN }} >> ~/.ssh/known_hosts
+    
+      - name: Deploy to server
+        run: |
+            ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ env.USER }}@${{ env.DOMAIN }} <<'ENDSSH'
+            cd ${{ env.APP_PATH }}
+            
+            docker pull ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:${{ env.TAG }}
+
+            docker service update --image ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:${{ env.TAG }} ${{ env.APP_NAME }}
+
+            docker system prune -f
+            
+            ENDSSH
