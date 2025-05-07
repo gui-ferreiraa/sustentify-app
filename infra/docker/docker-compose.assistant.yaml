@@ -19,7 +19,7 @@ services:
               device_ids: ['all']
               capabilities: [gpu]
     networks:
-      - internal-network
+      - assistant_net
 
   ollama-model-loader:
     image: docker:latest  # 🔥 Uses Docker CLI instead of Ollama
@@ -41,7 +41,7 @@ services:
         echo "✅ Models downloaded. Exiting..."
     restart: "no"
     networks:
-      - internal-network
+      - assistant_net
 
   chat:
     build:
@@ -49,24 +49,24 @@ services:
       dockerfile: Dockerfile
     container_name: sustentify-assistant
     ports:
-      - 3100:3100
+      - 8090:8090
     environment:
-      - PORT=3100
+      - PORT=8090
       - OLLAMA_URL=http://ollama:11434
       - OLLAMA_MODEL=mistral:7b-instruct
       - CHAT_CORS_ORIGIN=http://localhost
     depends_on:
       - ollama-model-loader
     networks:
-      - assistant-network
-      - internal-network
+      - assistant_net
+      - shared_net
 
 volumes:
   ollama:
 
 networks:
-  assistant-network:
+  assistant_net:
     external: true
-  internal-network:
-    driver: bridge
+  shared_net:
+    external: true
       

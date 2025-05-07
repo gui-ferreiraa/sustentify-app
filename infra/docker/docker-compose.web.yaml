@@ -1,23 +1,20 @@
 services:
   web: 
-    # build: 
-    #   context: ../../web
-    #   dockerfile: Dockerfile
-    #   args:
-    #     - NG_SUS_API_BASE_URL=${NG_SUS_API_BASE_URL}
-    #     - NG_SUS_ASSISTANT_BASE_URL=${NG_SUS_ASSISTANT_BASE_URL}
-    #     - NG_SUS_APP_VERSION=${NG_SUS_APP_VERSION}
-    #     - NG_SUS_MAKE_REQUEST=false
-    image: guiferreiraa/sustentify-web:latest
+    build: 
+      context: ../../web
+      dockerfile: Dockerfile
+      args:
+        - NG_SUS_API_BASE_URL=${NG_SUS_API_BASE_URL}
+        - NG_SUS_ASSISTANT_BASE_URL=${NG_SUS_ASSISTANT_BASE_URL}
+        - NG_SUS_APP_VERSION=${NG_SUS_APP_VERSION}
+        - NG_SUS_MAKE_REQUEST=${NG_SUS_MAKE_REQUEST}
+    # image: guiferreiraa/sustentify-web:latest
     container_name: sustentify-web
     ports:
-      - 80:80
-    # networks:
-    #   - assistant-network
-    #   - server-network
+      - '80:80'
+    networks:
+      - shared_net
 
-# networks:
-#   assistant-network:
-#     external: true
-#   server-network:
-#     external: true
+networks:
+  shared_net:
+    external: true

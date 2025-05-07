@@ -69,7 +69,7 @@ export class InterestedProductsService {
     return this.http.patch<IResponseDto>(`${this.url}/${interestedId}`, {
       status
     }, {
-      context: new HttpContext().set(REQUIRE_AUTH, true),
+      context: new HttpContext().set(REQUIRE_AUTH, true)
     });
   }
 }

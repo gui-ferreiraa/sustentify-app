@@ -11,7 +11,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   const token = cookie.getAccessToken();
   const authreq = req.clone({
-    withCredentials: true,
+    // withCredentials: true,
     headers: req.headers.set('Authorization', `Bearer ${token}`)
   })
 

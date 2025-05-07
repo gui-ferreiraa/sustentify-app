@@ -20,6 +20,8 @@ services:
     command:
       - "--character-set-server=utf8mb4"
       - "--collation-server=utf8mb4_unicode_ci"
+    networks:
+      - server_net
       
   phpmyadmin:
     image: phpmyadmin
@@ -46,6 +48,8 @@ services:
     environment:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
     restart: always
+    networks:
+      - server_net
 
   server:
     build:
@@ -53,7 +57,7 @@ services:
       dockerfile: Dockerfile
     container_name: sustentify-server
     ports:
-      - 3000:3000
+      - 8080:8080
     environment:
       - PORT=${SERVER_PORT}
       - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
@@ -87,6 +91,9 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+    networks:
+      - server_net
+      - shared_net
   
   collector:
     image: otel/opentelemetry-collector-contrib:0.109.0
@@ -101,6 +108,9 @@ services:
       - jaeger
     links:
       - jaeger
+    networks:
+      - observability_net
+      - server_net
   
   prometheus:
     image: prom/prometheus:latest
@@ -108,6 +118,8 @@ services:
       - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"  # Porta da UI do Prometheus
+    networks:
+      - observability_net
 
   jaeger:
     image: jaegertracing/all-in-one:latest
@@ -123,15 +135,14 @@ services:
       - PROMETHEUS_QUERY_NORMALIZE_DURATION=true
     ports:
 #      - '4317:4317'
-      - "8081:16686"
+      - "16686:16686"
+    networks:
+      - observability_net
 
-  portainer:
-    image: portainer/portainer-ce
-    ports:
-      - 9000:9000
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data
-
-volumes:
-  portainer_data:
+networks:
+  server_net:
+    driver: bridge
+  observability_net:
+    external: true
+  shared_net:
+    external: true

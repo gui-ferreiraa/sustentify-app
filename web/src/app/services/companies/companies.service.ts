@@ -29,7 +29,7 @@ export class CompaniesService {
     company: Partial<ICompany>
   ) {
     return this.http.patch<IResponseDto>(`${this.url}`, company, {
-      context: new HttpContext().set(REQUIRE_AUTH, true)
+      context: new HttpContext().set(REQUIRE_AUTH, true),
     });
   }
 
