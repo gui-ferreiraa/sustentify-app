@@ -7,7 +7,8 @@ const CORS_ORIGIN = process.env.CHAT_CORS_ORIGIN;
 
 const DEFAULT_HEADER = {
     'Access-Control-Allow-Origin': CORS_ORIGIN,
-    'Access-Control-Allow-Methods': 'GET',
+    'Access-Control-Allow-Methods': 'GET, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, ngrok-skip-browser-warning',
     'Content-Type': 'application/json'
 }
 const rateLimit = {};
@@ -34,6 +35,12 @@ const checkRateLimit = (ip) => {
 const handler = (request, response) => {
     const { url, method, socket } = request
     const clientIp = socket.remoteAddress;
+
+    if (method === 'OPTIONS') {
+        response.writeHead(204, DEFAULT_HEADER);
+        response.end();
+        return;
+    }
 
     if (!checkRateLimit(clientIp)) {
         response.writeHead(429, DEFAULT_HEADER);

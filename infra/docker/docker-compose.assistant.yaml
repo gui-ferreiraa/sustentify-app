@@ -13,6 +13,9 @@ services:
       - ollama:/root/.ollama
     deploy:
       resources:
+        limits:
+          cpus: '2.0'
+          memory: 8G
         reservations:
           devices:
             - driver: nvidia
@@ -54,7 +57,7 @@ services:
       - PORT=8090
       - OLLAMA_URL=http://ollama:11434
       - OLLAMA_MODEL=mistral:7b-instruct
-      - CHAT_CORS_ORIGIN=http://localhost
+      - CHAT_CORS_ORIGIN=${API_CORS_ORIGIN}
     depends_on:
       - ollama-model-loader
     networks:
