@@ -7,6 +7,7 @@ import { provideToastr } from 'ngx-toastr';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { provideCloudinaryLoader } from '@angular/common';
 import { blockRequestInterceptor } from './core/interceptors/block-requests.interceptor';
+import { ngrokInterceptor } from './core/interceptors/ngrok.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -22,7 +23,7 @@ export const appConfig: ApplicationConfig = {
     })),
     provideHttpClient(
       withFetch(),
-      withInterceptors([authInterceptor, blockRequestInterceptor]),
+      withInterceptors([authInterceptor, blockRequestInterceptor, ngrokInterceptor]),
     ),
     provideCloudinaryLoader(`https://res.cloudinary.com/di2rpmtzc/`),
   ]
