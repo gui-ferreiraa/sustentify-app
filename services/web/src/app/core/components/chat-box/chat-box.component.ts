@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, signal, ViewChild } from '@angular/core';
+import { Component, ElementRef, signal, ViewChild } from '@angular/core';
 import { IAChatService } from '../../../services/iachat/iachat.service';
 import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.component";
 
