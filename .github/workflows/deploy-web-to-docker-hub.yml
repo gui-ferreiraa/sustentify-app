@@ -3,7 +3,7 @@ name: Deploy Web to Docker Hub
 on: 
   push: 
     paths: 
-      - 'web/**'
+      - 'services/web/**'
     branches:
       - main
     tags:
@@ -25,15 +25,15 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-        working-directory: ./web
+        working-directory: ./services/web
 
       - name: Install Angular CLI
         run: npm install -g @angular/cli
-        working-directory: ./web
+        working-directory: ./services/web
 
       - name: Build app (production)
         run: npm run build:prod
-        working-directory: ./web
+        working-directory: ./services/web
 
   deploy-docker-hub-latest:
     environment: docker-hub-web
@@ -94,15 +94,15 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-        working-directory: ./web
+        working-directory: ./services/web
 
       - name: Install Angular CLI
         run: npm install -g @angular/cli
-        working-directory: ./web
+        working-directory: ./services/web
 
       - name: Build app (production)
         run: npm run build:prod
-        working-directory: ./web
+        working-directory: ./services/web
 
   deploy-docker-hub-with-tag:
     environment: docker-hub-web

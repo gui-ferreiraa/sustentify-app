@@ -1,1 +1,1 @@
-cd ./docker && docker-compose -f docker-compose.server.yaml down && docker-compose -f docker-compose.assistant.yaml down
+cd ./docker && docker-compose -f server.yaml down && docker-compose -f assistant.yaml down

@@ -3,7 +3,7 @@ name: Deploy Server to Docker Hub
 on: 
   push: 
     paths: 
-      - 'server/**'
+      - 'services/server/**'
     branches:
       - main
     tags:
@@ -40,7 +40,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:latest ./server
+          docker build -t ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:latest ./services/server
 
       - name: Push Docker image to Docker Hub
         run: |
@@ -93,7 +93,7 @@ jobs:
           docker build \
             -t ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:latest \
             -t ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:$GIT_TAG_NAME \
-            ./server
+            ./services/server
 
       - name: Push Docker image to Docker Hub
         run: |

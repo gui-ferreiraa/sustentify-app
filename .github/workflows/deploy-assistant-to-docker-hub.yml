@@ -3,7 +3,7 @@ name: Deploy Assistant to Docker Hub
 on: 
   push: 
     paths: 
-      - 'chat/**'
+      - 'services/chat/**'
     branches:
       - main
     tags:
@@ -25,7 +25,7 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-        working-directory: ./chat
+        working-directory: ./services/services/chat
 
   deploy-docker-hub-latest:
     environment: docker-hub-assistant
@@ -45,7 +45,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:latest ./chat
+          docker build -t ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:latest ./services/chat
 
       - name: Push Docker image to Docker Hub
         run: |
@@ -70,7 +70,7 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-        working-directory: ./chat
+        working-directory: ./services/chat
 
   deploy-docker-hub-with-tag:
     environment: docker-hub-assistant
@@ -102,7 +102,7 @@ jobs:
           docker build \
             -t ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:latest \
             -t ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:$GIT_TAG_NAME \
-            ./chat
+            ./services/chat
 
       - name: Push Docker image to Docker Hub
         run: |

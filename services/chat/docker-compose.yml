@@ -1,0 +1,68 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    expose:
+      - "11434/tcp"
+    ports:
+      - "11434:11434/tcp"
+    healthcheck:
+      test: ollama --version || exit 1
+    command: serve
+    volumes:
+      - ollama:/root/.ollama
+    networks:
+      - mynetwork
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['all']
+              capabilities: [gpu]
+
+  ollama-model-loader:
+    image: docker:latest  # 🔥 Uses Docker CLI instead of Ollama
+    container_name: ollama-model-loader
+    depends_on:
+      - ollama
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock  # 🔥 Allows running commands inside containers
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        echo "⏳ Waiting for Ollama to be ready..."
+        until docker exec ollama ollama list >/dev/null 2>&1; do
+            sleep 2
+        done
+        echo "📥 Pulling models inside Ollama container..."
+        docker exec ollama ollama pull mistral:7b-instruct
+
+        echo "✅ Models downloaded. Exiting..."
+    restart: "no"
+
+  chat:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: sustentify-assistant
+    ports:
+      - 8090:8090
+    environment:
+      - APP_PORT=8090
+      - APP_CORS_ORIGIN_URL=http://localhost
+      - OPENAI_API_HOST=http://ollama:11434
+      - OPENAI_MODEL_NAME=mistral:7b-instruct
+      - OPENAI_API_KEY=kx-xxxxxxxxxxxxxxxxxxxxxx
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
+    depends_on:
+      - ollama
+    networks:
+      - mynetwork
+
+volumes:
+  ollama:
+
+networks:
+  mynetwork:
+    driver: bridge

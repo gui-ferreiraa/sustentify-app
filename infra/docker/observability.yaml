@@ -1,0 +1,49 @@
+services:
+  collector:
+    image: otel/opentelemetry-collector-contrib:0.109.0
+    volumes:
+      - ./config/collector-spring-native-config.yaml:/collector-spring-native-config.yaml
+    command: [ '--config=/collector-spring-native-config.yaml' ]
+    ports:
+      - '4317:4317'
+      - '4318:4318'
+      - '8889:8889'
+    depends_on:
+      - jaeger
+    links:
+      - jaeger
+    networks:
+      - observability_net
+      - collector_net
+  
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - collector_net
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    volumes:
+      - ./config/jaeger-ui.json:/etc/jaeger/jaeger-ui.json
+    command: --query.ui-config /etc/jaeger/jaeger-ui.json
+    environment:
+      - METRICS_STORAGE_TYPE=prometheus
+      - PROMETHEUS_SERVER_URL=http://prometheus:9090
+      - PROMETHEUS_QUERY_NAMESPACE=${PROMETHEUS_QUERY_NAMESPACE:-}
+      - PROMETHEUS_QUERY_DURATION_UNIT=${PROMETHEUS_QUERY_DURATION_UNIT:-}
+      - PROMETHEUS_QUERY_NORMALIZE_CALLS=true
+      - PROMETHEUS_QUERY_NORMALIZE_DURATION=true
+    ports:
+      - "16686:16686"
+    networks:
+      - collector_net
+
+networks:
+  collector_net:
+    driver: bridge
+  observability_net:
+    external: true
