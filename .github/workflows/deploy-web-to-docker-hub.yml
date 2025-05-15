@@ -68,7 +68,7 @@ jobs:
           --build-arg NG_SUS_ASSISTANT_BASE_URL=${{ env.ASSISTANT_BASE_URL }} \
           --build-arg NG_SUS_APP_VERSION=v1.0.0 \
           --build-arg NG_SUS_MAKE_REQUEST=${{ env.MAKE_REQUEST }} \
-          -t ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:latest ./web
+          -t ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:latest ./services/web
 
       - name: Push Docker image to Docker Hub
         run: |
@@ -141,7 +141,7 @@ jobs:
             --build-arg NG_SUS_MAKE_REQUEST=${{ env.MAKE_REQUEST }} \
             -t ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:latest \
             -t ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_HUB_PROJECT_NAME }}:$GIT_TAG_NAME \
-            ./web
+            ./services/web
 
       - name: Push Docker image to Docker Hub
         run: |
