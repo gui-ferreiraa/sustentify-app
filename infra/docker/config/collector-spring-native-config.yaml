@@ -5,6 +5,29 @@ receivers:
         endpoint: 0.0.0.0:4317
       http:
         endpoint: 0.0.0.0:4318
+  hostmetrics:
+      collection_interval: 10s
+      scrapers:
+        cpu:
+        memory:
+        disk:
+        filesystem:
+        load:
+        network:
+  docker_stats:
+    endpoint: unix:///var/run/docker.sock
+    collection_interval: 10s
+    # scrapers:
+    #   container:
+    #     collection_interval: 10s
+    #     metrics:
+    #       - cpu_usage
+    #       - memory_usage
+    #       - memory_limit
+    #       - network_rx_bytes
+    #       - network_tx_bytes
+    #       - network_rx_packets
+    #       - network_tx_packets
 
 exporters:
   debug:
@@ -29,7 +52,7 @@ service:
       processors: [batch]
       exporters: [debug, otlp, spanmetrics]
     metrics:
-      receivers: [otlp, spanmetrics]
+      receivers: [otlp, spanmetrics, hostmetrics, docker_stats]
       processors: [batch]
       exporters: [debug, prometheus]
     logs:

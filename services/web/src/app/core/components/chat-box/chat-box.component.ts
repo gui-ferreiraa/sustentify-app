@@ -2,12 +2,14 @@ import { NgClass } from '@angular/common';
 import { Component, ElementRef, signal, ViewChild } from '@angular/core';
 import { IAChatService } from '../../../services/iachat/iachat.service';
 import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.component";
+import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-chat-box',
   imports: [
     NgClass,
-    LoadingSpinnerComponent
+    LoadingSpinnerComponent,
+    ReactiveFormsModule,
 ],
   templateUrl: './chat-box.component.html',
 })
@@ -16,7 +18,6 @@ export class ChatBoxComponent {
   protected userInput = signal('');
   protected userMessage = signal('');
   protected isSubmitting = signal(false);
-  protected streamMode = signal(true);
 
   @ViewChild('chatContainer') chatContainerRef!: ElementRef<HTMLDivElement>
   @ViewChild('output') assistantOutput!: ElementRef<HTMLParagraphElement>
@@ -34,27 +35,19 @@ export class ChatBoxComponent {
 
     this.isSubmitting.set(true)
     this.userMessage.set(this.userInput());
+    this.assistantOutput.nativeElement.textContent = '';
     this.userInput.set('');
 
-    if (this.streamMode()) {
-      this.assistantOutput.nativeElement.textContent = '';
+    try {
       await this.chat.sendQuestionStream(this.userMessage(), (chunk) => {
         this.assistantOutput.nativeElement.textContent += chunk;
       })
+    } catch (error) {
       this.isSubmitting.set(false);
-      return;
+      this.assistantOutput.nativeElement.textContent = 'Error tente novamente mais tarde.';
+    } finally {
+      this.isSubmitting.set(false);
     }
-
-    this.chat.sendQuestion(this.userMessage()).subscribe({
-      next: (value) => {
-        this.assistantOutput.nativeElement.textContent = value.content;
-      },
-      error: (err) => {
-        this.isSubmitting.set(false);
-      },
-      complete: () => {
-        this.isSubmitting.set(false);
-      },
-    })
+    return;
   }
 }

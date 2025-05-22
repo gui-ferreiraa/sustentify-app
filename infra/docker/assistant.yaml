@@ -55,11 +55,11 @@ services:
       - 8090:8090
     environment:
       - APP_PORT=8090
-      - APP_CORS_ORIGIN_URL=http://localhost
-      - OPENAI_API_HOST=http://ollama:11434
-      - OPENAI_MODEL_NAME=mistral:7b-instruct
-      - OPENAI_API_KEY=kx-xxxxxxxxxxxxxxxxxxxxxx
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://collector:4317
+      - APP_CORS_ORIGIN_URL=${WEB_DOMAIN}
+      - OPENAI_API_HOST=${OPENAI_API_HOST}
+      - OPENAI_MODEL_NAME=${OPENAI_MODEL_NAME}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OTEL_EXPORTER_OTLP_ENDPOINT=${OTEL_EXPORTER_OTLP_ENDPOINT}
     depends_on:
       - ollama-model-loader
     networks:

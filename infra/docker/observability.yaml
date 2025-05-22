@@ -3,6 +3,7 @@ services:
     image: otel/opentelemetry-collector-contrib:0.109.0
     volumes:
       - ./config/collector-spring-native-config.yaml:/collector-spring-native-config.yaml
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     command: [ '--config=/collector-spring-native-config.yaml' ]
     ports:
       - '4317:4317'

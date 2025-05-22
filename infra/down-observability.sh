@@ -1,0 +1,1 @@
+cd ./docker && docker-compose -f observability.yaml down

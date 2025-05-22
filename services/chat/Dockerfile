@@ -6,10 +6,9 @@ COPY package*.json ./
 
 RUN npm install
 
-COPY ./prompt.txt ./
-COPY ./server.js ./
+COPY ./main.js ./
 COPY ./src ./src
 
 EXPOSE ${PORT}
 
-CMD [ "node", "server.js" ]
+CMD [ "node", "main.js" ]
