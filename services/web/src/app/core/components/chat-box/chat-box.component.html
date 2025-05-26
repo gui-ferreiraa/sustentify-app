@@ -26,12 +26,15 @@
       <div>
         <h5 class="text-lg font-semibold">Dúvidas</h5>
         <p class="text-[10px] text-justify max-[376px]:hidden">Olá! 👋 Este assistente responde apenas a perguntas relacionadas à plataforma Sustentify. Existe um limite de requisições por usuário e uma latência estimada de até 1 minuto e 30 segundos para as respostas.</p>
-      </div>
-        <button id="close-chat" class="text-gray-300 hover:text-gray-400 focus:outline-none focus:text-gray-400 cursor-pointer" (click)="toggleChatbox()">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
+        <button id="send-button" class="bg-gray-600 text-white px-2 py-1 rounded-r-md hover:bg-gray-800 transition duration-300 disabled:opacity-45 disabled:cursor-progress hover:cursor-pointer text-sm mt-2 hover:scale-105" (click)="this.isModalOpen.set(true);" [disabled]="this.isSubmitting()">
+          Recomendação
         </button>
+      </div>
+      <button id="close-chat" class="text-gray-300 hover:text-gray-400 focus:outline-none focus:text-gray-400 cursor-pointer" (click)="toggleChatbox()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
     </div>
     <div id="chatbox" class="p-4 max-h-[280px] overflow-y-auto" #chatContainer>
       <!-- Chat messages will be displayed here -->
@@ -61,3 +64,86 @@
         </button>
     </div>
 </div>
+<app-modal
+  [isOpen]="isModalOpen()"
+  (clickedOutside)="closeModal()"
+>
+  <div>
+    <h2 class="text-lg font-semibold mb-4">Recomendação</h2>
+    <p class="mb-4 text-[10px] text-justify">Funcionalidade de recomendação inteligente que, por meio de um chatbot, auxilia empresas a adotarem práticas mais sustentáveis, indicando produtos, soluções e oportunidades alinhadas ao seu perfil e necessidades.</p>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmitRecommendation()" class="space-y-4">
+      <app-primary-input
+        formControlName="companyName"
+        label="Nome da Empresa"
+        placeholder="Company Name"
+        type="text"
+        [error]="form.controls.companyName.invalid && (form.controls['companyName'].touched || form.controls.companyName.dirty)"
+        [errorMessage]="
+          form.controls.companyName.errors?.['required'] && 'Nome do Produto é obrigatório'
+        "
+        inputName="name"
+      />
+
+      <div class="mb-3">
+        <app-select-input
+            formControlName="department"
+            inputName="department"
+            label="Ramo de Atividade/Setor"
+            [options]="departmentOptions"
+            class="mb-3"
+            [error]="form.controls.department.invalid && (form.controls['department'].touched || form.controls.department.dirty)"
+            [errorMessage]="
+              form.controls.department.errors?.['required'] && 'Ramo de Atividade é obrigatório'
+            "
+          />
+      </div>
+
+      <div class="mb-3">
+        <app-select-input
+            formControlName="productsGenerated"
+            inputName="productsGenerated"
+            label="Quais tipos de resíduos sua empresa mais gera?"
+            [options]="categoryOptions"
+            class="mb-3"
+            [error]="form.controls.productsGenerated.invalid && (form.controls['productsGenerated'].touched || form.controls.productsGenerated.dirty)"
+            [errorMessage]="
+              form.controls.productsGenerated.errors?.['required'] && 'Tipos de resíduos é obrigatório'
+            "
+          />
+      </div>
+
+      <div class="mb-3">
+        <app-select-input
+            formControlName="interestedIn"
+            inputName="interestedIn"
+            label="Sua empresa está interessada em: "
+            [options]="interestedIn"
+            class="mb-3"
+            [error]="form.controls.interestedIn.invalid && (form.controls['interestedIn'].touched || form.controls.interestedIn.dirty)"
+            [errorMessage]="
+              form.controls.interestedIn.errors?.['required'] && 'Tipos de resíduos é obrigatório'
+            "
+          />
+      </div>
+
+      <app-textarea-input
+        formControlName="description"
+        inputName="description"
+        label="Breve descrição da empresa"
+        [error]="form.controls.description.invalid && (form.controls['description'].touched || form.controls.description.dirty)"
+        [errorMessage]="
+          form.controls.description.errors?.['required'] && 'Descrição é obrigatório'
+        "
+        placeholder=""
+      />
+
+
+      <app-button-green
+        title="Enviar"
+        [disabled]="false"
+        [type]="'submit'"
+      />
+    </form>
+  </div>
+</app-modal>

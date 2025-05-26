@@ -10,6 +10,15 @@ interface IAChatResponse {
   duration: number;
 }
 
+interface Company {
+  name: string;
+  department: string;
+  interestedValue: string;
+  interestedLabel: string;
+  productsGenerated: string;
+  description: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -61,6 +70,39 @@ export class IAChatService {
         'Content-Length': question.length.toString()
       },
       body: JSON.stringify({ question })
+    });
+
+    if (!response.ok || !response.body) {
+      console.error('Erro na requisição:', response.statusText);
+      return;
+    }
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder('utf-8');
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      const chunk = decoder.decode(value, { stream: true });
+      onChunk(chunk);
+    }
+  }
+
+  async sendRecommendationStream(company: Company, onChunk: (chunk: string) => void): Promise<void> {
+    const response = await fetch(`${this.url}/recommendation/stream`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'text/event-stream',
+        'Content-Length': company.name.length.toString() +
+          company.department.length.toString() +
+          company.interestedLabel.length.toString() +
+          company.interestedValue.length.toString() +
+          company.productsGenerated.length.toString() +
+          company.description.length.toString()
+      },
+      body: JSON.stringify({ company })
     });
 
     if (!response.ok || !response.body) {

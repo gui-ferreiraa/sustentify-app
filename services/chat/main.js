@@ -221,6 +221,60 @@ app.post('/v1/chat/message/stream', async (req, res) => {
     console.error('Error streaming response:', error);
     return res.status(500).send({ error: 'Error streaming response' });
   }
+
+})
+
+app.post('/v1/chat/recommendation/stream', async (req, res) => {
+  try {
+    res.raw.setHeader('Access-Control-Allow-Origin', ORIGIN);
+    res.raw.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.raw.setHeader('Content-Type', 'text/event-stream');
+    res.raw.setHeader('Cache-Control', 'no-cache');
+    res.raw.setHeader('Connection', 'keep-alive');
+
+    res.raw.flushHeaders?.();
+
+    const { company } = req.body;
+    const prompt = RECOMMENDATIONS_PROMPT
+      .replace(/{{companyName}}/g, company.name)
+      .replace(/{{department}}/g, company.department)
+      .replace(/{{description}}/g, company.description)
+      .replace(/{{interestedValue}}/g, company.interestedValue)
+      .replace(/{{interestedLabel}}/g, company.interestedLabel)
+      .replace(/{{productsGenerated}}/g, company.productsGenerated);
+
+    
+    span.addEvent('Recommendation endpoint called');
+    span.setAttributes({
+      'http.body.name': company.name,
+      'http.body.department': company.department,
+      'http.body.description': company.description,
+      'http.body.interestedValue': company.interestedValue,
+      'http.body.interestedLabel': company.interestedLabel,
+      'http.body.productsGenerated': company.productsGenerated,
+    });
+
+    const modelResponse = await streamResponse(prompt);
+    const chunks = [];
+  
+    for await (const chunk of modelResponse) {
+      const jsonChunk = Buffer.from(chunk).toString('utf-8');
+      const parsedChunk = JSON.parse(jsonChunk);
+      const content = parsedChunk.message.content;
+      
+      chunks.push(content);
+
+      res.raw.write(content);
+      res.raw.flush?.();
+    }
+  
+    res.raw.end();
+  
+    return;
+  } catch (error) {
+    console.error('Error streaming response:', error);
+    return res.status(500).send({ error: 'Error streaming response' });
+  }
 })
 
 try {
