@@ -244,6 +244,7 @@ app.post('/v1/chat/recommendation/stream', async (req, res) => {
       .replace(/{{productsGenerated}}/g, company.productsGenerated);
 
     
+    const span = trace.getSpan(context.active());
     span.addEvent('Recommendation endpoint called');
     span.setAttributes({
       'http.body.name': company.name,
@@ -269,6 +270,10 @@ app.post('/v1/chat/recommendation/stream', async (req, res) => {
     }
   
     res.raw.end();
+
+    const fulltext = chunks.join('');
+
+    span.addEvent('Recommendation response generated', { content: fulltext });
   
     return;
   } catch (error) {
