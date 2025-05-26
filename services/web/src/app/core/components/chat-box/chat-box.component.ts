@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { AfterViewChecked, Component, ElementRef, signal, ViewChild } from '@angular/core';
+import { Component, ElementRef, signal, ViewChild } from '@angular/core';
 import { IAChatService } from '../../../services/iachat/iachat.service';
 import { LoadingSpinnerComponent } from "../loading-spinner/loading-spinner.component";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -35,7 +35,7 @@ interface RecommendationForm {
 ],
   templateUrl: './chat-box.component.html',
 })
-export class ChatBoxComponent implements AfterViewChecked {
+export class ChatBoxComponent {
   protected isOpen = signal(false);
   protected userInput = signal('');
   protected userMessage = signal('');
@@ -64,19 +64,6 @@ export class ChatBoxComponent implements AfterViewChecked {
       description: new FormControl('', [Validators.required]),
       productsGenerated: new FormControl('', [Validators.required]),
     });
-  }
-
-  ngAfterViewChecked(): void {
-    this.scrollToBottom();
-  }
-
-  scrollToBottom() {
-    setTimeout(() => {
-      if (this.chatContainerRef && this.chatContainerRef.nativeElement) {
-        const chatContainer = this.chatContainerRef.nativeElement;
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-      }
-    }, 100);
   }
 
   toggleChatbox() {
