@@ -1,6 +1,6 @@
 source ./docker/.env
 
-export COMPANY_ID=478bc7e3-836c-4bd5-9428-3ef5966c571a
+export COMPANY_ID=ba7376b6-94a6-4eaa-a6ab-aef7d49a271e
 
 if [ -z "$COMPANY_ID" ]; then
   echo "Error: COMPANY_ID is not set."
