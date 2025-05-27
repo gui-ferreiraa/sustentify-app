@@ -48,7 +48,10 @@ export class ChatBoxComponent {
     { value: 'sell_materials', label: 'Vender resíduos ou materiais reaproveitáveis' },
     { value: 'buy_sustainable_inputs', label: 'Comprar insumos sustentáveis (reciclados, reaproveitados)' },
     { value: 'improve_sustainability_practices', label: 'Melhorar práticas de sustentabilidade interna' },
-    { value: 'obtain_certifications', label: 'Obter certificações ESG ou ambientais' },
+    { value: 'reduce_environmental_impact', label: 'Reduzir impacto ambiental das operações'},
+    { value: 'find_partners_for_circular_economy', label: 'Encontrar parceiros para economia circular'},
+    { value: 'dispose_hazardous_waste_responsibly', label: 'Descarte correto de resíduos perigosos ou especiais'},
+    { value: 'learn_about_sustentify', label: 'Saber mais sobre a Sustentify e como ela pode ajudar minha empresa'},
   ];
 
   @ViewChild('chatContainer') chatContainerRef!: ElementRef<HTMLDivElement>
