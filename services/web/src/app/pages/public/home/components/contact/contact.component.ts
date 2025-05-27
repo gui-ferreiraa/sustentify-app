@@ -10,7 +10,7 @@ import { Router } from "@angular/router";
   imports: [NgOptimizedImage, SubtitleComponent, ButtonGreenComponent],
   template: `
     <div
-      class="relative"
+      class="relative -z-40"
       #appContact
     >
       <img

@@ -113,7 +113,7 @@
           </p>
         </div>
 
-        <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-4 -z-40">
           @if (product.thumbnail) {
             <img
               [ngSrc]="'q_auto,w_890,h_640/' + (product.thumbnail.publicId)"
@@ -161,7 +161,7 @@
     }
   </div>
   <section
-    class="default-padding max-md:mt-8 flex flex-col gap-16 bg-[#F2F1EB]"
+    class="default-padding max-md:mt-8 flex flex-col gap-16 bg-[#F2F1EB] -z-40"
   >
     <h3
       class="text-xl font-semibold"
