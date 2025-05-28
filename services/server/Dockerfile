@@ -22,7 +22,6 @@ COPY --from=build /usr/src/server/target/sustentify-app-0.0.1-SNAPSHOT.jar ./app
 COPY --from=build /usr/src/server/target/classes/templates ./templates
 COPY --from=build /usr/src/server/opentelemetry-javaagent.jar ./opentelemetry-javaagent.jar
 
-
 ENV PORT=${PORT}
 EXPOSE ${PORT}
 
