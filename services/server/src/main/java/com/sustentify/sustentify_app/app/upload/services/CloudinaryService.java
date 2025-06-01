@@ -36,7 +36,6 @@ public class CloudinaryService {
         try {
             cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
         } catch (Exception e) {
-            e.printStackTrace();
             throw new UploadInvalidException("Error while deleting image");
         }
     }

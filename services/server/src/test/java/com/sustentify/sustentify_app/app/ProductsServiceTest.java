@@ -1,4 +1,4 @@
-package com.sustentify.sustentify_app.app.products;
+package com.sustentify.sustentify_app.app;
 
 import com.sustentify.sustentify_app.app.companies.entities.Company;
 import com.sustentify.sustentify_app.app.products.dtos.RegisterProductDto;

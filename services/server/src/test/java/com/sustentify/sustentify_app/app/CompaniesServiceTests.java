@@ -1,4 +1,4 @@
-package com.sustentify.sustentify_app.app.companies;
+package com.sustentify.sustentify_app.app;
 
 import com.sustentify.sustentify_app.app.companies.dtos.RegisterCompanyDto;
 import com.sustentify.sustentify_app.app.companies.dtos.UpdateCompanyDto;

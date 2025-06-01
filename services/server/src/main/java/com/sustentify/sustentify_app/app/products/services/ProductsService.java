@@ -37,12 +37,15 @@ public class ProductsService {
         this.cloudinaryService = cloudinaryService;
     }
 
+    // Finds a product by its ID or throws ProductNotFoundException.
     @Transactional(readOnly = true)
     public Product findById(String productId) { return this.productsRepository.findById(productId).orElseThrow(ProductNotFoundException::new); }
 
+    // Finds a product by its ID and company or throws ProductNotFoundException.
     @Transactional(readOnly = true)
     public Product findByIdAndCompany(String productId, Company company) { return this.productsRepository.findByIdAndCompany(productId, company).orElseThrow(ProductNotFoundException::new);}
 
+    // Creates and saves a new product with the given data.
     public Product create(RegisterProductDto registerProductDto, Company company) {
         Product newProduct = new Product();
         newProduct.setCategory(registerProductDto.category());
@@ -60,6 +63,7 @@ public class ProductsService {
         return  this.productsRepository.save(newProduct);
     }
 
+    // Retrieves a paginated list of products filtered by parameters.
     public Page<ProductSummaryDto> findAllFiltered(int page, int size, ProductFilterDto filter) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
         Specification<Product> specification = filter.toSpecification();
@@ -67,17 +71,20 @@ public class ProductsService {
         return this.productsRepository.findAll(specification, pageable).map(ProductSummaryDto::new);
     }
 
+    // Retrieves a paginated list of products belonging to a company.
     public Page<Product> getProductsByCompany(Company company, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
         return this.productsRepository.findByCompany(company, pageable);
     }
 
+    // Retrieves a paginated list of trending products based on interest count.
     public Page<ProductSummaryDto> findTrendingProducts(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("price").descending());
 
         return this.productsRepository.findTopByInterestCount(pageable).map(ProductSummaryDto::new);
     }
 
+    // Updates an existing product with new data.
     public Product update(Product product, UpdateProductDto updateProductDto) {
 
         applyUpdate(product, updateProductDto);
@@ -85,6 +92,7 @@ public class ProductsService {
         return this.productsRepository.save(product);
     }
 
+    // Applies changes from the DTO to the product entity.
     private void applyUpdate(Product product, UpdateProductDto dto) {
         if (dto.name() != null) product.setName(dto.name());
         if (dto.description() != null) product.setDescription(dto.description());
@@ -96,6 +104,7 @@ public class ProductsService {
         if (dto.quantity() != null) product.setQuantity(dto.quantity());
     }
 
+    // Deletes a product and all its associated images and thumbnail.
     public void delete(Product product) {
 
         if (product.getThumbnail() != null) {
@@ -114,6 +123,7 @@ public class ProductsService {
         this.productsRepository.delete(product);
     }
 
+    // Uploads or replaces a product thumbnail image.
     public void uploadThumbnail(Product product, final MultipartFile file) {
         if (product.getThumbnail() != null) {
             UploadDeleteDto dto = new UploadDeleteDto(product.getThumbnail().getPublicId());
@@ -133,6 +143,7 @@ public class ProductsService {
         this.productsRepository.save(product);
     }
 
+    // Uploads multiple product images with a limit of 3 images per product.
     public void uploadImages(Product product, final MultipartFile[] files) {
 
         if (product.getImages().size() >= 3) throw new ProductInvalidException("Too many images");
@@ -155,6 +166,7 @@ public class ProductsService {
         this.productsRepository.save(product);
     }
 
+    // Deletes a specific product image from Cloudinary and the product.
     public void deleteImage(Product product, UploadDeleteDto dto) {
 
         cloudinaryService.deleteImage(dto.publicId());
@@ -162,6 +174,7 @@ public class ProductsService {
         product.getImages().removeIf(img -> img.getPublicId().equals(dto.publicId()));
     }
 
+    // Deletes the product's thumbnail from Cloudinary.
     public void deleteThumbnail(Product product, UploadDeleteDto dto) {
 
         cloudinaryService.deleteImage(dto.publicId());
@@ -169,6 +182,7 @@ public class ProductsService {
         product.setThumbnail(null);
     }
 
+    // Saves the current state of the product to the database.
     public void save(Product product) {
         this.productsRepository.save(product);
     }

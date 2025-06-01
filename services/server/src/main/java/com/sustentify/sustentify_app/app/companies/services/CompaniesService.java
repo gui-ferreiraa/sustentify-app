@@ -43,17 +43,21 @@ public class CompaniesService {
         this.emailsService = emailsService;
     }
 
+    // Finds a company by its email.
     public Optional<Company> findByEmail(String email) {
         return this.companiesRepository.findByEmail(email);
     }
 
+    // Checks if the email or CNPJ is already registered in the database.
     public boolean isEmailOrCnpjAlreadyRegistered(String email, String cnpj) {
         return companiesRepository.findByEmail(email).isPresent()
                 || companiesRepository.findByCnpj(cnpj).isPresent();
     }
 
+    // Finds a company by its ID.
     public Optional<Company> findById(String companyId) { return this.companiesRepository.findById(companyId); }
 
+    // Creates a new company, uploads its document, sends validation email, and saves it.
     @Transactional
     public Company create(RegisterCompanyDto registerCompanyDto, MultipartFile file) {
 
@@ -84,6 +88,7 @@ public class CompaniesService {
         return savedCompany;
     }
 
+    // Uploads the company's document image to cloud storage.
     public CompanyDocumentImage uploadDocumentImage(MultipartFile file) {
         FileUploadUtil.assertAllowed(file);
 
@@ -97,18 +102,21 @@ public class CompaniesService {
         return documentImage;
     }
 
+    // Sends a validation email with the attached document to the admin.
     public void sendEmailValidation(Company company, MultipartFile file) {
         Context context = new Context();
         context.setVariable("company", company);
         this.emailsService.sendEmail("Nova Documentação Inserida - " + company.getName(), sender, EmailTemplate.VALIDATION_COMPANY, context, Optional.of(file));
     }
 
+    // Deletes the company's document image from both the company and cloud storage.
     public void deleteDocumentImage(Company company, String publicId) {
         cloudinaryService.deleteImage(publicId);
 
         company.setDocument(null);
     }
 
+    // Updates company information based on the provided DTO.
     @Transactional
     public Company update(Company company, UpdateCompanyDto updateCompanyDto) {
 
@@ -117,6 +125,7 @@ public class CompaniesService {
         return this.companiesRepository.save(company);
     }
 
+    // Updates the company's password with a hashed version.
     @Transactional
     public void updatePassword(Company company, String password) {
         String hashedPassword = this.passwordEncoder.encode(password);
@@ -126,6 +135,7 @@ public class CompaniesService {
         this.save(company);
     }
 
+    // Deletes the company and stores a backup of its data in the deleted companies repository.
     public void delete(Company company) {
         CompanyDeleted companyDeleted = new CompanyDeleted(company);
         this.companiesDeletedRepository.save(companyDeleted);
@@ -137,6 +147,7 @@ public class CompaniesService {
         this.companiesRepository.delete(company);
     }
 
+    // Updates the company's validation status (e.g., PROGRESS, CANCELLED, ACCEPTED).
     @Transactional
     public void validateCompany(Company company, ValidateCompanyDto validation) {
         company.setValidation(validation.validation());
@@ -144,6 +155,7 @@ public class CompaniesService {
         this.save(company);
     }
 
+    // Applies the update DTO values to the company if they are not null.
     private void applyUpdates(Company company, UpdateCompanyDto dto) {
         if (dto.name() != null) company.setName(dto.name());
         if (dto.address() != null) company.setAddress(dto.address());
@@ -151,6 +163,7 @@ public class CompaniesService {
         if (dto.phone() != null) company.setPhone(dto.phone());
     }
 
+    // Saves the current state of the company to the database.
     public void save(Company company) {
         this.companiesRepository.save(company);
     }
