@@ -1,7 +1,7 @@
 SET @uuid := UUID();
 
 INSERT INTO companies (id, name, email, password, cnpj, address, phone, company_department, validation)
-VALUES (@uuid, 'Sustentify Solutions', 'gui.sustentify.admin@sustentify.com.br', '$2a$10$A0nnaWy3OqF9iOv8tx5aTuv72klRnti3hSPIKySy/6xy2ESe.3IwG', '12.345.678/0001-99', 'Rua Verde, 123, São Paulo, SP', '123456', 'SALES', 'ACCEPTED');
+VALUES (@uuid, 'Sustentify Solutions', 'gui.admin@sustentify.com.br', '$2a$10$A0nnaWy3OqF9iOv8tx5aTuv72klRnti3hSPIKySy/6xy2ESe.3IwG', '12.345.678/0001-99', 'Rua Verde, 123, São Paulo, SP', '123456', 'SALES', 'ACCEPTED');
 
 INSERT INTO products (id, name, category, description, product_condition, material, production_date, disposal_date, price, location, quantity, companies_id)
 VALUES
@@ -15,3 +15,10 @@ VALUES
     (UUID(), 'Papelão Prensado', 'WOOD', 'Fardos de papelão prensado para reciclagem.', 'AVAILABLE', 'PAPER', '2023-10-01 12:00:00', '2026-10-01 12:00:00', 10.00, 'São Paulo, SP', 80, @uuid),
     (UUID(), 'Óleo de Cozinha Usado', 'FOOD', 'Óleo vegetal usado para reciclagem.', 'USED', 'OTHER', '2023-12-01 12:00:00', '2025-12-01 12:00:00', 3.50, 'São Paulo, SP', 150, @uuid),
     (UUID(), 'Borracha Reciclada', 'PLASTIC', 'Pneus triturados para reuso.', 'REFURBISHED', 'RUBBER', '2024-01-20 12:00:00', '2026-01-20 12:00:00', 7.00, 'São Paulo, SP', 60, @uuid);
+
+
+-- CREATING GUESS USER
+SET @uuid2 := UUID();
+
+INSERT INTO companies (id, name, email, password, cnpj, address, phone, company_department, validation)
+VALUES (@uuid2, 'Sustentify Solutions', 'gui.guess@sustentify.com.br', '$2a$10$A0nnaWy3OqF9iOv8tx5aTuv72klRnti3hSPIKySy/6xy2ESe.3IwG', '12.344.678/0001-90', 'Rua Monteiro, 123, São Paulo, SP', '123456', 'SALES', 'ACCEPTED');

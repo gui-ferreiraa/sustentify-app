@@ -46,8 +46,6 @@ Entre no diretório de Infra
 
 Para rodar esse projeto, você vai precisar adicionar as seguintes variáveis de ambiente.
 
-Adicionei um exemplo também, com .env.example
-
 ## Servidor
 
 #### Porta em que o backend irá rodar
@@ -116,6 +114,7 @@ Adicionei um exemplo também, com .env.example
 
 #### Caminho local (dentro do docker) para os templates de email
 `MAIL_TEMPLATES_PATH`=/usr/src/server/templates/mail-templates/
+
 ## Rodando com docker
 
 Confira o arquivo docker-compose, se a parte de `environment`, em cada serviço do docker estão de acordo com as passadas no env., e rode:
